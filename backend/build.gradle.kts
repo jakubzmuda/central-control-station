@@ -1,6 +1,9 @@
 plugins {
     id("java")
+    id("org.springframework.boot") version ("3.3.0")
 }
+
+apply(plugin = "io.spring.dependency-management")
 
 group = "com.github.jakubzmuda"
 version = "1.0-SNAPSHOT"
@@ -10,8 +13,10 @@ repositories {
 }
 
 dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-web")
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 tasks.test {
