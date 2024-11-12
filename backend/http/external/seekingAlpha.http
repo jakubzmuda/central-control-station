@@ -1,1 +1,1 @@
-GET https://seekingalpha.com/api/v3/symbols/jpm/dividend_history?years=1
+GET https://seekingalpha.com/api/v3/symbols/aapl/dividend_history?years=1
