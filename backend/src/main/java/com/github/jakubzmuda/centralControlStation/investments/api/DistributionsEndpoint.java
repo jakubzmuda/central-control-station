@@ -1,84 +1,109 @@
 package com.github.jakubzmuda.centralControlStation.investments.api;
 
+import com.github.jakubzmuda.centralControlStation.investments.application.Distribution;
+import com.github.jakubzmuda.centralControlStation.investments.application.DistributionForecast;
+import com.github.jakubzmuda.centralControlStation.investments.application.DistributionsService;
+import com.github.jakubzmuda.centralControlStation.investments.application.YearlyForecast;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 public class DistributionsEndpoint {
 
+    private DistributionsService application;
+
+    public DistributionsEndpoint(DistributionsService application) {
+        this.application = application;
+    }
+
     @GetMapping("/api/distributions/forecast")
     public ForecastResponse forecast() {
-
-        Map<String, DistributionList> months = new HashMap<>();
-        months.put("january", new DistributionList(List.of(new Distribution("aapl", Map.of("USD", 10f)))));
-        months.put("february", new DistributionList());
-        months.put("march", new DistributionList());
-        months.put("april", new DistributionList());
-        months.put("may", new DistributionList());
-        months.put("june", new DistributionList());
-        months.put("july", new DistributionList());
-        months.put("august", new DistributionList());
-        months.put("september", new DistributionList());
-        months.put("october", new DistributionList());
-        months.put("november", new DistributionList());
-        months.put("december", new DistributionList());
-
-        return new ForecastResponse(new YearlyForecast(months));
+        return new ForecastResponse(application.forecast());
     }
 
     static class ForecastResponse {
-        YearlyForecast yearlyForecast;
+        YearlyForecastJson yearlyForecast;
 
         private ForecastResponse() {
         }
 
-        public ForecastResponse(YearlyForecast yearlyForecast) {
-            this.yearlyForecast = yearlyForecast;
+        public ForecastResponse(DistributionForecast distributionForecast) {
+            this.yearlyForecast = new YearlyForecastJson(distributionForecast.yearlyForecast());
         }
 
-        public YearlyForecast yearlyForecast() {
+        public YearlyForecastJson yearlyForecast() {
             return yearlyForecast;
         }
     }
 
-    static class YearlyForecast {
-        Map<String, DistributionList> months;
+    static class YearlyForecastJson {
+        Map<String, DistributionListJson> months;
         Distribution total;
 
-        private YearlyForecast() {
+        private YearlyForecastJson() {
         }
 
-        public YearlyForecast(Map<String, DistributionList> months) {
-            this.months = months;
+        public YearlyForecastJson(YearlyForecast yearlyForecast) {
+            this.months = yearlyForecast
+                    .months()
+                    .entrySet()
+                    .stream()
+                    .collect(Collectors.toMap(
+                            Map.Entry::getKey,
+                            entry -> new DistributionListJson(entry.getValue().distributions())));
+        }
+
+        public Map<String, DistributionListJson> months() {
+            return months;
+        }
+
+        public Distribution total() {
+            return total;
         }
     }
 
-    static class DistributionList {
-        List<Distribution> distributions;
-        Distribution total;
+    static class DistributionListJson {
+        List<DistributionJson> distributions;
+        DistributionJson total;
 
-        private DistributionList() {
+        private DistributionListJson() {
         }
 
-        public DistributionList(List<Distribution> distributions) {
-            this.distributions = distributions;
+        public DistributionListJson(List<Distribution> distributions) {
+            this.distributions = distributions.stream().map(DistributionJson::new).toList();
+        }
+
+        public List<DistributionJson> distributions() {
+            return distributions;
+        }
+
+        public DistributionJson total() {
+            return total;
         }
     }
 
-    static class Distribution {
+    static class DistributionJson {
         String source;
         Map<String, Float> monetaryValue;
 
-        private Distribution() {
+        private DistributionJson() {
         }
 
-        public Distribution(String source, Map<String, Float> monetaryValue) {
-            this.source = source;
-            this.monetaryValue = monetaryValue;
+        public DistributionJson(Distribution distribution) {
+            this.source = distribution.source();
+            this.monetaryValue = Map.of(distribution.monetaryValue().currency().toString(), distribution.monetaryValue().amount());
+        }
+
+        public String source() {
+            return source;
+        }
+
+        public Map<String, Float> monetaryValue() {
+            return monetaryValue;
         }
     }
 }

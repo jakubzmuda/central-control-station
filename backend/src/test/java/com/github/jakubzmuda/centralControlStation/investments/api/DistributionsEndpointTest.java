@@ -2,6 +2,7 @@ package com.github.jakubzmuda.centralControlStation.investments.api;
 
 import com.github.jakubzmuda.centralControlStation.investments.api.infrastructure.rest.ApiTest;
 import com.github.jakubzmuda.centralControlStation.investments.api.infrastructure.rest.Response;
+import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.Portfolio;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -21,10 +22,11 @@ public class DistributionsEndpointTest extends ApiTest {
 
         var responseBody = response.bodyAs(DistributionsEndpoint.ForecastResponse.class);
 
-        Map<String, DistributionsEndpoint.DistributionList> months = responseBody.yearlyForecast().months;
+        Map<String, DistributionsEndpoint.DistributionListJson> months = responseBody.yearlyForecast().months;
         assertThat(months).hasSize(12);
 
-        DistributionsEndpoint.DistributionList januaryDistributions = months.get("january");
+        DistributionsEndpoint.DistributionListJson januaryDistributions = months.get("january");
         assertThat(januaryDistributions.distributions).hasSize(1);
     }
+
 }
