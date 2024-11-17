@@ -1,7 +1,7 @@
-package com.github.jakubzmuda.centralControlStation.investments.api.infrastructure.any;
+package com.github.jakubzmuda.centralControlStation.investments.infrastructure;
 
-import com.github.jakubzmuda.centralControlStation.investments.api.infrastructure.rest.Api;
-import com.github.jakubzmuda.centralControlStation.investments.api.infrastructure.rest.Port;
+import com.github.jakubzmuda.centralControlStation.investments.infrastructure.rest.Api;
+import com.github.jakubzmuda.centralControlStation.investments.infrastructure.rest.Port;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;

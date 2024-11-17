@@ -1,22 +1,28 @@
-package com.github.jakubzmuda.centralControlStation.investments.application;
+package com.github.jakubzmuda.centralControlStation.investments.domain.distributions;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
-public class DistributionList {
+public class Distributions {
     private List<Distribution> distributions;
-    private Distribution total;
+    private Optional<Distribution> total;
 
-    public DistributionList(List<Distribution> distributions, Distribution total) {
+    public Distributions(List<Distribution> distributions) {
         this.distributions = distributions;
-        this.total = total;
+        this.total = distributions.isEmpty() ? Optional.empty() : Optional.of(distributions.getFirst());
+    }
+
+    public static Distributions empty() {
+        return new Distributions(Collections.emptyList());
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DistributionList that = (DistributionList) o;
+        Distributions that = (Distributions) o;
         return Objects.equals(distributions, that.distributions) && Objects.equals(total, that.total);
     }
 
@@ -33,11 +39,15 @@ public class DistributionList {
                 '}';
     }
 
+    public String productTicker() {
+        return distributions.getFirst().productTicker();
+    }
+
     public List<Distribution> distributions() {
         return distributions;
     }
 
-    public Distribution total() {
+    public Optional<Distribution> total() {
         return total;
     }
 }

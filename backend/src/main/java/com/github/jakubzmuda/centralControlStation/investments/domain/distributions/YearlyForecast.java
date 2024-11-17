@@ -1,13 +1,14 @@
-package com.github.jakubzmuda.centralControlStation.investments.application;
+package com.github.jakubzmuda.centralControlStation.investments.domain.distributions;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
 public class YearlyForecast {
-    Map<String, DistributionList> months;
+    LinkedHashMap<String, Distributions> months;
     Distribution total;
 
-    public YearlyForecast(Map<String, DistributionList> months) {
+    public YearlyForecast(LinkedHashMap<String, Distributions> months) {
         this.months = months;
     }
 
@@ -32,7 +33,7 @@ public class YearlyForecast {
                 '}';
     }
 
-    public Map<String, DistributionList> months() {
+    public Map<String, Distributions> months() {
         return months;
     }
 

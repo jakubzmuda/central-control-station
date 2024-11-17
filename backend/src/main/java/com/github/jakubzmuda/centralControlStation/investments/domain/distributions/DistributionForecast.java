@@ -1,4 +1,4 @@
-package com.github.jakubzmuda.centralControlStation.investments.application;
+package com.github.jakubzmuda.centralControlStation.investments.domain.distributions;
 
 import java.util.Objects;
 

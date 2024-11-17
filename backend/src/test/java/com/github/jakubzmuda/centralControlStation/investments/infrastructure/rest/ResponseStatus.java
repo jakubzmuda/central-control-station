@@ -1,4 +1,4 @@
-package com.github.jakubzmuda.centralControlStation.investments.api.infrastructure.rest;
+package com.github.jakubzmuda.centralControlStation.investments.infrastructure.rest;
 
 import static java.lang.String.format;
 
@@ -11,8 +11,9 @@ public enum ResponseStatus {
     NO_CONTENT(204),
     BAD_REQUEST(400),
     CONFLICT(409),
-
-    NOT_FOUND(404), FORBIDDEN(403);
+    INTERNAL_SERVER_ERROR(500),
+    NOT_FOUND(404),
+    FORBIDDEN(403);
 
     private final int code;
 

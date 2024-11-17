@@ -1,12 +1,13 @@
 package com.github.jakubzmuda.centralControlStation.investments.api;
 
-import com.github.jakubzmuda.centralControlStation.investments.application.Distribution;
-import com.github.jakubzmuda.centralControlStation.investments.application.DistributionForecast;
+import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.Distribution;
+import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.DistributionForecast;
 import com.github.jakubzmuda.centralControlStation.investments.application.DistributionsService;
-import com.github.jakubzmuda.centralControlStation.investments.application.YearlyForecast;
+import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.YearlyForecast;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -41,23 +42,26 @@ public class DistributionsEndpoint {
     }
 
     static class YearlyForecastJson {
-        Map<String, DistributionListJson> months;
+        LinkedHashMap<String, DistributionListJson> months;
         Distribution total;
 
         private YearlyForecastJson() {
         }
 
         public YearlyForecastJson(YearlyForecast yearlyForecast) {
-            this.months = yearlyForecast
+            months = yearlyForecast
                     .months()
                     .entrySet()
                     .stream()
                     .collect(Collectors.toMap(
                             Map.Entry::getKey,
-                            entry -> new DistributionListJson(entry.getValue().distributions())));
+                            entry -> new DistributionListJson(entry.getValue().distributions()),
+                            (oldValue, newValue) -> oldValue,
+                            LinkedHashMap::new
+                    ));
         }
 
-        public Map<String, DistributionListJson> months() {
+        public LinkedHashMap<String, DistributionListJson> months() {
             return months;
         }
 
@@ -94,7 +98,7 @@ public class DistributionsEndpoint {
         }
 
         public DistributionJson(Distribution distribution) {
-            this.source = distribution.source();
+            this.source = distribution.productTicker();
             this.monetaryValue = Map.of(distribution.monetaryValue().currency().toString(), distribution.monetaryValue().amount());
         }
 

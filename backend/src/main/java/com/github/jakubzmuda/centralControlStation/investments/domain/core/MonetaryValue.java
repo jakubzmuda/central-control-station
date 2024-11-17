@@ -11,6 +11,10 @@ public class MonetaryValue {
         this.amount = amount;
     }
 
+    public static MonetaryValue of(Currency currency, float amount) {
+        return new MonetaryValue(currency, amount);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
