@@ -43,7 +43,7 @@ public class DistributionsEndpoint {
 
     static class YearlyForecastJson {
         LinkedHashMap<String, DistributionListJson> months;
-        Distribution total;
+        DistributionJson total;
 
         private YearlyForecastJson() {
         }
@@ -65,7 +65,7 @@ public class DistributionsEndpoint {
             return months;
         }
 
-        public Distribution total() {
+        public DistributionJson total() {
             return total;
         }
     }

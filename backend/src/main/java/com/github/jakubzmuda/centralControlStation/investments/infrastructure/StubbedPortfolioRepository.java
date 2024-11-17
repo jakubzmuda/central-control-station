@@ -14,7 +14,7 @@ public class StubbedPortfolioRepository implements PortfolioRepository {
     public Portfolio getPortfolio() {
         return new Portfolio(List.of(
                 new PortfolioEntry("aapl", 1.50f),
-                new PortfolioEntry("msft", 2.30f)
+                new PortfolioEntry("jpm", 2.30f)
         ));
     }
 }

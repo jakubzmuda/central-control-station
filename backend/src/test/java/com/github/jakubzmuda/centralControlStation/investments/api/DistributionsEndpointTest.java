@@ -24,9 +24,9 @@ public class DistributionsEndpointTest extends ApiTest {
                         .withBody(aaplResponse())
                         .withStatus(200)));
 
-        WireMock.stubFor(get("/api/v3/symbols/msft/dividend_history?years=0")
+        WireMock.stubFor(get("/api/v3/symbols/jpm/dividend_history?years=0")
                 .willReturn(aResponse()
-                        .withBody(msftResponse())
+                        .withBody(jpmResponse())
                         .withStatus(200)));
 
         Response response = api.whenAnonymously().get("/api/distributions/forecast");
@@ -38,6 +38,12 @@ public class DistributionsEndpointTest extends ApiTest {
         Map<String, DistributionsEndpoint.DistributionListJson> months = responseBody.yearlyForecast().months;
         assertThat(months).hasSize(12);
 
+        DistributionsEndpoint.DistributionListJson januaryDistributions = months.get("january");
+        assertThat(januaryDistributions.distributions).hasSize(1);
+        assertThat(januaryDistributions.distributions.getFirst().source).isEqualTo("jpm");
+        assertThat(januaryDistributions.distributions.getFirst().monetaryValue.get("USD")).isEqualTo(2.875f);
+        assertThat(januaryDistributions.total.source).isEqualTo("total");
+        assertThat(januaryDistributions.total.monetaryValue.get("USD")).isEqualTo(2.875f);
     }
 
     private static String aaplResponse() {
@@ -120,74 +126,74 @@ public class DistributionsEndpointTest extends ApiTest {
                 """;
     }
 
-    private static String msftResponse() {
+    private static String jpmResponse() {
         return """
                 {
                   "data": [
                     {
-                      "id": "5555220",
+                      "id": "9980440",
                       "type": "dividend_history",
                       "attributes": {
                         "year": 2024,
-                        "amount": "0.75",
-                        "ex_date": "2024-02-14",
+                        "amount": "1.05",
+                        "ex_date": "2024-01-04",
                         "freq": "QUARTERLY",
-                        "declare_date": "2023-11-28",
-                        "pay_date": "2024-03-14",
-                        "record_date": "2024-02-15",
-                        "date": "2024-02-14",
-                        "adjusted_amount": 0.75,
+                        "declare_date": "2023-12-12",
+                        "pay_date": "2024-01-31",
+                        "record_date": "2024-01-05",
+                        "date": "2024-01-04",
+                        "adjusted_amount": 1.05,
                         "split_adj_factor": 1.0,
                         "type": "Regular"
                       }
                     },
                     {
-                      "id": "5555240",
+                      "id": "9980460",
                       "type": "dividend_history",
                       "attributes": {
                         "year": 2024,
-                        "amount": "0.75",
-                        "ex_date": "2024-05-15",
+                        "amount": "1.15",
+                        "ex_date": "2024-04-04",
                         "freq": "QUARTERLY",
-                        "declare_date": "2024-03-12",
-                        "pay_date": "2024-06-13",
-                        "record_date": "2024-05-16",
-                        "date": "2024-05-15",
-                        "adjusted_amount": 0.75,
+                        "declare_date": "2024-03-19",
+                        "pay_date": "2024-04-30",
+                        "record_date": "2024-04-05",
+                        "date": "2024-04-04",
+                        "adjusted_amount": 1.15,
                         "split_adj_factor": 1.0,
                         "type": "Regular"
                       }
                     },
                     {
-                      "id": "5555260",
+                      "id": "9980480",
                       "type": "dividend_history",
                       "attributes": {
                         "year": 2024,
-                        "amount": "0.75",
-                        "ex_date": "2024-08-15",
+                        "amount": "1.15",
+                        "ex_date": "2024-07-05",
                         "freq": "QUARTERLY",
-                        "declare_date": "2024-06-12",
-                        "pay_date": "2024-09-12",
-                        "record_date": "2024-08-15",
-                        "date": "2024-08-15",
-                        "adjusted_amount": 0.75,
+                        "declare_date": "2024-05-20",
+                        "pay_date": "2024-07-31",
+                        "record_date": "2024-07-05",
+                        "date": "2024-07-05",
+                        "adjusted_amount": 1.15,
                         "split_adj_factor": 1.0,
                         "type": "Regular"
                       }
                     },
                     {
-                      "id": "5555280",
+                      "id": "9980500",
                       "type": "dividend_history",
                       "attributes": {
                         "year": 2024,
-                        "amount": "0.83",
-                        "ex_date": "2024-11-21",
+                        "amount": "1.25",
+                        "ex_date": "2024-10-04",
                         "freq": "QUARTERLY",
-                        "declare_date": "2024-09-16",
-                        "pay_date": "2024-12-12",
-                        "record_date": "2024-11-21",
-                        "date": "2024-11-21",
-                        "adjusted_amount": 0.83,
+                        "declare_date": "2024-09-17",
+                        "pay_date": "2024-10-31",
+                        "record_date": "2024-10-04",
+                        "date": "2024-10-04",
+                        "adjusted_amount": 1.25,
                         "split_adj_factor": 1.0,
                         "type": "Regular"
                       }
