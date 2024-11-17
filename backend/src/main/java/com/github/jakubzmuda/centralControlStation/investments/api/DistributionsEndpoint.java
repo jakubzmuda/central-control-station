@@ -55,7 +55,7 @@ public class DistributionsEndpoint {
                     .stream()
                     .collect(Collectors.toMap(
                             Map.Entry::getKey,
-                            entry -> new DistributionListJson(entry.getValue().distributions()),
+                            entry -> new DistributionListJson(entry.getValue().distributionList()),
                             (oldValue, newValue) -> oldValue,
                             LinkedHashMap::new
                     ));

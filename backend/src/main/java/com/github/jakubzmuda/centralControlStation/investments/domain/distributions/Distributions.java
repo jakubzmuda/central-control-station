@@ -1,17 +1,17 @@
 package com.github.jakubzmuda.centralControlStation.investments.domain.distributions;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.time.format.TextStyle;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Distributions {
-    private List<Distribution> distributions;
+    private List<Distribution> distributionList;
     private Optional<Distribution> total;
 
-    public Distributions(List<Distribution> distributions) {
-        this.distributions = distributions;
-        this.total = distributions.isEmpty() ? Optional.empty() : Optional.of(distributions.getFirst());
+    public Distributions(List<Distribution> distributionList) {
+        this.distributionList = distributionList;
+        this.total = distributionList.isEmpty() ? Optional.empty() : Optional.of(distributionList.getFirst());
     }
 
     public static Distributions empty() {
@@ -23,31 +23,47 @@ public class Distributions {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Distributions that = (Distributions) o;
-        return Objects.equals(distributions, that.distributions) && Objects.equals(total, that.total);
+        return Objects.equals(distributionList, that.distributionList) && Objects.equals(total, that.total);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(distributions, total);
+        return Objects.hash(distributionList, total);
     }
 
     @Override
     public String toString() {
         return "DistributionList{" +
-                "distributions=" + distributions +
+                "distributionList=" + distributionList +
                 ", total=" + total +
                 '}';
     }
 
     public String productTicker() {
-        return distributions.getFirst().productTicker();
+        return distributionList.getFirst().productTicker();
     }
 
-    public List<Distribution> distributions() {
-        return distributions;
+    public List<Distribution> distributionList() {
+        return distributionList;
+    }
+
+    public Distributions distributionsInMonth(String month) {
+        return new Distributions(distributionList
+                .stream()
+                .filter(d -> d.exDate().getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH).equalsIgnoreCase(month))
+                .toList());
+    }
+
+    public Distributions addAll(Distributions distributions) {
+        return new Distributions(Stream.concat(distributionList.stream(), distributions.distributionList().stream())
+                .collect(Collectors.toList()));
     }
 
     public Optional<Distribution> total() {
         return total;
+    }
+
+    public Optional<Distribution> last() {
+        return distributionList.isEmpty() ? Optional.empty() : Optional.of(distributionList.getLast());
     }
 }

@@ -14,20 +14,15 @@ import static com.github.jakubzmuda.centralControlStation.investments.infrastruc
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 
+// TODO test util that generates stub response with api like withProduct("aapl").amount(0.25f).onMonths("january", "april)
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class DistributionsEndpointTest extends ApiTest {
 
     @Test
     public void shouldRespondWithForecast() {
-        WireMock.stubFor(get("/api/v3/symbols/aapl/dividend_history?years=0")
-                .willReturn(aResponse()
-                        .withBody(aaplResponse())
-                        .withStatus(200)));
-
-        WireMock.stubFor(get("/api/v3/symbols/jpm/dividend_history?years=0")
-                .willReturn(aResponse()
-                        .withBody(jpmResponse())
-                        .withStatus(200)));
+        stubDistributionsResponse("aapl", aaplResponse());
+        stubDistributionsResponse("jpm", jpmResponse());
 
         Response response = api.whenAnonymously().get("/api/distributions/forecast");
 
@@ -44,6 +39,13 @@ public class DistributionsEndpointTest extends ApiTest {
         assertThat(januaryDistributions.distributions.getFirst().monetaryValue.get("USD")).isEqualTo(2.875f);
         assertThat(januaryDistributions.total.source).isEqualTo("total");
         assertThat(januaryDistributions.total.monetaryValue.get("USD")).isEqualTo(2.875f);
+    }
+
+    private static void stubDistributionsResponse(String productName, String body) {
+        WireMock.stubFor(get(String.format("/api/v3/symbols/%s/dividend_history?years=0", productName))
+                .willReturn(aResponse()
+                        .withBody(body)
+                        .withStatus(200)));
     }
 
     private static String aaplResponse() {
@@ -208,6 +210,9 @@ public class DistributionsEndpointTest extends ApiTest {
 
     @Test
     public void shouldSortMoths() {
+        stubDistributionsResponse("aapl", aaplResponse());
+        stubDistributionsResponse("jpm", jpmResponse());
+
         Response response = api.whenAnonymously().get("/api/distributions/forecast");
 
         var responseBody = response.bodyAs(DistributionsEndpoint.ForecastResponse.class);

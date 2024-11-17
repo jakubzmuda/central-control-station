@@ -9,7 +9,10 @@ import org.springframework.stereotype.Component;
 
 import java.time.Month;
 import java.time.format.TextStyle;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Component
@@ -23,26 +26,36 @@ public class DistributionsService {
         this.dataAcquirementService = dataAcquirementService;
     }
 
+    // TODO iść przez portfolio entries i akumulować w miesiącach
     public DistributionForecast forecast() {
         Portfolio portfolio = portfolioRepository.getPortfolio();
 
-        List<Distributions> distributionsPerPortfolioEntry = portfolio.entries().stream().map(entry -> dataAcquirementService.acquireLastYearDistributions(entry.name())).toList();
+        Distributions distributions = distributionsForPortfolio(portfolio);
 
-        LinkedHashMap<String, Distributions> distributionPerMonth = Arrays.stream(Month.values())
-                .map(month -> month.getDisplayName(TextStyle.FULL, Locale.ENGLISH).toLowerCase())
+        LinkedHashMap<String, Distributions> distributionPerMonth = monthNames()
+                .stream()
                 .collect(Collectors.toMap(
                         monthName -> monthName,
-                        monthName -> distributionsPerPortfolioEntry.stream()
-                                .filter(distributions -> distributions.distributions().stream()
-                                        .anyMatch(distribution -> distribution.exDate().getMonth()
-                                                .getDisplayName(TextStyle.FULL, Locale.ENGLISH)
-                                                .equalsIgnoreCase(monthName)))
-                                .findFirst()
-                                .orElseGet(Distributions::empty),
-                        (oldValue, newValue) -> oldValue, // TODO merge function?
+                        distributions::distributionsInMonth,
+                        (oldValue, newValue) -> oldValue,
                         LinkedHashMap::new
                 ));
 
         return new DistributionForecast(new YearlyForecast(distributionPerMonth));
     }
+
+    private List<String> monthNames() {
+        return Arrays.stream(Month.values())
+                .map(month -> month.getDisplayName(TextStyle.FULL, Locale.ENGLISH).toLowerCase()).toList();
+    }
+
+    private Distributions distributionsForPortfolio(Portfolio portfolio) {
+        return portfolio
+                .entries()
+                .stream()
+                .map(entry -> dataAcquirementService.acquireLastYearDistributions(entry.name()))
+                .reduce(Distributions::addAll)
+                .orElse(Distributions.empty());
+    }
+
 }

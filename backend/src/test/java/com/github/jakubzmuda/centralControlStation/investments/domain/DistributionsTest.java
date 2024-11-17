@@ -12,5 +12,6 @@ public class DistributionsTest {
     @Test
     public void shouldHandleEmpty() {
         assertThat(Distributions.empty().total()).isEqualTo(Optional.empty());
+        assertThat(Distributions.empty().last()).isEqualTo(Optional.empty());
     }
 }
