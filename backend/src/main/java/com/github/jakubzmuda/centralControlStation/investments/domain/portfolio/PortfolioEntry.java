@@ -1,7 +1,10 @@
 package com.github.jakubzmuda.centralControlStation.investments.domain.portfolio;
 
+import jakarta.persistence.Embeddable;
+
 import java.util.Objects;
 
+@Embeddable
 public class PortfolioEntry {
     String name;
     float amount;

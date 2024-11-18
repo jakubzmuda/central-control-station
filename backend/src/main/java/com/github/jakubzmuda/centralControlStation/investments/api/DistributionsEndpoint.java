@@ -1,5 +1,6 @@
 package com.github.jakubzmuda.centralControlStation.investments.api;
 
+import com.github.jakubzmuda.centralControlStation.investments.domain.core.UserId;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.Distribution;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.DistributionForecast;
 import com.github.jakubzmuda.centralControlStation.investments.application.DistributionsService;
@@ -23,7 +24,7 @@ public class DistributionsEndpoint {
 
     @GetMapping("/api/distributions/forecast")
     public ForecastResponse forecast() {
-        return new ForecastResponse(application.forecast());
+        return new ForecastResponse(application.forecast(UserId.of("user")));
     }
 
     static class ForecastResponse {

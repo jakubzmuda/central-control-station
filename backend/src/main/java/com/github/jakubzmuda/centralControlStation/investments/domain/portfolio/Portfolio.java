@@ -1,13 +1,25 @@
 package com.github.jakubzmuda.centralControlStation.investments.domain.portfolio;
 
+import com.github.jakubzmuda.centralControlStation.investments.domain.core.UserId;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+
 import java.util.List;
 import java.util.Objects;
 
+@Entity
 public class Portfolio {
 
-    List<PortfolioEntry> entries;
+    @Id
+    private UserId userId;
 
-    public Portfolio(List<PortfolioEntry> entries) {
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<PortfolioEntry> entries;
+
+    public Portfolio(UserId userId, List<PortfolioEntry> entries) {
+        this.userId = userId;
         this.entries = entries;
     }
 
@@ -22,6 +34,10 @@ public class Portfolio {
     @Override
     public int hashCode() {
         return Objects.hashCode(entries);
+    }
+
+    public UserId userId() {
+        return userId;
     }
 
     public List<PortfolioEntry> entries() {

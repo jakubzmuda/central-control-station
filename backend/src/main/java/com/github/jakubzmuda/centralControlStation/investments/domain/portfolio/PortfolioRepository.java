@@ -1,6 +1,11 @@
 package com.github.jakubzmuda.centralControlStation.investments.domain.portfolio;
 
-public interface PortfolioRepository {
+import com.github.jakubzmuda.centralControlStation.investments.domain.core.UserId;
+import org.springframework.data.repository.Repository;
 
-    Portfolio getPortfolio();
+public interface PortfolioRepository extends Repository<Portfolio, UserId> {
+
+    Portfolio getByUserId(UserId userId);
+
+    void save(Portfolio portfolio);
 }

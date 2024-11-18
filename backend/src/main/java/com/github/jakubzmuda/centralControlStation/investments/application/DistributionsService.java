@@ -1,5 +1,6 @@
 package com.github.jakubzmuda.centralControlStation.investments.application;
 
+import com.github.jakubzmuda.centralControlStation.investments.domain.core.UserId;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.DistributionForecast;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.Distributions;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.YearlyForecast;
@@ -26,9 +27,8 @@ public class DistributionsService {
         this.dataAcquirementService = dataAcquirementService;
     }
 
-    // TODO iść przez portfolio entries i akumulować w miesiącach
-    public DistributionForecast forecast() {
-        Portfolio portfolio = portfolioRepository.getPortfolio();
+    public DistributionForecast forecast(UserId userId) {
+        Portfolio portfolio = portfolioRepository.getByUserId(userId);
 
         Distributions distributions = distributionsForPortfolio(portfolio);
 

@@ -40,3 +40,4 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+/app_state.db
