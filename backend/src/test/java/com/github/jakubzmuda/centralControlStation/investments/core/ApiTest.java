@@ -1,8 +1,9 @@
-package com.github.jakubzmuda.centralControlStation.investments.infrastructure.rest;
+package com.github.jakubzmuda.centralControlStation.investments.core;
 
 import com.github.jakubzmuda.centralControlStation.Application;
-import com.github.jakubzmuda.centralControlStation.investments.infrastructure.TestApplication;
+import com.github.jakubzmuda.centralControlStation.investments.core.rest.Api;
 import com.github.tomakehurst.wiremock.WireMockServer;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ public class ApiTest {
     @Autowired
     protected Api api;
 
+    @Autowired Database database;
+
     @Value( "${application.seekingAlpha.port}" )
     private Integer seekingAlphaPort;
 
@@ -28,6 +31,7 @@ public class ApiTest {
     @BeforeEach
     public void setUp() {
         api.reset();
+        database.reset();
         wireMockServer = new WireMockServer(seekingAlphaPort);
         wireMockServer.start();
         configureFor("localhost", seekingAlphaPort);

@@ -1,4 +1,4 @@
-package com.github.jakubzmuda.centralControlStation.investments.infrastructure.rest;
+package com.github.jakubzmuda.centralControlStation.investments.core.rest;
 
 import org.assertj.core.api.AbstractAssert;
 
