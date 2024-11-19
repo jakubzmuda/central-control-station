@@ -1,5 +1,6 @@
 package com.github.jakubzmuda.centralControlStation.investments.application;
 
+import com.github.jakubzmuda.centralControlStation.core.application.NotFoundException;
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.UserId;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.DistributionForecast;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.Distributions;
@@ -28,7 +29,7 @@ public class DistributionsService {
     }
 
     public DistributionForecast forecast(UserId userId) {
-        Portfolio portfolio = portfolioRepository.getByUserId(userId);
+        Portfolio portfolio = portfolioRepository.getByUserId(userId).orElseThrow(NotFoundException::new);
 
         Distributions distributions = distributionsForPortfolio(portfolio);
 

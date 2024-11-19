@@ -24,7 +24,7 @@ public class DistributionsEndpoint {
 
     @GetMapping("/api/distributions/forecast")
     public ForecastResponse forecast() {
-        return new ForecastResponse(application.forecast(UserId.of("user")));
+        return new ForecastResponse(application.forecast(UserId.of("test-user")));
     }
 
     static class ForecastResponse {

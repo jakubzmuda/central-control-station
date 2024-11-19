@@ -1,4 +1,4 @@
-package com.github.jakubzmuda.centralControlStation.infrastructure;
+package com.github.jakubzmuda.centralControlStation.core.infrastructure;
 
 import okhttp3.OkHttpClient;
 import org.springframework.context.annotation.Bean;

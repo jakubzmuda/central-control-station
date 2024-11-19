@@ -3,24 +3,21 @@ package com.github.jakubzmuda.centralControlStation.investments.api;
 import com.github.jakubzmuda.centralControlStation.investments.core.ApiTest;
 import com.github.jakubzmuda.centralControlStation.investments.core.Database;
 import com.github.jakubzmuda.centralControlStation.investments.core.rest.Response;
+import com.github.jakubzmuda.centralControlStation.investments.core.rest.ResponseStatus;
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.UserId;
 import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.Portfolio;
 import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.PortfolioEntry;
-import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import static com.github.jakubzmuda.centralControlStation.investments.core.rest.ResponseStatus.OK;
 import static com.github.jakubzmuda.centralControlStation.investments.core.rest.RestAssertions.assertThat;
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-
-// TODO test util that generates stub response with api like withProduct("aapl").amount(0.25f).onMonths("january", "april)
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class DistributionsEndpointTest extends ApiTest {
@@ -35,8 +32,21 @@ public class DistributionsEndpointTest extends ApiTest {
                 new PortfolioEntry("jpm", 2.30f)
         );
 
-        stubDistributionsResponse("aapl", aaplResponse());
-        stubDistributionsResponse("jpm", jpmResponse());
+        distributionsHelper
+                .withProduct("aapl")
+                .withDistribution(0.24f, LocalDate.parse("2024-02-09"))
+                .withDistribution(0.25f, LocalDate.parse("2024-05-10"))
+                .withDistribution(0.25f, LocalDate.parse("2024-08-12"))
+                .withDistribution(0.25f, LocalDate.parse("2024-11-14"))
+                .stub();
+
+        distributionsHelper
+                .withProduct("jpm")
+                .withDistribution(0.25f, LocalDate.parse("2024-01-15"))
+                .withDistribution(0.25f, LocalDate.parse("2024-04-15"))
+                .withDistribution(0.25f, LocalDate.parse("2024-07-15"))
+                .withDistribution(0.25f, LocalDate.parse("2024-10-15"))
+                .stub();
 
         Response response = api.whenAnonymously().get("/api/distributions/forecast");
 
@@ -55,182 +65,9 @@ public class DistributionsEndpointTest extends ApiTest {
         assertThat(januaryDistributions.total.monetaryValue.get("USD")).isEqualTo(2.875f);
     }
 
-    private void givenPortfolio(PortfolioEntry... entries) {
-        database.save(new Portfolio(UserId.of("test-user"), List.of(entries))
-        );
-    }
-
-    private static void stubDistributionsResponse(String productName, String body) {
-        WireMock.stubFor(get(String.format("/api/v3/symbols/%s/dividend_history?years=0", productName))
-                .willReturn(aResponse()
-                        .withBody(body)
-                        .withStatus(200)));
-    }
-
-    private static String aaplResponse() {
-        return """
-                {
-                  "data": [
-                    {
-                      "id": "8405100",
-                      "type": "dividend_history",
-                      "attributes": {
-                        "year": 2024,
-                        "amount": "0.24",
-                        "ex_date": "2024-02-09",
-                        "freq": "QUARTERLY",
-                        "declare_date": "2024-02-01",
-                        "pay_date": "2024-02-15",
-                        "record_date": "2024-02-12",
-                        "date": "2024-02-09",
-                        "adjusted_amount": 0.24,
-                        "split_adj_factor": 1.0,
-                        "type": "Regular"
-                      }
-                    },
-                    {
-                      "id": "8405120",
-                      "type": "dividend_history",
-                      "attributes": {
-                        "year": 2024,
-                        "amount": "0.25",
-                        "ex_date": "2024-05-10",
-                        "freq": "QUARTERLY",
-                        "declare_date": "2024-05-02",
-                        "pay_date": "2024-05-16",
-                        "record_date": "2024-05-13",
-                        "date": "2024-05-10",
-                        "adjusted_amount": 0.25,
-                        "split_adj_factor": 1.0,
-                        "type": "Regular"
-                      }
-                    },
-                    {
-                      "id": "8405140",
-                      "type": "dividend_history",
-                      "attributes": {
-                        "year": 2024,
-                        "amount": "0.25",
-                        "ex_date": "2024-08-12",
-                        "freq": "QUARTERLY",
-                        "declare_date": "2024-08-01",
-                        "pay_date": "2024-08-15",
-                        "record_date": "2024-08-12",
-                        "date": "2024-08-12",
-                        "adjusted_amount": 0.25,
-                        "split_adj_factor": 1.0,
-                        "type": "Regular"
-                      }
-                    },
-                    {
-                      "id": "8405160",
-                      "type": "dividend_history",
-                      "attributes": {
-                        "year": 2024,
-                        "amount": "0.25",
-                        "ex_date": "2024-11-08",
-                        "freq": "QUARTERLY",
-                        "declare_date": "2024-10-31",
-                        "pay_date": "2024-11-14",
-                        "record_date": "2024-11-11",
-                        "date": "2024-11-08",
-                        "adjusted_amount": 0.25,
-                        "split_adj_factor": 1.0,
-                        "type": "Regular"
-                      }
-                    }
-                  ],
-                  "meta": {
-                    "current_year": 2024
-                  }
-                }
-                """;
-    }
-
-    private static String jpmResponse() {
-        return """
-                {
-                  "data": [
-                    {
-                      "id": "9980440",
-                      "type": "dividend_history",
-                      "attributes": {
-                        "year": 2024,
-                        "amount": "1.05",
-                        "ex_date": "2024-01-04",
-                        "freq": "QUARTERLY",
-                        "declare_date": "2023-12-12",
-                        "pay_date": "2024-01-31",
-                        "record_date": "2024-01-05",
-                        "date": "2024-01-04",
-                        "adjusted_amount": 1.05,
-                        "split_adj_factor": 1.0,
-                        "type": "Regular"
-                      }
-                    },
-                    {
-                      "id": "9980460",
-                      "type": "dividend_history",
-                      "attributes": {
-                        "year": 2024,
-                        "amount": "1.15",
-                        "ex_date": "2024-04-04",
-                        "freq": "QUARTERLY",
-                        "declare_date": "2024-03-19",
-                        "pay_date": "2024-04-30",
-                        "record_date": "2024-04-05",
-                        "date": "2024-04-04",
-                        "adjusted_amount": 1.15,
-                        "split_adj_factor": 1.0,
-                        "type": "Regular"
-                      }
-                    },
-                    {
-                      "id": "9980480",
-                      "type": "dividend_history",
-                      "attributes": {
-                        "year": 2024,
-                        "amount": "1.15",
-                        "ex_date": "2024-07-05",
-                        "freq": "QUARTERLY",
-                        "declare_date": "2024-05-20",
-                        "pay_date": "2024-07-31",
-                        "record_date": "2024-07-05",
-                        "date": "2024-07-05",
-                        "adjusted_amount": 1.15,
-                        "split_adj_factor": 1.0,
-                        "type": "Regular"
-                      }
-                    },
-                    {
-                      "id": "9980500",
-                      "type": "dividend_history",
-                      "attributes": {
-                        "year": 2024,
-                        "amount": "1.25",
-                        "ex_date": "2024-10-04",
-                        "freq": "QUARTERLY",
-                        "declare_date": "2024-09-17",
-                        "pay_date": "2024-10-31",
-                        "record_date": "2024-10-04",
-                        "date": "2024-10-04",
-                        "adjusted_amount": 1.25,
-                        "split_adj_factor": 1.0,
-                        "type": "Regular"
-                      }
-                    }
-                  ],
-                  "meta": {
-                    "current_year": 2024
-                  }
-                }
-                """;
-    }
-
     @Test
     public void shouldSortMoths() {
-        stubDistributionsResponse("aapl", aaplResponse());
-        stubDistributionsResponse("jpm", jpmResponse());
+        givenPortfolio();
 
         Response response = api.whenAnonymously().get("/api/distributions/forecast");
 
@@ -240,6 +77,18 @@ public class DistributionsEndpointTest extends ApiTest {
 
         assertThat(months.sequencedKeySet()).containsExactly("january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december");
 
+    }
+
+    @Test
+    public void shouldReturn404WhenNoPortfolio() {
+        Response response = api.whenAnonymously().get("/api/distributions/forecast");
+
+        assertThat(response).hasStatus(ResponseStatus.NOT_FOUND);
+    }
+
+    private void givenPortfolio(PortfolioEntry... entries) {
+        database.save(new Portfolio(UserId.of("test-user"), List.of(entries))
+        );
     }
 
 }

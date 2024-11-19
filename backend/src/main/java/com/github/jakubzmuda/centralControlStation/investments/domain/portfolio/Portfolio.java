@@ -18,6 +18,9 @@ public class Portfolio {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<PortfolioEntry> entries;
 
+    private Portfolio() {
+    }
+
     public Portfolio(UserId userId, List<PortfolioEntry> entries) {
         this.userId = userId;
         this.entries = entries;

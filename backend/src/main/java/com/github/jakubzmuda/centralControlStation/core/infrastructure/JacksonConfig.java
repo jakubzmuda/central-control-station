@@ -1,4 +1,4 @@
-package com.github.jakubzmuda.centralControlStation.infrastructure;
+package com.github.jakubzmuda.centralControlStation.core.infrastructure;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
