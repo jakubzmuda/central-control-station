@@ -31,4 +31,8 @@ public class Database {
 
     }
 
+    @Transactional
+    public void save(Object entity) {
+        entityManager.persist(entity);
+    }
 }

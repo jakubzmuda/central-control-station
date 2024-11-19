@@ -9,6 +9,9 @@ public class PortfolioEntry {
     String name;
     float amount;
 
+    private PortfolioEntry() {
+    }
+
     public PortfolioEntry(String name, float amount) {
         this.name = name;
         this.amount = amount;

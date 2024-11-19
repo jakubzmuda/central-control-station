@@ -1,12 +1,18 @@
 package com.github.jakubzmuda.centralControlStation.investments.api;
 
 import com.github.jakubzmuda.centralControlStation.investments.core.ApiTest;
+import com.github.jakubzmuda.centralControlStation.investments.core.Database;
 import com.github.jakubzmuda.centralControlStation.investments.core.rest.Response;
+import com.github.jakubzmuda.centralControlStation.investments.domain.core.UserId;
+import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.Portfolio;
+import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.PortfolioEntry;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.github.jakubzmuda.centralControlStation.investments.core.rest.ResponseStatus.OK;
@@ -19,8 +25,16 @@ import static com.github.tomakehurst.wiremock.client.WireMock.get;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class DistributionsEndpointTest extends ApiTest {
 
+    @Autowired
+    private Database database;
+
     @Test
     public void shouldRespondWithForecast() {
+        givenPortfolio(
+                new PortfolioEntry("aapl", 1.50f),
+                new PortfolioEntry("jpm", 2.30f)
+        );
+
         stubDistributionsResponse("aapl", aaplResponse());
         stubDistributionsResponse("jpm", jpmResponse());
 
@@ -39,6 +53,11 @@ public class DistributionsEndpointTest extends ApiTest {
         assertThat(januaryDistributions.distributions.getFirst().monetaryValue.get("USD")).isEqualTo(2.875f);
         assertThat(januaryDistributions.total.source).isEqualTo("total");
         assertThat(januaryDistributions.total.monetaryValue.get("USD")).isEqualTo(2.875f);
+    }
+
+    private void givenPortfolio(PortfolioEntry... entries) {
+        database.save(new Portfolio(UserId.of("test-user"), List.of(entries))
+        );
     }
 
     private static void stubDistributionsResponse(String productName, String body) {
