@@ -1,5 +1,6 @@
 package com.github.jakubzmuda.centralControlStation.investments.api;
 
+import com.github.jakubzmuda.centralControlStation.investments.domain.core.MonetaryValue;
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.UserId;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.DistributionsForecast;
 import com.github.jakubzmuda.centralControlStation.investments.application.DistributionsService;
@@ -36,10 +37,6 @@ public class DistributionsEndpoint {
         public ForecastResponse(DistributionsForecast distributionsForecast) {
             this.yearlyForecast = new YearlyForecastJson(distributionsForecast.yearlyForecast());
         }
-
-        public YearlyForecastJson yearlyForecast() {
-            return yearlyForecast;
-        }
     }
 
     static class YearlyForecastJson {
@@ -60,14 +57,14 @@ public class DistributionsEndpoint {
                             (oldValue, newValue) -> oldValue,
                             LinkedHashMap::new
                     ));
-        }
 
-        public LinkedHashMap<String, DistributionListJson> months() {
-            return months;
-        }
-
-        public Map<String, Float> total() {
-            return total;
+            total = months.values().stream()
+                    .map(month -> month.total)
+                    .flatMap(map -> map.entrySet().stream())
+                    .collect(Collectors.groupingBy(Map.Entry::getKey, Collectors.collectingAndThen(
+                            Collectors.summingDouble(Map.Entry::getValue),
+                            Double::floatValue
+                    )));
         }
     }
 
@@ -80,14 +77,16 @@ public class DistributionsEndpoint {
 
         public DistributionListJson(List<ForecastedDistribution> distributions) {
             this.distributions = distributions.stream().map(DistributionJson::new).toList();
-        }
-
-        public List<DistributionJson> distributions() {
-            return distributions;
-        }
-
-        public Map<String, Float> total() {
-            return total;
+            if (!distributions.isEmpty()) {
+                this.total = Map.of(distributions.getFirst().monetaryValue().currency().toString(),
+                        distributions
+                                .stream()
+                                .map(ForecastedDistribution::monetaryValue)
+                                .map(MonetaryValue::amount)
+                                .reduce(0f, Float::sum));
+            } else {
+                this.total = Map.of("USD", 0f);
+            }
         }
     }
 
@@ -101,14 +100,6 @@ public class DistributionsEndpoint {
         public DistributionJson(ForecastedDistribution distribution) {
             this.product = distribution.productName();
             this.monetaryValue = Map.of(distribution.monetaryValue().currency().toString(), distribution.monetaryValue().amount());
-        }
-
-        public String source() {
-            return product;
-        }
-
-        public Map<String, Float> monetaryValue() {
-            return monetaryValue;
         }
     }
 }

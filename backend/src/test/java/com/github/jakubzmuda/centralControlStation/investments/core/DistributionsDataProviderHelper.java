@@ -47,6 +47,8 @@ public class DistributionsDataProviderHelper {
                 .willReturn(aResponse()
                         .withBody(body)
                         .withStatus(200)));
+
+        reset();
     }
 
     public void reset() {

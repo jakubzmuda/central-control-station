@@ -54,17 +54,71 @@ public class DistributionsEndpointTest extends ApiTest {
 
         var responseBody = response.bodyAs(DistributionsEndpoint.ForecastResponse.class);
 
-        Map<String, DistributionsEndpoint.DistributionListJson> months = responseBody.yearlyForecast().months;
-        assertThat(months).hasSize(12);
+        Map<String, DistributionsEndpoint.DistributionListJson> months = responseBody.yearlyForecast.months;
 
         assertThereIsASingleDistributionInMonth(months, "january", "jpm", 0.575f);
-
     }
 
     @Test
     public void shouldCalculateTotalForMonth() {
+        givenPortfolio(
+                new PortfolioEntry("aapl", 1f),
+                new PortfolioEntry("jpm", 2f)
+        );
 
-//        Assertions.assertThat(januaryDistributions.total.get("USD")).isEqualTo(0.575f);
+        distributionsHelper
+                .withProduct("aapl")
+                .withDistribution(0.24f, LocalDate.parse("2024-02-09"))
+                .stub();
+
+        distributionsHelper
+                .withProduct("jpm")
+                .withDistribution(0.25f, LocalDate.parse("2024-02-15"))
+                .stub();
+
+        Response response = api.whenAnonymously().get("/api/distributions/forecast");
+        var responseBody = response.bodyAs(DistributionsEndpoint.ForecastResponse.class);
+
+        assertThat(responseBody.yearlyForecast.months.get("february").total.get("USD")).isEqualTo(0.74f);
+    }
+
+    @Test
+    public void shouldCalculateTotalForYear() {
+        givenPortfolio(
+                new PortfolioEntry("aapl", 1f),
+                new PortfolioEntry("jpm", 2f)
+        );
+
+        distributionsHelper
+                .withProduct("aapl")
+                .withDistribution(0.24f, LocalDate.parse("2024-02-09"))
+                .stub();
+
+        distributionsHelper
+                .withProduct("jpm")
+                .withDistribution(0.25f, LocalDate.parse("2024-02-15"))
+                .withDistribution(0.25f, LocalDate.parse("2024-05-15"))
+                .stub();
+
+        Response response = api.whenAnonymously().get("/api/distributions/forecast");
+        var responseBody = response.bodyAs(DistributionsEndpoint.ForecastResponse.class);
+
+        assertThat(responseBody.yearlyForecast.total.get("USD")).isEqualTo(1.24f);
+    }
+
+    @Test
+    public void shouldShowTotalZeroWhenNoDistributions() {
+        givenPortfolio();
+
+        Response response = api.whenAnonymously().get("/api/distributions/forecast");
+
+        var responseBody = response.bodyAs(DistributionsEndpoint.ForecastResponse.class);
+
+        LinkedHashMap<String, DistributionsEndpoint.DistributionListJson> months = responseBody.yearlyForecast.months;
+
+        assertThat(responseBody.yearlyForecast.months.get("january").total.get("USD")).isEqualTo(0f);
+        assertThat(responseBody.yearlyForecast.total.get("USD")).isEqualTo(0f);
+
     }
 
     @Test
@@ -75,7 +129,7 @@ public class DistributionsEndpointTest extends ApiTest {
 
         var responseBody = response.bodyAs(DistributionsEndpoint.ForecastResponse.class);
 
-        LinkedHashMap<String, DistributionsEndpoint.DistributionListJson> months = responseBody.yearlyForecast().months;
+        LinkedHashMap<String, DistributionsEndpoint.DistributionListJson> months = responseBody.yearlyForecast.months;
 
         assertThat(months.sequencedKeySet()).containsExactly("january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december");
 

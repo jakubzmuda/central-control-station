@@ -56,6 +56,7 @@ public class DistributionsService {
 
         LinkedHashMap<String, List<ForecastedDistribution>> distributionsPerMonth = new LinkedHashMap<>();
 
+        // TODO refactor to more functional approach
         for (Month month : Month.values()) {
             distributionsPerMonth.put(month.getName(), new ArrayList<>());
         }
