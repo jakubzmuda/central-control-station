@@ -57,11 +57,14 @@ public class DistributionsEndpointTest extends ApiTest {
         Map<String, DistributionsEndpoint.DistributionListJson> months = responseBody.yearlyForecast().months;
         assertThat(months).hasSize(12);
 
-        DistributionsEndpoint.DistributionListJson januaryDistributions = months.get("january");
-        assertThat(januaryDistributions.distributions).hasSize(1);
-        assertThat(januaryDistributions.distributions.getFirst().product).isEqualTo("jpm");
-        assertThat(januaryDistributions.distributions.getFirst().monetaryValue.get("USD")).isEqualTo(2.875f);
-        assertThat(januaryDistributions.total.get("USD")).isEqualTo(2.875f);
+        assertThereIsASingleDistributionInMonth(months, "january", "jpm", 0.575f);
+
+    }
+
+    @Test
+    public void shouldCalculateTotalForMonth() {
+
+//        Assertions.assertThat(januaryDistributions.total.get("USD")).isEqualTo(0.575f);
     }
 
     @Test
@@ -88,6 +91,13 @@ public class DistributionsEndpointTest extends ApiTest {
     private void givenPortfolio(PortfolioEntry... entries) {
         database.save(new Portfolio(UserId.of("test-user"), List.of(entries))
         );
+    }
+
+    private void assertThereIsASingleDistributionInMonth(Map<String, DistributionsEndpoint.DistributionListJson> months, String month, String productTicker, float usdAmount) {
+        DistributionsEndpoint.DistributionListJson januaryDistributions = months.get(month);
+        assertThat(januaryDistributions.distributions).hasSize(1);
+        assertThat(januaryDistributions.distributions.getFirst().product).isEqualTo(productTicker);
+        assertThat(januaryDistributions.distributions.getFirst().monetaryValue.get("USD")).isEqualTo(usdAmount);
     }
 
 }

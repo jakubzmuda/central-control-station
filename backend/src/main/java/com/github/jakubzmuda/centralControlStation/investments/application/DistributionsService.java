@@ -12,9 +12,9 @@ import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.
 import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.PortfolioRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class DistributionsService {
@@ -32,7 +32,7 @@ public class DistributionsService {
 
         ActualDistributions distributions = distributionsForPortfolio(portfolio);
 
-        portfolio.entries()
+        List<ForecastedDistribution> forecastedDistributions = portfolio.entries()
                 .stream()
                 .map(portfolioEntry -> {
                     ActualDistributions distributionsForProduct = distributions.forProduct(portfolioEntry.name());
@@ -42,7 +42,7 @@ public class DistributionsService {
                             .orElseThrow(() -> new RuntimeException("No distributions found for portfolioEntry " + portfolioEntry.name()))
                             .monetaryValue();
 
-                    List<ForecastedDistribution> forecastedDistributions = distributionsForProduct.lastYear()
+                    return distributionsForProduct.lastYear()
                             .distributionList()
                             .stream()
                             .map(distribution -> new ForecastedDistribution(
@@ -50,30 +50,21 @@ public class DistributionsService {
                                     lastDistributionAmount.multiply(portfolioEntry.amount()),
                                     Month.of(distribution.exDate())))
                             .toList();
+                })
+                .flatMap(List::stream)
+                .toList();
 
-                });
+        LinkedHashMap<String, List<ForecastedDistribution>> distributionsPerMonth = new LinkedHashMap<>();
 
+        for (Month month : Month.values()) {
+            distributionsPerMonth.put(month.getName(), new ArrayList<>());
+        }
 
-        LinkedHashMap<String, List<ForecastedDistribution>> distributionPerMonth = Month.monthNames()
-                .stream()
-                .collect(Collectors.toMap(
-                        monthName -> monthName,
-                        month -> {
-                            ActualDistributions distributionsInMonth = distributions.inMonth(month);
+        for (ForecastedDistribution distribution : forecastedDistributions) {
+            distributionsPerMonth.get(distribution.month().getName()).add(distribution);
+        }
 
-                            return distributionsInMonth
-                                    .distributionList()
-                                    .stream()
-                                    .map(distribution -> {
-                                        return new ForecastedDistribution(distribution.monetaryValue(), Month.of(distribution.exDate()));
-                                    })
-                                    .toList();
-                        },
-                        (oldValue, newValue) -> oldValue,
-                        LinkedHashMap::new
-                ));
-
-        return new DistributionsForecast(new YearlyForecast(distributionPerMonth));
+        return new DistributionsForecast(new YearlyForecast(distributionsPerMonth));
     }
 
     private ActualDistributions distributionsForPortfolio(Portfolio portfolio) {

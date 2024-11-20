@@ -1,9 +1,9 @@
 package com.github.jakubzmuda.centralControlStation.investments.api;
 
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.UserId;
-import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.ActualDistribution;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.DistributionsForecast;
 import com.github.jakubzmuda.centralControlStation.investments.application.DistributionsService;
+import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.ForecastedDistribution;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.YearlyForecast;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,7 +56,7 @@ public class DistributionsEndpoint {
                     .stream()
                     .collect(Collectors.toMap(
                             Map.Entry::getKey,
-                            entry -> new DistributionListJson(entry.getValue().distributionList()),
+                            entry -> new DistributionListJson(entry.getValue()),
                             (oldValue, newValue) -> oldValue,
                             LinkedHashMap::new
                     ));
@@ -78,7 +78,7 @@ public class DistributionsEndpoint {
         private DistributionListJson() {
         }
 
-        public DistributionListJson(List<ActualDistribution> distributions) {
+        public DistributionListJson(List<ForecastedDistribution> distributions) {
             this.distributions = distributions.stream().map(DistributionJson::new).toList();
         }
 
@@ -98,8 +98,8 @@ public class DistributionsEndpoint {
         private DistributionJson() {
         }
 
-        public DistributionJson(ActualDistribution distribution) {
-            this.product = distribution.productTicker();
+        public DistributionJson(ForecastedDistribution distribution) {
+            this.product = distribution.productName();
             this.monetaryValue = Map.of(distribution.monetaryValue().currency().toString(), distribution.monetaryValue().amount());
         }
 

@@ -29,7 +29,7 @@ public class PortfolioEntry {
     public String toString() {
         return "PortfolioEntry{" +
                 "name='" + name + '\'' +
-                ", amount=" + amount +
+                ", monetaryValue=" + amount +
                 '}';
     }
 
