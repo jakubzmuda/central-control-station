@@ -1,8 +1,8 @@
 package com.github.jakubzmuda.centralControlStation.investments.api;
 
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.UserId;
-import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.Distribution;
-import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.DistributionForecast;
+import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.ActualDistribution;
+import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.DistributionsForecast;
 import com.github.jakubzmuda.centralControlStation.investments.application.DistributionsService;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.YearlyForecast;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,8 +33,8 @@ public class DistributionsEndpoint {
         private ForecastResponse() {
         }
 
-        public ForecastResponse(DistributionForecast distributionForecast) {
-            this.yearlyForecast = new YearlyForecastJson(distributionForecast.yearlyForecast());
+        public ForecastResponse(DistributionsForecast distributionsForecast) {
+            this.yearlyForecast = new YearlyForecastJson(distributionsForecast.yearlyForecast());
         }
 
         public YearlyForecastJson yearlyForecast() {
@@ -44,7 +44,7 @@ public class DistributionsEndpoint {
 
     static class YearlyForecastJson {
         LinkedHashMap<String, DistributionListJson> months;
-        DistributionJson total;
+        Map<String, Float> total;
 
         private YearlyForecastJson() {
         }
@@ -66,19 +66,19 @@ public class DistributionsEndpoint {
             return months;
         }
 
-        public DistributionJson total() {
+        public Map<String, Float> total() {
             return total;
         }
     }
 
     static class DistributionListJson {
         List<DistributionJson> distributions;
-        DistributionJson total;
+        Map<String, Float> total;
 
         private DistributionListJson() {
         }
 
-        public DistributionListJson(List<Distribution> distributions) {
+        public DistributionListJson(List<ActualDistribution> distributions) {
             this.distributions = distributions.stream().map(DistributionJson::new).toList();
         }
 
@@ -86,25 +86,25 @@ public class DistributionsEndpoint {
             return distributions;
         }
 
-        public DistributionJson total() {
+        public Map<String, Float> total() {
             return total;
         }
     }
 
     static class DistributionJson {
-        String source;
+        String product;
         Map<String, Float> monetaryValue;
 
         private DistributionJson() {
         }
 
-        public DistributionJson(Distribution distribution) {
-            this.source = distribution.productTicker();
+        public DistributionJson(ActualDistribution distribution) {
+            this.product = distribution.productTicker();
             this.monetaryValue = Map.of(distribution.monetaryValue().currency().toString(), distribution.monetaryValue().amount());
         }
 
         public String source() {
-            return source;
+            return product;
         }
 
         public Map<String, Float> monetaryValue() {

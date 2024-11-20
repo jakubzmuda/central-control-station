@@ -2,10 +2,10 @@ package com.github.jakubzmuda.centralControlStation.investments.domain.distribut
 
 import java.util.Objects;
 
-public class DistributionForecast {
+public class DistributionsForecast {
     private YearlyForecast yearlyForecast;
 
-    public DistributionForecast(YearlyForecast yearlyForecast) {
+    public DistributionsForecast(YearlyForecast yearlyForecast) {
         this.yearlyForecast = yearlyForecast;
     }
 
@@ -13,7 +13,7 @@ public class DistributionForecast {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DistributionForecast that = (DistributionForecast) o;
+        DistributionsForecast that = (DistributionsForecast) o;
         return Objects.equals(yearlyForecast, that.yearlyForecast);
     }
 

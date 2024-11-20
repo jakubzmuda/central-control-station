@@ -43,4 +43,8 @@ public class MonetaryValue {
     public float amount() {
         return amount;
     }
+
+    public MonetaryValue multiply(float amount) {
+        return new MonetaryValue(currency, this.amount * amount);
+    }
 }

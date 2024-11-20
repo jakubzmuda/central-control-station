@@ -5,7 +5,7 @@ import com.github.jakubzmuda.centralControlStation.investments.domain.core.Monet
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class Distribution {
+public class ActualDistribution {
     private String productTicker;
     private MonetaryValue monetaryValue;
     private LocalDate exDate;
@@ -13,7 +13,7 @@ public class Distribution {
     private LocalDate payDate;
     private LocalDate recordDate;
 
-    public Distribution(String productTicker, MonetaryValue monetaryValue) {
+    public ActualDistribution(String productTicker, MonetaryValue monetaryValue) {
         this.productTicker = productTicker;
         this.monetaryValue = monetaryValue;
     }
@@ -22,7 +22,7 @@ public class Distribution {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Distribution that = (Distribution) o;
+        ActualDistribution that = (ActualDistribution) o;
         return Objects.equals(productTicker, that.productTicker) && Objects.equals(monetaryValue, that.monetaryValue) && Objects.equals(exDate, that.exDate) && Objects.equals(declareDate, that.declareDate) && Objects.equals(payDate, that.payDate) && Objects.equals(recordDate, that.recordDate);
     }
 
@@ -43,22 +43,22 @@ public class Distribution {
                 '}';
     }
 
-    public Distribution withExDate(LocalDate exDate) {
+    public ActualDistribution withExDate(LocalDate exDate) {
         this.exDate = exDate;
         return this;
     }
 
-    public Distribution withDeclareDate(LocalDate declareDate) {
+    public ActualDistribution withDeclareDate(LocalDate declareDate) {
         this.declareDate = declareDate;
         return this;
     }
 
-    public Distribution withPayDate(LocalDate payDate) {
+    public ActualDistribution withPayDate(LocalDate payDate) {
         this.payDate = payDate;
         return this;
     }
 
-    public Distribution withRecordDate(LocalDate recordDate) {
+    public ActualDistribution withRecordDate(LocalDate recordDate) {
         this.recordDate = recordDate;
         return this;
     }

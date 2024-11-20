@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.Currency;
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.MonetaryValue;
-import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.Distribution;
-import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.Distributions;
+import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.ActualDistribution;
+import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.ActualDistributions;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -33,12 +33,12 @@ public class DistributionDataAcquirementService {
         this.objectMapper = objectMapper;
     }
 
-    public Distributions acquireLastYearDistributions(String productTicker) {
+    public ActualDistributions acquireLastYearDistributions(String productTicker) {
         ProviderDistributionsResponse distributionsResponse = acquireDataFromExternalService(productTicker);
 
-        return new Distributions(distributionsResponse.data
+        return new ActualDistributions(distributionsResponse.data
                 .stream()
-                .map(entry -> new Distribution(
+                .map(entry -> new ActualDistribution(
                         productTicker,
                         MonetaryValue.of(Currency.USD, Float.parseFloat(entry.attributes().amount())))
                         .withExDate(LocalDate.parse(entry.attributes().exDate()))

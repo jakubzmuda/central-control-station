@@ -59,10 +59,9 @@ public class DistributionsEndpointTest extends ApiTest {
 
         DistributionsEndpoint.DistributionListJson januaryDistributions = months.get("january");
         assertThat(januaryDistributions.distributions).hasSize(1);
-        assertThat(januaryDistributions.distributions.getFirst().source).isEqualTo("jpm");
+        assertThat(januaryDistributions.distributions.getFirst().product).isEqualTo("jpm");
         assertThat(januaryDistributions.distributions.getFirst().monetaryValue.get("USD")).isEqualTo(2.875f);
-        assertThat(januaryDistributions.total.source).isEqualTo("total");
-        assertThat(januaryDistributions.total.monetaryValue.get("USD")).isEqualTo(2.875f);
+        assertThat(januaryDistributions.total.get("USD")).isEqualTo(2.875f);
     }
 
     @Test
