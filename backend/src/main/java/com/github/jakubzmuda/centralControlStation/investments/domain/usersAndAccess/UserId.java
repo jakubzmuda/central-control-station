@@ -1,4 +1,4 @@
-package com.github.jakubzmuda.centralControlStation.investments.domain.core;
+package com.github.jakubzmuda.centralControlStation.investments.domain.usersAndAccess;
 
 import jakarta.persistence.Embeddable;
 

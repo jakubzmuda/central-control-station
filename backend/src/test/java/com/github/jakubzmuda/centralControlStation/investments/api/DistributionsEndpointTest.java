@@ -4,7 +4,7 @@ import com.github.jakubzmuda.centralControlStation.investments.core.ApiTest;
 import com.github.jakubzmuda.centralControlStation.investments.core.Database;
 import com.github.jakubzmuda.centralControlStation.investments.core.rest.Response;
 import com.github.jakubzmuda.centralControlStation.investments.core.rest.ResponseStatus;
-import com.github.jakubzmuda.centralControlStation.investments.domain.core.UserId;
+import com.github.jakubzmuda.centralControlStation.investments.domain.usersAndAccess.UserId;
 import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.Portfolio;
 import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.PortfolioEntry;
 import org.junit.jupiter.api.Test;
