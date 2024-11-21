@@ -1,7 +1,7 @@
 package com.github.jakubzmuda.centralControlStation.investments.api;
 
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.MonetaryValue;
-import com.github.jakubzmuda.centralControlStation.investments.domain.usersAndAccess.UserId;
+import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.UserId;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.DistributionsForecast;
 import com.github.jakubzmuda.centralControlStation.investments.application.DistributionsService;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.ForecastedDistribution;

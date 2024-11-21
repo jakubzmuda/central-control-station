@@ -1,6 +1,6 @@
 package com.github.jakubzmuda.centralControlStation.investments.domain.portfolio;
 
-import com.github.jakubzmuda.centralControlStation.investments.domain.usersAndAccess.UserId;
+import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.UserId;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

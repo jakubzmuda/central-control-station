@@ -1,4 +1,4 @@
-package com.github.jakubzmuda.centralControlStation.support;
+package com.github.jakubzmuda.centralControlStation.usersAndAccess.infrastructure.support;
 
 import java.security.*;
 import java.util.Base64;

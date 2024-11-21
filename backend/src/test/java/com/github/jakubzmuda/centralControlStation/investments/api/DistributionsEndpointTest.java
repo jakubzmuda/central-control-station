@@ -4,7 +4,7 @@ import com.github.jakubzmuda.centralControlStation.investments.core.ApiTest;
 import com.github.jakubzmuda.centralControlStation.investments.core.Database;
 import com.github.jakubzmuda.centralControlStation.investments.core.rest.Response;
 import com.github.jakubzmuda.centralControlStation.investments.core.rest.ResponseStatus;
-import com.github.jakubzmuda.centralControlStation.investments.domain.usersAndAccess.UserId;
+import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.UserId;
 import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.Portfolio;
 import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.PortfolioEntry;
 import org.junit.jupiter.api.Test;
@@ -140,6 +140,21 @@ public class DistributionsEndpointTest extends ApiTest {
         Response response = api.whenAnonymously().get("/api/distributions/forecast");
 
         assertThat(response).hasStatus(ResponseStatus.NOT_FOUND);
+    }
+
+    @Test
+    public void shouldReturnUnauthorizedWhenCallingAnonymously() {
+        Response response = api.whenAnonymously().get("/api/distributions/forecast");
+
+        assertThat(response).hasStatus(ResponseStatus.UNAUTHORIZED);
+    }
+
+    @Test
+    public void shouldReturnForbiddenWhenCallingWithInvalidToken() {
+        // TODO implement this test
+//        Response response = api.whenAnonymously().get("/api/distributions/forecast");
+//
+//        assertThat(response).hasStatus(ResponseStatus.FORBIDDEN);
     }
 
     private void givenPortfolio(PortfolioEntry... entries) {
