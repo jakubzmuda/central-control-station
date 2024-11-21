@@ -1,5 +1,7 @@
 package com.github.jakubzmuda.centralControlStation.usersAndAccess.infrastructure;
 
+import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.CurrentUser;
+import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.UserId;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,14 +30,22 @@ public class TokenFilter extends OncePerRequestFilter {
             @NotNull HttpServletResponse response,
             @NotNull FilterChain filterChain
     ) throws ServletException, IOException {
-        try {
-            String authorizationToken = request.getHeader("Authorization");
-//            Token token = Token.of(decodedToken.getUid());
-//            CurrentUser currentUser = context.getBean(CurrentUser.class);
-//            currentUser.authorize(UserId.of(token.value()));
-        } catch (Exception ignored) {
+        CurrentUser currentUser = context.getBean(CurrentUser.class);
 
+        try {
+            String encodedToken = extractToken(request);
+            Token token = Token.of(encodedToken);
+            currentUser.authorize(UserId.of(token.getPayload().user()));
+        } catch (Exception e) {
+            currentUser.revoke();
         }
+
         filterChain.doFilter(request, response);
     }
+
+    private String extractToken(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader("Authorization");
+        return authorizationHeader.split(" ")[1];
+    }
+
 }

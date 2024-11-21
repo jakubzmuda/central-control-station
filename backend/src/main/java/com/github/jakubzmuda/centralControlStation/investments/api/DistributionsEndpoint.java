@@ -1,6 +1,7 @@
 package com.github.jakubzmuda.centralControlStation.investments.api;
 
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.MonetaryValue;
+import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.CurrentUser;
 import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.UserId;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.DistributionsForecast;
 import com.github.jakubzmuda.centralControlStation.investments.application.DistributionsService;
@@ -18,13 +19,16 @@ import java.util.stream.Collectors;
 public class DistributionsEndpoint {
 
     private DistributionsService application;
+    private CurrentUser currentUser;
 
-    public DistributionsEndpoint(DistributionsService application) {
+    public DistributionsEndpoint(DistributionsService application, CurrentUser currentUser) {
         this.application = application;
+        this.currentUser = currentUser;
     }
 
     @GetMapping("/api/distributions/forecast")
     public ForecastResponse forecast() {
+        UserId user = currentUser.getOrUnauthorized();
         return new ForecastResponse(application.forecast(UserId.of("test-user")));
     }
 
