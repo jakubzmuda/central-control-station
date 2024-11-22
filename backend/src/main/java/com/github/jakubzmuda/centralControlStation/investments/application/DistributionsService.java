@@ -7,6 +7,7 @@ import com.github.jakubzmuda.centralControlStation.investments.domain.distributi
 import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.Portfolio;
 import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.PortfolioRepository;
 import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.CurrentUser;
+import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.UserId;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -29,9 +30,11 @@ public class DistributionsService {
         this.currentUser = currentUser;
     }
 
-    public DistributionsForecast forecast() {
+    public DistributionsForecast forecast(UserId userId) {
+        currentUser.getOrUnauthorized();
+
         Portfolio portfolio = portfolioRepository
-                .getByUserId(currentUser.getOrUnauthorized())
+                .getByUserId(userId)
                 .orElseThrow(NotFoundException::new);
 
         ActualDistributions distributions = distributionsForPortfolio(portfolio);

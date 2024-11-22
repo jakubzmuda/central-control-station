@@ -8,6 +8,8 @@ import com.github.jakubzmuda.centralControlStation.investments.application.Distr
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.ForecastedDistribution;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.YearlyForecast;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.LinkedHashMap;
@@ -25,8 +27,8 @@ public class DistributionsEndpoint {
     }
 
     @GetMapping("/api/distributions/forecast")
-    public ForecastResponse forecast() {
-        return new ForecastResponse(application.forecast());
+    public ForecastResponse forecast(@RequestParam("user") String userId) {
+        return new ForecastResponse(application.forecast(UserId.of(userId)));
     }
 
     static class ForecastResponse {

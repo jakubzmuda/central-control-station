@@ -38,7 +38,7 @@ public class DistributionsEndpointTest extends ApiTest {
                 .withDistribution(0.25f, LocalDate.parse("2024-04-15"))
                 .stub();
 
-        Response response = api.whenAs(TestUser.Max).get("/api/distributions/forecast");
+        Response response = api.whenAs(TestUser.Max).get("/api/distributions/forecast?user=max");
 
         assertThat(response).hasStatus(OK);
 
@@ -70,7 +70,7 @@ public class DistributionsEndpointTest extends ApiTest {
                 .withDistribution(0.25f, LocalDate.parse("2024-02-15"))
                 .stub();
 
-        Response response = api.whenAs(TestUser.Max).get("/api/distributions/forecast");
+        Response response = api.whenAs(TestUser.Max).get("/api/distributions/forecast?user=max");
         var responseBody = response.bodyAs(DistributionsEndpoint.ForecastResponse.class);
 
         assertThat(responseBody.yearlyForecast.months.get("february").total.get("USD")).isEqualTo(0.74f);
@@ -95,7 +95,7 @@ public class DistributionsEndpointTest extends ApiTest {
                 .withDistribution(0.25f, LocalDate.parse("2024-05-15"))
                 .stub();
 
-        Response response = api.whenAs(TestUser.Max).get("/api/distributions/forecast");
+        Response response = api.whenAs(TestUser.Max).get("/api/distributions/forecast?user=max");
         var responseBody = response.bodyAs(DistributionsEndpoint.ForecastResponse.class);
 
         assertThat(responseBody.yearlyForecast.total.get("USD")).isEqualTo(1.24f);
@@ -105,7 +105,7 @@ public class DistributionsEndpointTest extends ApiTest {
     public void shouldShowTotalZeroWhenNoDistributions() {
         givenPortfolio(TestUser.Max);
 
-        Response response = api.whenAs(TestUser.Max).get("/api/distributions/forecast");
+        Response response = api.whenAs(TestUser.Max).get("/api/distributions/forecast?user=max");
 
         var responseBody = response.bodyAs(DistributionsEndpoint.ForecastResponse.class);
 
@@ -120,7 +120,7 @@ public class DistributionsEndpointTest extends ApiTest {
     public void shouldSortMoths() {
         givenPortfolio(TestUser.Max);
 
-        Response response = api.whenAs(TestUser.Max).get("/api/distributions/forecast");
+        Response response = api.whenAs(TestUser.Max).get("/api/distributions/forecast?user=max");
 
         var responseBody = response.bodyAs(DistributionsEndpoint.ForecastResponse.class);
 
@@ -137,7 +137,7 @@ public class DistributionsEndpointTest extends ApiTest {
                 new PortfolioEntry("archicom", 10f)
         );
 
-        Response response = api.whenAs(TestUser.Max).get("/api/distributions/forecast");
+        Response response = api.whenAs(TestUser.Max).get("/api/distributions/forecast?user=max");
 
         assertThat(response).hasStatus(OK);
 
@@ -152,15 +152,41 @@ public class DistributionsEndpointTest extends ApiTest {
     }
 
     @Test
+    public void shouldBeAbleToForecastForAnyUserWhenAuthenticated() {
+        givenPortfolio(TestUser.Max);
+
+        Response response = api.whenAs(TestUser.Charles).get("/api/distributions/forecast?user=max");
+
+        assertThat(response).hasStatus(OK);
+
+        var responseBody = response.bodyAs(DistributionsEndpoint.ForecastResponse.class);
+
+        assertThat(responseBody.yearlyForecast.months.keySet().size()).isEqualTo(12);
+    }
+
+    @Test
+    public void shouldBeAbleToForecastEvenForEmptyPortfolio() {
+        givenPortfolio(TestUser.Max);
+
+        Response response = api.whenAs(TestUser.Max).get("/api/distributions/forecast?user=max");
+
+        assertThat(response).hasStatus(OK);
+
+        var responseBody = response.bodyAs(DistributionsEndpoint.ForecastResponse.class);
+
+        assertThat(responseBody.yearlyForecast.months.keySet().size()).isEqualTo(12);
+    }
+
+    @Test
     public void shouldReturn404WhenNoPortfolio() {
-        Response response = api.whenAs(TestUser.Charles).get("/api/distributions/forecast");
+        Response response = api.whenAs(TestUser.Max).get("/api/distributions/forecast?user=max");
 
         assertThat(response).hasStatus(ResponseStatus.NOT_FOUND);
     }
 
     @Test
     public void shouldReturnUnauthorizedWhenCallingAnonymously() {
-        Response response = api.whenAnonymously().get("/api/distributions/forecast");
+        Response response = api.whenAnonymously().get("/api/distributions/forecast?user=max");
 
         assertThat(response).hasStatus(ResponseStatus.UNAUTHORIZED);
     }
