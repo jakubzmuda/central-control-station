@@ -3,12 +3,9 @@ package com.github.jakubzmuda.centralControlStation.investments.application;
 import com.github.jakubzmuda.centralControlStation.core.application.NotFoundException;
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.MonetaryValue;
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.Month;
+import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.*;
 import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.CurrentUser;
 import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.UserId;
-import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.ActualDistributions;
-import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.DistributionsForecast;
-import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.ForecastedDistribution;
-import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.YearlyForecast;
 import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.Portfolio;
 import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.PortfolioRepository;
 import org.springframework.stereotype.Component;
@@ -21,15 +18,15 @@ import java.util.List;
 public class DistributionsService {
 
     private PortfolioRepository portfolioRepository;
-    private DistributionDataAcquirementService dataAcquirementService;
+    private DistributionsDataSupplier distributionsDataSupplier;
     private CurrentUser currentUser;
 
     public DistributionsService(
             PortfolioRepository portfolioRepository,
-            DistributionDataAcquirementService dataAcquirementService,
+            DistributionsDataSupplier distributionsDataSupplier,
             CurrentUser currentUser) {
         this.portfolioRepository = portfolioRepository;
-        this.dataAcquirementService = dataAcquirementService;
+        this.distributionsDataSupplier = distributionsDataSupplier;
         this.currentUser = currentUser;
     }
 
@@ -80,7 +77,7 @@ public class DistributionsService {
         return portfolio
                 .entries()
                 .stream()
-                .map(entry -> dataAcquirementService.acquireLastYearDistributions(entry.name()))
+                .map(entry -> distributionsDataSupplier.acquireLastYearDistributions(entry.name()))
                 .reduce(ActualDistributions::addAll)
                 .orElse(ActualDistributions.empty());
     }

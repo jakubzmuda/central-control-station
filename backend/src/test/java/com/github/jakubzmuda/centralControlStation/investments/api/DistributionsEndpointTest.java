@@ -53,10 +53,10 @@ public class DistributionsEndpointTest extends ApiTest {
 
         Map<String, DistributionsEndpoint.DistributionListJson> months = responseBody.yearlyForecast.months;
 
-        assertThereIsASingleDistributionInMonth(months, "january", "jpm", 0.575f);
-        assertThereIsASingleDistributionInMonth(months, "february", "aapl", 0.375f);
-        assertThereIsASingleDistributionInMonth(months, "april", "jpm", 0.575f);
-        assertThereIsASingleDistributionInMonth(months, "may", "aapl", 0.375f);
+        assertThereIsASingleDistributionInMonth(months, "january", "jpm", 0.575f, "USD");
+        assertThereIsASingleDistributionInMonth(months, "february", "aapl", 0.375f, "USD");
+        assertThereIsASingleDistributionInMonth(months, "april", "jpm", 0.575f, "USD");
+        assertThereIsASingleDistributionInMonth(months, "may", "aapl", 0.375f, "USD");
     }
 
     @Test
@@ -138,6 +138,28 @@ public class DistributionsEndpointTest extends ApiTest {
     }
 
     @Test
+    public void shouldWorkForSelectedPolishStocks() {
+        givenPortfolio(
+                TestUser.Max,
+                new PortfolioEntry("domdev", 5f),
+                new PortfolioEntry("archicom", 10f)
+        );
+
+        Response response = api.whenAs(TestUser.Max).get("/api/distributions/forecast");
+
+        assertThat(response).hasStatus(OK);
+
+        var responseBody = response.bodyAs(DistributionsEndpoint.ForecastResponse.class);
+
+        Map<String, DistributionsEndpoint.DistributionListJson> months = responseBody.yearlyForecast.months;
+
+        assertThereIsASingleDistributionInMonth(months, "june", "domdev", 32.5f, "PLN");
+        assertThereIsASingleDistributionInMonth(months, "july", "archicom", 6.3999996f, "PLN");
+        assertThereIsASingleDistributionInMonth(months, "october", "archicom", 6.3999996f, "PLN");
+        assertThereIsASingleDistributionInMonth(months, "december", "domdev", 32.5f, "PLN");
+    }
+
+    @Test
     public void shouldReturn404WhenNoPortfolio() {
         Response response = api.whenAs(TestUser.Charles).get("/api/distributions/forecast");
 
@@ -156,11 +178,10 @@ public class DistributionsEndpointTest extends ApiTest {
         );
     }
 
-    private void assertThereIsASingleDistributionInMonth(Map<String, DistributionsEndpoint.DistributionListJson> months, String month, String productTicker, float usdAmount) {
+    private void assertThereIsASingleDistributionInMonth(Map<String, DistributionsEndpoint.DistributionListJson> months, String month, String productTicker, float amount, String currency) {
         DistributionsEndpoint.DistributionListJson januaryDistributions = months.get(month);
         assertThat(januaryDistributions.distributions).hasSize(1);
         assertThat(januaryDistributions.distributions.getFirst().product).isEqualTo(productTicker);
-        assertThat(januaryDistributions.distributions.getFirst().monetaryValue.get("USD")).isEqualTo(usdAmount);
+        assertThat(januaryDistributions.distributions.getFirst().monetaryValue.get(currency)).isEqualTo(amount);
     }
-
 }

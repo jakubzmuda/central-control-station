@@ -86,7 +86,7 @@ public class DistributionsEndpoint {
                                 .map(MonetaryValue::amount)
                                 .reduce(0f, Float::sum));
             } else {
-                this.total = Map.of("USD", 0f);
+                this.total = Map.of("USD", 0f, "PLN", 0f);
             }
         }
     }

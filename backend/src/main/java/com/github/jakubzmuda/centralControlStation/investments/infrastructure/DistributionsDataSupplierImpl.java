@@ -1,4 +1,4 @@
-package com.github.jakubzmuda.centralControlStation.investments.application;
+package com.github.jakubzmuda.centralControlStation.investments.infrastructure;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,6 +6,7 @@ import com.github.jakubzmuda.centralControlStation.investments.domain.core.Curre
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.MonetaryValue;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.ActualDistribution;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.ActualDistributions;
+import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.DistributionsDataSupplier;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -15,12 +16,14 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Component
-public class DistributionDataAcquirementService {
+public class DistributionsDataSupplierImpl implements DistributionsDataSupplier {
 
     private OkHttpClient client;
     private ObjectMapper objectMapper;
+    private StubbedProductDistributions StubbedProductDistributions = new StubbedProductDistributions();
 
     @Value("${application.seekingAlpha.url}")
     private String seekingAlphaUrl;
@@ -28,12 +31,17 @@ public class DistributionDataAcquirementService {
     @Value("${application.seekingAlpha.port}")
     private String seekingAlphaPort;
 
-    public DistributionDataAcquirementService(OkHttpClient client, ObjectMapper objectMapper) {
+    public DistributionsDataSupplierImpl(OkHttpClient client, ObjectMapper objectMapper) {
         this.client = client;
         this.objectMapper = objectMapper;
     }
 
     public ActualDistributions acquireLastYearDistributions(String productTicker) {
+        Optional<ActualDistributions> maybeStubbedDistributions = StubbedProductDistributions.get(productTicker);
+        if(maybeStubbedDistributions.isPresent()) {
+            return maybeStubbedDistributions.get();
+        }
+
         ProviderDistributionsResponse distributionsResponse = acquireDataFromExternalService(productTicker);
 
         return new ActualDistributions(distributionsResponse.data

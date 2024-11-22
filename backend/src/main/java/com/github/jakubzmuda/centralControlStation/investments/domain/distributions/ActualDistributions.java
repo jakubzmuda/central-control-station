@@ -66,7 +66,7 @@ public class ActualDistributions {
                     LocalDate today = LocalDate.now();
                     LocalDate yearFromNow = today.minusYears(1)
                             .minusDays(30); // safety factor
-                    return d.exDate().isAfter(yearFromNow) && d.exDate().isBefore(today);
+                    return d.exDate().isAfter(yearFromNow);
                 })
                 .toList());
     }
