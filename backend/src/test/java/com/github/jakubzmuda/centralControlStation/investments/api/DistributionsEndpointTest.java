@@ -37,16 +37,12 @@ public class DistributionsEndpointTest extends ApiTest {
                 .withProduct("aapl")
                 .withDistribution(0.24f, LocalDate.parse("2024-02-09"))
                 .withDistribution(0.25f, LocalDate.parse("2024-05-10"))
-                .withDistribution(0.25f, LocalDate.parse("2024-08-12"))
-                .withDistribution(0.25f, LocalDate.parse("2024-11-14"))
                 .stub();
 
         distributionsHelper
                 .withProduct("jpm")
                 .withDistribution(0.25f, LocalDate.parse("2024-01-15"))
                 .withDistribution(0.25f, LocalDate.parse("2024-04-15"))
-                .withDistribution(0.25f, LocalDate.parse("2024-07-15"))
-                .withDistribution(0.25f, LocalDate.parse("2024-10-15"))
                 .stub();
 
         Response response = api.whenAs(TestUser.Max).get("/api/distributions/forecast");
@@ -58,6 +54,9 @@ public class DistributionsEndpointTest extends ApiTest {
         Map<String, DistributionsEndpoint.DistributionListJson> months = responseBody.yearlyForecast.months;
 
         assertThereIsASingleDistributionInMonth(months, "january", "jpm", 0.575f);
+        assertThereIsASingleDistributionInMonth(months, "february", "aapl", 0.375f);
+        assertThereIsASingleDistributionInMonth(months, "april", "jpm", 0.575f);
+        assertThereIsASingleDistributionInMonth(months, "may", "aapl", 0.375f);
     }
 
     @Test
