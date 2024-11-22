@@ -1,4 +1,4 @@
-package com.github.jakubzmuda.centralControlStation.investments.core.rest;
+package com.github.jakubzmuda.centralControlStation.core.rest;
 
 public class RestAssertions extends org.assertj.core.api.Assertions {
 

@@ -1,10 +1,10 @@
-package com.github.jakubzmuda.centralControlStation.investments.core.rest;
+package com.github.jakubzmuda.centralControlStation.core.rest;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.jakubzmuda.centralControlStation.investments.core.TestUser;
+import com.github.jakubzmuda.centralControlStation.core.TestUser;
 import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.CurrentUser;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;

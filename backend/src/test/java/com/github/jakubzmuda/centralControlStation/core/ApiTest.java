@@ -1,7 +1,7 @@
-package com.github.jakubzmuda.centralControlStation.investments.core;
+package com.github.jakubzmuda.centralControlStation.core;
 
 import com.github.jakubzmuda.centralControlStation.Application;
-import com.github.jakubzmuda.centralControlStation.investments.core.rest.Api;
+import com.github.jakubzmuda.centralControlStation.core.rest.Api;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

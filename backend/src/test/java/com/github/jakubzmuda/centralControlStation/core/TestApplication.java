@@ -1,7 +1,7 @@
-package com.github.jakubzmuda.centralControlStation.investments.core;
+package com.github.jakubzmuda.centralControlStation.core;
 
-import com.github.jakubzmuda.centralControlStation.investments.core.rest.Api;
-import com.github.jakubzmuda.centralControlStation.investments.core.rest.Port;
+import com.github.jakubzmuda.centralControlStation.core.rest.Api;
+import com.github.jakubzmuda.centralControlStation.core.rest.Port;
 import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

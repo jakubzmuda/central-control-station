@@ -1,29 +1,22 @@
 package com.github.jakubzmuda.centralControlStation.investments.api;
 
-import com.github.jakubzmuda.centralControlStation.investments.core.ApiTest;
-import com.github.jakubzmuda.centralControlStation.investments.core.Database;
-import com.github.jakubzmuda.centralControlStation.investments.core.TestUser;
-import com.github.jakubzmuda.centralControlStation.investments.core.rest.Response;
-import com.github.jakubzmuda.centralControlStation.investments.core.rest.ResponseStatus;
+import com.github.jakubzmuda.centralControlStation.core.ApiTest;
+import com.github.jakubzmuda.centralControlStation.core.TestUser;
+import com.github.jakubzmuda.centralControlStation.core.rest.Response;
+import com.github.jakubzmuda.centralControlStation.core.rest.ResponseStatus;
 import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.Portfolio;
 import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.PortfolioEntry;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.github.jakubzmuda.centralControlStation.investments.core.rest.ResponseStatus.OK;
-import static com.github.jakubzmuda.centralControlStation.investments.core.rest.RestAssertions.assertThat;
+import static com.github.jakubzmuda.centralControlStation.core.rest.ResponseStatus.OK;
+import static com.github.jakubzmuda.centralControlStation.core.rest.RestAssertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class DistributionsEndpointTest extends ApiTest {
-
-    @Autowired
-    private Database database;
 
     @Test
     public void shouldRespondWithForecast() {
@@ -134,7 +127,6 @@ public class DistributionsEndpointTest extends ApiTest {
         LinkedHashMap<String, DistributionsEndpoint.DistributionListJson> months = responseBody.yearlyForecast.months;
 
         assertThat(months.sequencedKeySet()).containsExactly("january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december");
-
     }
 
     @Test

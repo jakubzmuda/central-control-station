@@ -1,4 +1,4 @@
-package com.github.jakubzmuda.centralControlStation.investments.core.rest;
+package com.github.jakubzmuda.centralControlStation.core.rest;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;

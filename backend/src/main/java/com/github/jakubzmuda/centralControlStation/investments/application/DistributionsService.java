@@ -4,10 +4,9 @@ import com.github.jakubzmuda.centralControlStation.core.application.NotFoundExce
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.MonetaryValue;
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.Month;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.*;
-import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.CurrentUser;
-import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.UserId;
 import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.Portfolio;
 import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.PortfolioRepository;
+import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.CurrentUser;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

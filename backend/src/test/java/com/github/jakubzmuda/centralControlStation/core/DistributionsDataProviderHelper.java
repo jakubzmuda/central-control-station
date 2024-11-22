@@ -1,4 +1,4 @@
-package com.github.jakubzmuda.centralControlStation.investments.core;
+package com.github.jakubzmuda.centralControlStation.core;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import org.springframework.stereotype.Component;
