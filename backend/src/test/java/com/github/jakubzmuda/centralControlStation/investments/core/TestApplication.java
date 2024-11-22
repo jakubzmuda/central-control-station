@@ -18,7 +18,7 @@ public class TestApplication {
 
     @Bean
     Api api(Port port) {
-        return new Api(port);
+        return new Api(port, currentUser);
     }
 
     @Bean

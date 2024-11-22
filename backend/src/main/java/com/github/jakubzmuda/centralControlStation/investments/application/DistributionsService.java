@@ -3,6 +3,7 @@ package com.github.jakubzmuda.centralControlStation.investments.application;
 import com.github.jakubzmuda.centralControlStation.core.application.NotFoundException;
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.MonetaryValue;
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.Month;
+import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.CurrentUser;
 import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.UserId;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.ActualDistributions;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.DistributionsForecast;
@@ -21,14 +22,21 @@ public class DistributionsService {
 
     private PortfolioRepository portfolioRepository;
     private DistributionDataAcquirementService dataAcquirementService;
+    private CurrentUser currentUser;
 
-    public DistributionsService(PortfolioRepository portfolioRepository, DistributionDataAcquirementService dataAcquirementService) {
+    public DistributionsService(
+            PortfolioRepository portfolioRepository,
+            DistributionDataAcquirementService dataAcquirementService,
+            CurrentUser currentUser) {
         this.portfolioRepository = portfolioRepository;
         this.dataAcquirementService = dataAcquirementService;
+        this.currentUser = currentUser;
     }
 
-    public DistributionsForecast forecast(UserId userId) {
-        Portfolio portfolio = portfolioRepository.getByUserId(userId).orElseThrow(NotFoundException::new);
+    public DistributionsForecast forecast() {
+        Portfolio portfolio = portfolioRepository
+                .getByUserId(currentUser.getOrUnauthorized())
+                .orElseThrow(NotFoundException::new);
 
         ActualDistributions distributions = distributionsForPortfolio(portfolio);
 

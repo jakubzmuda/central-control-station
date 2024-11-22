@@ -2,11 +2,11 @@ package com.github.jakubzmuda.centralControlStation.investments.api;
 
 import com.github.jakubzmuda.centralControlStation.investments.core.ApiTest;
 import com.github.jakubzmuda.centralControlStation.investments.core.Database;
+import com.github.jakubzmuda.centralControlStation.investments.core.TestUser;
 import com.github.jakubzmuda.centralControlStation.investments.core.rest.Response;
 import com.github.jakubzmuda.centralControlStation.investments.core.rest.ResponseStatus;
 import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.Portfolio;
 import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.PortfolioEntry;
-import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.UserId;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,6 +28,7 @@ public class DistributionsEndpointTest extends ApiTest {
     @Test
     public void shouldRespondWithForecast() {
         givenPortfolio(
+                TestUser.Max,
                 new PortfolioEntry("aapl", 1.50f),
                 new PortfolioEntry("jpm", 2.30f)
         );
@@ -48,7 +49,7 @@ public class DistributionsEndpointTest extends ApiTest {
                 .withDistribution(0.25f, LocalDate.parse("2024-10-15"))
                 .stub();
 
-        Response response = api.whenAnonymously().get("/api/distributions/forecast");
+        Response response = api.whenAs(TestUser.Max).get("/api/distributions/forecast");
 
         assertThat(response).hasStatus(OK);
 
@@ -62,6 +63,7 @@ public class DistributionsEndpointTest extends ApiTest {
     @Test
     public void shouldCalculateTotalForMonth() {
         givenPortfolio(
+                TestUser.Max,
                 new PortfolioEntry("aapl", 1f),
                 new PortfolioEntry("jpm", 2f)
         );
@@ -76,7 +78,7 @@ public class DistributionsEndpointTest extends ApiTest {
                 .withDistribution(0.25f, LocalDate.parse("2024-02-15"))
                 .stub();
 
-        Response response = api.whenAnonymously().get("/api/distributions/forecast");
+        Response response = api.whenAs(TestUser.Max).get("/api/distributions/forecast");
         var responseBody = response.bodyAs(DistributionsEndpoint.ForecastResponse.class);
 
         assertThat(responseBody.yearlyForecast.months.get("february").total.get("USD")).isEqualTo(0.74f);
@@ -85,6 +87,7 @@ public class DistributionsEndpointTest extends ApiTest {
     @Test
     public void shouldCalculateTotalForYear() {
         givenPortfolio(
+                TestUser.Max,
                 new PortfolioEntry("aapl", 1f),
                 new PortfolioEntry("jpm", 2f)
         );
@@ -100,7 +103,7 @@ public class DistributionsEndpointTest extends ApiTest {
                 .withDistribution(0.25f, LocalDate.parse("2024-05-15"))
                 .stub();
 
-        Response response = api.whenAnonymously().get("/api/distributions/forecast");
+        Response response = api.whenAs(TestUser.Max).get("/api/distributions/forecast");
         var responseBody = response.bodyAs(DistributionsEndpoint.ForecastResponse.class);
 
         assertThat(responseBody.yearlyForecast.total.get("USD")).isEqualTo(1.24f);
@@ -108,9 +111,9 @@ public class DistributionsEndpointTest extends ApiTest {
 
     @Test
     public void shouldShowTotalZeroWhenNoDistributions() {
-        givenPortfolio();
+        givenPortfolio(TestUser.Max);
 
-        Response response = api.whenAnonymously().get("/api/distributions/forecast");
+        Response response = api.whenAs(TestUser.Max).get("/api/distributions/forecast");
 
         var responseBody = response.bodyAs(DistributionsEndpoint.ForecastResponse.class);
 
@@ -123,9 +126,9 @@ public class DistributionsEndpointTest extends ApiTest {
 
     @Test
     public void shouldSortMoths() {
-        givenPortfolio();
+        givenPortfolio(TestUser.Max);
 
-        Response response = api.whenAnonymously().get("/api/distributions/forecast");
+        Response response = api.whenAs(TestUser.Max).get("/api/distributions/forecast");
 
         var responseBody = response.bodyAs(DistributionsEndpoint.ForecastResponse.class);
 
@@ -137,7 +140,7 @@ public class DistributionsEndpointTest extends ApiTest {
 
     @Test
     public void shouldReturn404WhenNoPortfolio() {
-        Response response = api.whenAnonymously().get("/api/distributions/forecast");
+        Response response = api.whenAs(TestUser.Charles).get("/api/distributions/forecast");
 
         assertThat(response).hasStatus(ResponseStatus.NOT_FOUND);
     }
@@ -149,16 +152,8 @@ public class DistributionsEndpointTest extends ApiTest {
         assertThat(response).hasStatus(ResponseStatus.UNAUTHORIZED);
     }
 
-    @Test
-    public void shouldReturnForbiddenWhenCallingWithInvalidToken() {
-        // TODO implement this test
-//        Response response = api.whenAnonymously().get("/api/distributions/forecast");
-//
-//        assertThat(response).hasStatus(ResponseStatus.FORBIDDEN);
-    }
-
-    private void givenPortfolio(PortfolioEntry... entries) {
-        database.save(new Portfolio(UserId.of("test-user"), List.of(entries))
+    private void givenPortfolio(TestUser user, PortfolioEntry... entries) {
+        database.save(new Portfolio(user.id(), List.of(entries))
         );
     }
 

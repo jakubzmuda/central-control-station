@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.jakubzmuda.centralControlStation.investments.core.TestUser;
+import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.CurrentUser;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -17,15 +19,23 @@ public class Api {
     private static final OkHttpClient client = new OkHttpClient.Builder().build();
 
     private final Port port;
+    private final CurrentUser currentUser;
 
-    public Api(Port port) {
+    public Api(Port port, CurrentUser currentUser) {
         this.port = port;
+        this.currentUser = currentUser;
     }
 
     public void reset() {
+        currentUser.revoke();
     }
 
     public Client whenAnonymously() {
+        return new Client("http://localhost:" + port, client);
+    }
+
+    public Client whenAs(TestUser user) {
+        currentUser.authorize(user.id());
         return new Client("http://localhost:" + port, client);
     }
 

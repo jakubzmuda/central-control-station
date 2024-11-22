@@ -19,17 +19,14 @@ import java.util.stream.Collectors;
 public class DistributionsEndpoint {
 
     private DistributionsService application;
-    private CurrentUser currentUser;
 
-    public DistributionsEndpoint(DistributionsService application, CurrentUser currentUser) {
+    public DistributionsEndpoint(DistributionsService application) {
         this.application = application;
-        this.currentUser = currentUser;
     }
 
     @GetMapping("/api/distributions/forecast")
     public ForecastResponse forecast() {
-        UserId user = currentUser.getOrUnauthorized();
-        return new ForecastResponse(application.forecast(UserId.of("test-user")));
+        return new ForecastResponse(application.forecast());
     }
 
     static class ForecastResponse {
