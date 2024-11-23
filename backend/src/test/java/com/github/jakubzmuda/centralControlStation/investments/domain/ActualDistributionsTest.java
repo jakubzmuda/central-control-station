@@ -6,6 +6,7 @@ import com.github.jakubzmuda.centralControlStation.investments.domain.distributi
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.ActualDistributions;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,10 +22,11 @@ public class ActualDistributionsTest {
     @Test
     public void shouldSortByExDate() {
         MonetaryValue someValue = MonetaryValue.of(Currency.USD, 1f);
+        String someProduct = "aapl";
         var actualDistributions = new ActualDistributions(List.of(
-                new ActualDistribution("2024-02-01", someValue),
-                new ActualDistribution("2024-05-01", someValue),
-                new ActualDistribution("2024-03-01", someValue)
+                new ActualDistribution(someProduct, someValue).withExDate(LocalDate.parse("2024-02-01")),
+                new ActualDistribution(someProduct, someValue).withExDate(LocalDate.parse("2024-05-01")),
+                new ActualDistribution(someProduct, someValue).withExDate(LocalDate.parse("2024-01-01"))
         ));
 
         assertThat(actualDistributions.last().get().exDate()).isEqualTo("2024-05-01");

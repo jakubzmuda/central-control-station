@@ -77,6 +77,8 @@ public class ActualDistributions {
     }
 
     public Optional<ActualDistribution> last() {
-        return distributionList.isEmpty() ? Optional.empty() : Optional.of(distributionList.getLast());
+        List<ActualDistribution> distributions = new ArrayList<>(distributionList);
+        distributions.sort(Comparator.comparing(ActualDistribution::exDate));
+        return distributionList.isEmpty() ? Optional.empty() : Optional.of(distributions.getLast());
     }
 }

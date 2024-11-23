@@ -145,10 +145,10 @@ public class DistributionsEndpointTest extends ApiTest {
 
         Map<String, DistributionsEndpoint.DistributionListJson> months = responseBody.yearlyForecast.months;
 
-        assertThereIsASingleDistributionInMonth(months, "june", "domdev", 32.5f, "PLN");
-        assertThereIsASingleDistributionInMonth(months, "july", "archicom", 6.3999996f, "PLN");
-        assertThereIsASingleDistributionInMonth(months, "october", "archicom", 6.3999996f, "PLN");
-        assertThereIsASingleDistributionInMonth(months, "december", "domdev", 32.5f, "PLN");
+        assertThereIsASingleDistributionInMonth(months, "june", "domdev", 30f, "PLN");
+        assertThereIsASingleDistributionInMonth(months, "july", "archicom", 14.099999f, "PLN");
+        assertThereIsASingleDistributionInMonth(months, "october", "archicom", 14.099999f, "PLN");
+        assertThereIsASingleDistributionInMonth(months, "december", "domdev", 30f, "PLN");
     }
 
     @Test
