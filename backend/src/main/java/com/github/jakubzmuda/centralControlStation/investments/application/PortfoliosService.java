@@ -1,10 +1,13 @@
 package com.github.jakubzmuda.centralControlStation.investments.application;
 
+import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.Portfolio;
 import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.PortfolioRepository;
 import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.CurrentUser;
+import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.UserId;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class PortfoliosService {
@@ -17,8 +20,12 @@ public class PortfoliosService {
         this.repository = repository;
     }
 
-    public List<String> getPortfolios() {
+    public List<Portfolio> getAll() {
         currentUser.getOrUnauthorized();
-        return List.of("kroker");
+        return repository.findAll();
+    }
+
+    public Optional<Portfolio> getForUser(UserId userId) {
+        return repository.findByUserId(userId);
     }
 }
