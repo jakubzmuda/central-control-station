@@ -1,10 +1,8 @@
 package com.github.jakubzmuda.centralControlStation.investments.domain.distributions;
 
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.MultiCurrencyMonetaryValue;
-import com.github.jakubzmuda.centralControlStation.investments.domain.currency.Currency;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class YearlyForecast {
@@ -39,27 +37,10 @@ public class YearlyForecast {
     }
 
     public MultiCurrencyMonetaryValue total() {
-       return new MultiCurrencyMonetaryValue(Map.of());
+        return this.monthlyForecasts
+                .stream()
+                .map(MonthlyForecast::total)
+                .reduce(MultiCurrencyMonetaryValue::add)
+                .orElseThrow(() -> new RuntimeException("No monthly forecasts"));
     }
 }
-
-
-//        return calculateTotalPerCurrency()
-//                .entrySet()
-//                .stream()
-//                .collect(Collectors.toMap(
-//                        Map.Entry::getKey,
-//                        entry -> {
-//                            var otherCurrencies = currencyRates.currencies()
-//                                    .stream()
-//                                    .filter(c -> c != entry.getKey())
-//                                    .toList();
-//
-//                            otherCurrencies.
-//
-//                            return entry.getValue() + otherCurrencies.stream()
-//
-//
-////                            return entry.getValue() * currencyRates.rateFor(entry.getKey(), Currency.USD);
-//                        }
-//                ));

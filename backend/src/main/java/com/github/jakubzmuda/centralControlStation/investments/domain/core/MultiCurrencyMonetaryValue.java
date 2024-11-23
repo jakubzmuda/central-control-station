@@ -20,4 +20,12 @@ public class MultiCurrencyMonetaryValue {
     public Map<Currency, Float> asMap() {
         return currencyToAmountMap;
     }
+
+    public MultiCurrencyMonetaryValue add(MultiCurrencyMonetaryValue multiCurrencyMonetaryValue) {
+        Map<Currency, Float> newMap = new HashMap<>(currencyToAmountMap);
+        multiCurrencyMonetaryValue.currencyToAmountMap.forEach((currency, amount) -> {
+            newMap.put(currency, newMap.getOrDefault(currency, 0f) + amount);
+        });
+        return new MultiCurrencyMonetaryValue(newMap);
+    }
 }
