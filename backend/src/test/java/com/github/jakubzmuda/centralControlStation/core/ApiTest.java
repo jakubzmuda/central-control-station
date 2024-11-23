@@ -29,6 +29,9 @@ public class ApiTest {
     @Autowired
     protected DistributionsDataProviderHelper distributionsHelper;
 
+    @Autowired
+    protected CurrencyRatesDataProviderHelper currencyDataProviderHelper;
+
     @Value( "${application.seekingAlpha.port}" )
     private Integer seekingAlphaPort;
 
@@ -38,6 +41,7 @@ public class ApiTest {
     public void setUp() {
         api.reset();
         distributionsHelper.reset();
+        currencyDataProviderHelper.reset();
         database.reset();
         wireMockServer = new WireMockServer(seekingAlphaPort);
         wireMockServer.start();

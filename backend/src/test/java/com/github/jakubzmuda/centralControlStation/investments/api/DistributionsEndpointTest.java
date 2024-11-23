@@ -152,6 +152,46 @@ public class DistributionsEndpointTest extends ApiTest {
     }
 
     @Test
+    public void shouldConvertCurrenciesInBothDirections() {
+        givenPortfolio(
+                TestUser.Max,
+                new PortfolioEntry("domdev", 5f),
+                new PortfolioEntry("aapl", 10f)
+        );
+
+        distributionsHelper
+                .withProduct("aapl")
+                .withDistribution(0.24f, LocalDate.parse("2024-07-09"))
+                .stub();
+
+        Response response = api.whenAs(TestUser.Max).get("/api/distributions/forecast?user=max");
+
+        assertThat(response).hasStatus(OK);
+
+        var responseBody = response.bodyAs(DistributionsEndpoint.ForecastResponse.class);
+
+        Map<String, DistributionsEndpoint.DistributionListJson> months = responseBody.yearlyForecast.months;
+
+        DistributionsEndpoint.DistributionListJson juneDistributions = months.get("june");
+        assertThat(juneDistributions.distributions.getFirst().product).isEqualTo("domdev");
+        assertThat(juneDistributions.distributions.getFirst().monetaryValue.get("PLN")).isEqualTo(30f);
+        assertThat(juneDistributions.distributions.getFirst().monetaryValue.get("USD")).isEqualTo(7.185f);
+
+        assertThat(juneDistributions.distributions.getLast().product).isEqualTo("aapl");
+        assertThat(juneDistributions.distributions.getLast().monetaryValue.get("USD")).isEqualTo(2.4f);
+        assertThat(juneDistributions.distributions.getLast().monetaryValue.get("PLN")).isEqualTo(10.02f);
+
+        assertThat(juneDistributions.total.get("PLN")).isEqualTo(100f);
+        assertThat(juneDistributions.total.get("USD")).isEqualTo(100f);
+
+
+        // It might look like it doesn't add up from previous assertions. That's because polish stock distributions are stubbed for now.
+        assertThat(responseBody.yearlyForecast.total.get("PLN")).isEqualTo(100f);
+        assertThat(responseBody.yearlyForecast.total.get("USD")).isEqualTo(100f);
+    }
+
+
+    @Test
     public void shouldBeAbleToForecastForAnyUserWhenAuthenticated() {
         givenPortfolio(TestUser.Max);
 
@@ -197,9 +237,9 @@ public class DistributionsEndpointTest extends ApiTest {
     }
 
     private void assertThereIsASingleDistributionInMonth(Map<String, DistributionsEndpoint.DistributionListJson> months, String month, String productTicker, float amount, String currency) {
-        DistributionsEndpoint.DistributionListJson januaryDistributions = months.get(month);
-        assertThat(januaryDistributions.distributions).hasSize(1);
-        assertThat(januaryDistributions.distributions.getFirst().product).isEqualTo(productTicker);
-        assertThat(januaryDistributions.distributions.getFirst().monetaryValue.get(currency)).isEqualTo(amount);
+        DistributionsEndpoint.DistributionListJson distributions = months.get(month);
+        assertThat(distributions.distributions).hasSize(1);
+        assertThat(distributions.distributions.getFirst().product).isEqualTo(productTicker);
+        assertThat(distributions.distributions.getFirst().monetaryValue.get(currency)).isEqualTo(amount);
     }
 }

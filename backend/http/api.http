@@ -1,1 +1,1 @@
-GET http://localhost:8080/api/distributions/forecast
+GET http://localhost:8080/api/distributions/forecast?user=krokiet

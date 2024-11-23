@@ -1,6 +1,6 @@
 package com.github.jakubzmuda.centralControlStation.investments.domain;
 
-import com.github.jakubzmuda.centralControlStation.investments.domain.core.Currency;
+import com.github.jakubzmuda.centralControlStation.investments.domain.currency.Currency;
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.MonetaryValue;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.ActualDistribution;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.ActualDistributions;

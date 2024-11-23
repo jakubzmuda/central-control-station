@@ -2,7 +2,7 @@ package com.github.jakubzmuda.centralControlStation.investments.infrastructure;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.jakubzmuda.centralControlStation.investments.domain.core.Currency;
+import com.github.jakubzmuda.centralControlStation.investments.domain.currency.Currency;
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.MonetaryValue;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.ActualDistribution;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.ActualDistributions;
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class DistributionsDataSupplierImpl implements DistributionsDataSupplier {
+public class CombinedDistributionsDataSupplier implements DistributionsDataSupplier {
 
     private OkHttpClient client;
     private ObjectMapper objectMapper;
@@ -31,14 +31,14 @@ public class DistributionsDataSupplierImpl implements DistributionsDataSupplier 
     @Value("${application.seekingAlpha.port}")
     private String seekingAlphaPort;
 
-    public DistributionsDataSupplierImpl(OkHttpClient client, ObjectMapper objectMapper) {
+    public CombinedDistributionsDataSupplier(OkHttpClient client, ObjectMapper objectMapper) {
         this.client = client;
         this.objectMapper = objectMapper;
     }
 
     public ActualDistributions acquireLastYearDistributions(String productTicker) {
         Optional<ActualDistributions> maybeStubbedDistributions = StubbedProductDistributions.get(productTicker);
-        if(maybeStubbedDistributions.isPresent()) {
+        if (maybeStubbedDistributions.isPresent()) {
             return maybeStubbedDistributions.get();
         }
 
@@ -65,13 +65,8 @@ public class DistributionsDataSupplierImpl implements DistributionsDataSupplier 
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
-            if (response.isSuccessful() && response.body() != null) {
-                String responseBody = response.body().string();
-
-                return objectMapper.readValue(responseBody, ProviderDistributionsResponse.class);
-            } else {
-                throw new RuntimeException("Data acquirement for product " + productTicker + " was not successful");
-            }
+            String responseBody = response.body().string();
+            return objectMapper.readValue(responseBody, ProviderDistributionsResponse.class);
         } catch (IOException e) {
             throw new RuntimeException("Data acquirement for product " + productTicker + " failed", e);
         }

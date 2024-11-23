@@ -1,5 +1,7 @@
 package com.github.jakubzmuda.centralControlStation.investments.domain.core;
 
+import com.github.jakubzmuda.centralControlStation.investments.domain.currency.Currency;
+
 import java.util.Objects;
 
 public class MonetaryValue {

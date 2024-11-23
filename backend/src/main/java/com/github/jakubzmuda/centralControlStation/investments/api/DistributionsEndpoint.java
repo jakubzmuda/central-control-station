@@ -1,14 +1,12 @@
 package com.github.jakubzmuda.centralControlStation.investments.api;
 
-import com.github.jakubzmuda.centralControlStation.investments.domain.core.MonetaryValue;
-import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.CurrentUser;
+import com.github.jakubzmuda.centralControlStation.investments.domain.core.MultiCurrencyMonetaryValue;
 import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.UserId;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.DistributionsForecast;
 import com.github.jakubzmuda.centralControlStation.investments.application.DistributionsService;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.ForecastedDistribution;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.YearlyForecast;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -51,23 +49,21 @@ public class DistributionsEndpoint {
 
         public YearlyForecastJson(YearlyForecast yearlyForecast) {
             months = yearlyForecast
-                    .months()
-                    .entrySet()
+                    .monthlyForecasts()
                     .stream()
                     .collect(Collectors.toMap(
-                            Map.Entry::getKey,
-                            entry -> new DistributionListJson(entry.getValue()),
+                            monthlyForecast -> monthlyForecast.month().getName(),
+                            entry -> new DistributionListJson(entry.forecastedDistributions(), entry.total()),
                             (oldValue, newValue) -> oldValue,
                             LinkedHashMap::new
                     ));
 
-            total = months.values().stream()
-                    .map(month -> month.total)
-                    .flatMap(map -> map.entrySet().stream())
-                    .collect(Collectors.groupingBy(Map.Entry::getKey, Collectors.collectingAndThen(
-                            Collectors.summingDouble(Map.Entry::getValue),
-                            Double::floatValue
-                    )));
+            total = yearlyForecast
+                    .total()
+                    .asMap()
+                    .entrySet()
+                    .stream()
+                    .collect(Collectors.toMap(key -> key.getKey().symbol(), Map.Entry::getValue));
         }
     }
 
@@ -78,18 +74,17 @@ public class DistributionsEndpoint {
         private DistributionListJson() {
         }
 
-        public DistributionListJson(List<ForecastedDistribution> distributions) {
-            this.distributions = distributions.stream().map(DistributionJson::new).toList();
-            if (!distributions.isEmpty()) {
-                this.total = Map.of(distributions.getFirst().monetaryValue().currency().toString(),
-                        distributions
-                                .stream()
-                                .map(ForecastedDistribution::monetaryValue)
-                                .map(MonetaryValue::amount)
-                                .reduce(0f, Float::sum));
-            } else {
-                this.total = Map.of("USD", 0f, "PLN", 0f);
-            }
+        public DistributionListJson(List<ForecastedDistribution> distributions, MultiCurrencyMonetaryValue total) {
+            this.distributions = distributions
+                    .stream()
+                    .map(DistributionJson::new)
+                    .toList();
+
+            this.total = total
+                    .asMap()
+                    .entrySet()
+                    .stream()
+                    .collect(Collectors.toMap(key -> key.getKey().symbol(), Map.Entry::getValue));
         }
     }
 

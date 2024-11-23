@@ -1,0 +1,23 @@
+package com.github.jakubzmuda.centralControlStation.investments.domain.core;
+
+import com.github.jakubzmuda.centralControlStation.investments.domain.currency.Currency;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class MultiCurrencyMonetaryValue {
+
+    private Map<Currency, Float> currencyToAmountMap = new HashMap<>();
+
+    public MultiCurrencyMonetaryValue(Map<Currency, Float> currencyToAmountMap) {
+        this.currencyToAmountMap = currencyToAmountMap;
+    }
+
+    public Float amountForCurrency(Currency currency) {
+        return currencyToAmountMap.get(currency);
+    }
+
+    public Map<Currency, Float> asMap() {
+        return currencyToAmountMap;
+    }
+}

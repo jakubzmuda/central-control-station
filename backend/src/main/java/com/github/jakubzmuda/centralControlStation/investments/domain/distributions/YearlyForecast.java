@@ -1,18 +1,17 @@
 package com.github.jakubzmuda.centralControlStation.investments.domain.distributions;
 
-import com.github.jakubzmuda.centralControlStation.investments.domain.core.Currency;
-import com.github.jakubzmuda.centralControlStation.investments.domain.core.MonetaryValue;
+import com.github.jakubzmuda.centralControlStation.investments.domain.core.MultiCurrencyMonetaryValue;
+import com.github.jakubzmuda.centralControlStation.investments.domain.currency.Currency;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 public class YearlyForecast {
-    LinkedHashMap<String, List<ForecastedDistribution>> months;
+    private List<MonthlyForecast> monthlyForecasts;
 
-    public YearlyForecast(LinkedHashMap<String, List<ForecastedDistribution>> months) {
-        this.months = months;
+    public YearlyForecast(List<MonthlyForecast> monthlyForecasts) {
+        this.monthlyForecasts = monthlyForecasts;
     }
 
     @Override
@@ -20,26 +19,47 @@ public class YearlyForecast {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         YearlyForecast that = (YearlyForecast) o;
-        return Objects.equals(months, that.months);
+        return Objects.equals(monthlyForecasts, that.monthlyForecasts);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(months);
+        return Objects.hashCode(monthlyForecasts);
     }
 
     @Override
     public String toString() {
         return "YearlyForecast{" +
-                "months=" + months +
+                "monthlyForecasts=" + monthlyForecasts +
                 '}';
     }
 
-    public LinkedHashMap<String, List<ForecastedDistribution>> months() {
-        return months;
+    public List<MonthlyForecast> monthlyForecasts() {
+        return monthlyForecasts;
     }
 
-    public MonetaryValue total() {
-        return MonetaryValue.of(Currency.USD, 0f);
+    public MultiCurrencyMonetaryValue total() {
+       return new MultiCurrencyMonetaryValue(Map.of());
     }
 }
+
+
+//        return calculateTotalPerCurrency()
+//                .entrySet()
+//                .stream()
+//                .collect(Collectors.toMap(
+//                        Map.Entry::getKey,
+//                        entry -> {
+//                            var otherCurrencies = currencyRates.currencies()
+//                                    .stream()
+//                                    .filter(c -> c != entry.getKey())
+//                                    .toList();
+//
+//                            otherCurrencies.
+//
+//                            return entry.getValue() + otherCurrencies.stream()
+//
+//
+////                            return entry.getValue() * currencyRates.rateFor(entry.getKey(), Currency.USD);
+//                        }
+//                ));
