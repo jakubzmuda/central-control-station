@@ -3,6 +3,7 @@ package com.github.jakubzmuda.centralControlStation.investments.domain.distribut
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.Month;
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.MultiCurrencyMonetaryValue;
 import com.github.jakubzmuda.centralControlStation.investments.domain.currency.CurrencyRates;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.List;
 import java.util.Objects;
@@ -49,12 +50,16 @@ public final class MonthlyForecast {
         return forecastedDistributions;
     }
 
-    public MultiCurrencyMonetaryValue total() {
+    public MultiCurrencyMonetaryValue totalForEachCurrency() {
         return forecastedDistributions
                 .stream()
                 .map(ForecastedDistribution::monetaryValue)
                 .map(MultiCurrencyMonetaryValue::new)
                 .reduce(MultiCurrencyMonetaryValue::add)
                 .orElse(new MultiCurrencyMonetaryValue());
+    }
+
+    public MultiCurrencyMonetaryValue totalConvertedToEachCurrency() {
+        throw new NotImplementedException("Not implemented yet");
     }
 }

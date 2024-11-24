@@ -9,7 +9,7 @@ public record YearlyForecast(List<MonthlyForecast> monthlyForecasts) {
     public MultiCurrencyMonetaryValue total() {
         return this.monthlyForecasts
                 .stream()
-                .map(MonthlyForecast::total)
+                .map(MonthlyForecast::totalForEachCurrency)
                 .reduce(MultiCurrencyMonetaryValue::add)
                 .orElseThrow(() -> new RuntimeException("No monthly forecasts"));
     }

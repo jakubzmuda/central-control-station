@@ -1,5 +1,6 @@
 package com.github.jakubzmuda.centralControlStation.investments.application;
 
+import com.github.jakubzmuda.centralControlStation.investments.domain.currency.CurrencyRates;
 import com.github.jakubzmuda.centralControlStation.investments.domain.currency.CurrencyRatesDataSupplier;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +13,7 @@ public class CurrenciesService {
         this.currenciesDataSupplier = currenciesDataSupplier;
     }
 
-    public float getUsdPlnRate() {
-        return currenciesDataSupplier.getUsdPlnRate();
+    public CurrencyRates getRates() {
+        return currenciesDataSupplier.getCurrencyRates();
     }
 }

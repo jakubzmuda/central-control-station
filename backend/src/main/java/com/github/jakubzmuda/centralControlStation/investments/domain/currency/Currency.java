@@ -10,6 +10,14 @@ public enum Currency {
         this.symbol = symbol;
     }
 
+    public static Currency of(String code) {
+        return switch (code) {
+            case "USD" -> USD;
+            case "PLN" -> PLN;
+            default -> throw new IllegalArgumentException("Unsupported currency code: " + code);
+        };
+    }
+
     public String symbol() {
         return symbol;
     }

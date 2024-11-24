@@ -23,6 +23,7 @@ public class CurrencyRates {
     }
 
     public Float rateFor(Currency first, Currency second) {
-        return rates.get(Tuple.of(first, second));
+        Float submittedRate = rates.get(Tuple.of(first, second));
+        return submittedRate != null ? submittedRate : 1 / rates.get(Tuple.of(second, first));
     }
 }

@@ -3,7 +3,6 @@ package com.github.jakubzmuda.centralControlStation.investments.application;
 import com.github.jakubzmuda.centralControlStation.core.application.NotFoundException;
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.MonetaryValue;
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.Month;
-import com.github.jakubzmuda.centralControlStation.investments.domain.currency.Currency;
 import com.github.jakubzmuda.centralControlStation.investments.domain.currency.CurrencyRates;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.*;
 import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.Portfolio;
@@ -11,7 +10,8 @@ import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.Current
 import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.UserId;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -34,8 +34,6 @@ public class DistributionsService {
 
     public DistributionsForecast forecast(UserId userId) {
         currentUser.getOrUnauthorized();
-
-        float usdPlnRate = currenciesApplication.getUsdPlnRate();
 
         Portfolio portfolio = portfoliosApplication
                 .getForUser(userId)
@@ -65,15 +63,26 @@ public class DistributionsService {
                 .flatMap(List::stream)
                 .toList();
 
-        LinkedHashMap<Month, List<ForecastedDistribution>> distributionsPerMonth = Arrays.stream(Month.values())
-                .collect(LinkedHashMap::new, (map, month) -> map.put(month, new ArrayList<>()), LinkedHashMap::putAll);
+        List<MonthlyForecast> monthlyForecasts = Arrays
+                .stream(Month.values())
+                .map(month -> new MonthlyForecast(
+                        month,
+                        forecastedDistributions.stream()
+                                .filter(distribution -> distribution.month().equals(month))
+                                .toList(),
+                        currenciesApplication.getRates()))
+                .collect(Collectors.toList());
 
+        return new DistributionsForecast(new YearlyForecast(monthlyForecasts));
+    }
 
-        for (ForecastedDistribution distribution : forecastedDistributions) {
-            distributionsPerMonth.get(distribution.month()).add(distribution);
-        }
-
-        return new DistributionsForecast(new YearlyForecast(distributionsPerMonth));
+    private ActualDistributions distributionsForPortfolio(Portfolio portfolio) {
+        return portfolio
+                .entries()
+                .stream()
+                .map(entry -> distributionsDataSupplier.acquireLastYearDistributions(entry.productTicker()))
+                .reduce(ActualDistributions::addAll)
+                .orElse(ActualDistributions.empty());
     }
 
 //    public Map<Currency, Float> calculateTotal(CurrencyRates currencyRates) {
@@ -105,14 +114,4 @@ public class DistributionsService {
 //                        Double::floatValue
 //                )));
 //    }
-
-    private ActualDistributions distributionsForPortfolio(Portfolio portfolio) {
-        return portfolio
-                .entries()
-                .stream()
-                .map(entry -> distributionsDataSupplier.acquireLastYearDistributions(entry.productTicker()))
-                .reduce(ActualDistributions::addAll)
-                .orElse(ActualDistributions.empty());
-    }
-
 }

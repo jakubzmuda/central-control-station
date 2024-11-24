@@ -53,7 +53,7 @@ public class DistributionsEndpoint {
                     .stream()
                     .collect(Collectors.toMap(
                             monthlyForecast -> monthlyForecast.month().getName(),
-                            entry -> new DistributionListJson(entry.forecastedDistributions(), entry.total()),
+                            entry -> new DistributionListJson(entry.forecastedDistributions(), entry.totalForEachCurrency()),
                             (oldValue, newValue) -> oldValue,
                             LinkedHashMap::new
                     ));
