@@ -7,8 +7,6 @@ import com.github.jakubzmuda.centralControlStation.investments.domain.currency.C
 import java.util.List;
 import java.util.Objects;
 
-// TODO uzyc tej klasy czy nie? Jej zadaniem byloby w zasadzie tylko liczenie totala, co wydaje się sensowniejsze umieścić w aplikacji?
-// TODO wydaje mi sie jednak ze lepiej uzyc tej klasy. W zasadzie jestem tego pewien. Powodzonka.
 public final class MonthlyForecast {
     private Month month;
     private List<ForecastedDistribution> forecastedDistributions;
@@ -52,6 +50,11 @@ public final class MonthlyForecast {
     }
 
     public MultiCurrencyMonetaryValue total() {
-        return null;
+        return forecastedDistributions
+                .stream()
+                .map(ForecastedDistribution::monetaryValue)
+                .map(MultiCurrencyMonetaryValue::new)
+                .reduce(MultiCurrencyMonetaryValue::add)
+                .orElse(new MultiCurrencyMonetaryValue());
     }
 }

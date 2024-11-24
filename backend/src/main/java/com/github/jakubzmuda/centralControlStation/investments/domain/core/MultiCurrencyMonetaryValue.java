@@ -7,10 +7,19 @@ import java.util.Map;
 
 public class MultiCurrencyMonetaryValue {
 
-    private Map<Currency, Float> currencyToAmountMap = new HashMap<>();
+    private Map<Currency, Float> currencyToAmountMap;
+
+    public MultiCurrencyMonetaryValue() {
+        this(new HashMap<>());
+    }
 
     public MultiCurrencyMonetaryValue(Map<Currency, Float> currencyToAmountMap) {
         this.currencyToAmountMap = currencyToAmountMap;
+    }
+
+    public MultiCurrencyMonetaryValue(MonetaryValue monetaryValue) {
+        this();
+        this.currencyToAmountMap.put(monetaryValue.currency(), monetaryValue.amount());
     }
 
     public Float amountForCurrency(Currency currency) {
