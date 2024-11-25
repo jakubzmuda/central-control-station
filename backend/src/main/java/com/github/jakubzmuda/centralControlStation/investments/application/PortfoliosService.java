@@ -28,4 +28,9 @@ public class PortfoliosService {
     public Optional<Portfolio> getForUser(UserId userId) {
         return repository.findByUserId(userId);
     }
+
+    public void save(Portfolio portfolio) {
+        currentUser.getOrUnauthorized();
+        repository.save(portfolio);
+    }
 }
