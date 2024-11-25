@@ -20,6 +20,8 @@ public class DistributionsEndpointTest extends ApiTest {
 
     @Test
     public void shouldRespondWithForecast() {
+        currencyDataProviderHelper.withUsdPlnRate(4f).stub();
+
         givenPortfolio(
                 TestUser.Max,
                 new PortfolioEntry("aapl", 1.50f),
@@ -54,6 +56,8 @@ public class DistributionsEndpointTest extends ApiTest {
 
     @Test
     public void shouldCalculateTotalForMonth() {
+        currencyDataProviderHelper.withUsdPlnRate(4f).stub();
+
         givenPortfolio(
                 TestUser.Max,
                 new PortfolioEntry("aapl", 1f),
@@ -78,6 +82,8 @@ public class DistributionsEndpointTest extends ApiTest {
 
     @Test
     public void shouldCalculateTotalForYear() {
+        currencyDataProviderHelper.withUsdPlnRate(4f);
+
         givenPortfolio(
                 TestUser.Max,
                 new PortfolioEntry("aapl", 1f),
@@ -118,6 +124,8 @@ public class DistributionsEndpointTest extends ApiTest {
 
     @Test
     public void shouldSortMoths() {
+        currencyDataProviderHelper.withUsdPlnRate(4f).stub();
+
         givenPortfolio(TestUser.Max);
 
         Response response = api.whenAs(TestUser.Max).get("/api/distributions/forecast?user=max");
@@ -193,6 +201,8 @@ public class DistributionsEndpointTest extends ApiTest {
 
     @Test
     public void shouldBeAbleToForecastForAnyUserWhenAuthenticated() {
+        currencyDataProviderHelper.withUsdPlnRate(4f).stub();
+
         givenPortfolio(TestUser.Max);
 
         Response response = api.whenAs(TestUser.Charles).get("/api/distributions/forecast?user=max");
@@ -206,6 +216,8 @@ public class DistributionsEndpointTest extends ApiTest {
 
     @Test
     public void shouldBeAbleToForecastEvenForEmptyPortfolio() {
+        currencyDataProviderHelper.withUsdPlnRate(4f).stub();
+
         givenPortfolio(TestUser.Max);
 
         Response response = api.whenAs(TestUser.Max).get("/api/distributions/forecast?user=max");

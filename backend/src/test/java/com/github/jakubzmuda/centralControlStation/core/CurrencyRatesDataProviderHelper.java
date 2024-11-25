@@ -11,8 +11,9 @@ public class CurrencyRatesDataProviderHelper {
 
     private float usdPlnRate = 0f;
 
-    public void withUsdPlnRate(float rate) {
+    public CurrencyRatesDataProviderHelper withUsdPlnRate(float rate) {
         this.usdPlnRate = rate;
+        return this;
     }
 
     public void stub() {
@@ -39,6 +40,7 @@ public class CurrencyRatesDataProviderHelper {
                         .withBody(body)
                         .withStatus(200)));
 
+        reset();
     }
 
     public void reset() {

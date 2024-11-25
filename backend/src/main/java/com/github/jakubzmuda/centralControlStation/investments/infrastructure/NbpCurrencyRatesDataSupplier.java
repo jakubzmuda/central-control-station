@@ -1,5 +1,6 @@
 package com.github.jakubzmuda.centralControlStation.investments.infrastructure;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.Tuple;
 import com.github.jakubzmuda.centralControlStation.investments.domain.currency.Currency;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
@@ -20,13 +22,17 @@ public class NbpCurrencyRatesDataSupplier implements CurrencyRatesDataSupplier {
 
     private OkHttpClient client;
     private ObjectMapper objectMapper;
-    private StubbedProductDistributions StubbedProductDistributions = new StubbedProductDistributions();
 
     @Value("${application.nbp.url}")
     private String nbpUrl;
 
     @Value("${application.nbp.port}")
     private String nbpPort;
+
+    public NbpCurrencyRatesDataSupplier(OkHttpClient client, ObjectMapper objectMapper) {
+        this.client = client;
+        this.objectMapper = objectMapper;
+    }
 
     @Override
     public CurrencyRates getCurrencyRates() {
@@ -38,25 +44,43 @@ public class NbpCurrencyRatesDataSupplier implements CurrencyRatesDataSupplier {
         try (Response response = client.newCall(request).execute()) {
             String responseBody = response.body().string();
             @SuppressWarnings("unchecked")
-            List<TableJson> tableList = (List<TableJson>) objectMapper.readValue(responseBody, List.class);
-
+            List<TableJson> tableList = objectMapper.readValue(responseBody, new TypeReference<List<TableJson>>() {
+            });
             return new CurrencyRates(tableList
                     .getFirst()
-                    .rates()
+                    .rates
                     .stream()
                     .collect(Collectors.toMap(
-                            rate -> Tuple.of(Currency.of(rate.code()), Currency.PLN),
-                            CurrencyRateJson::mid
+                            rate -> Tuple.of(Currency.of(rate.code), Currency.PLN),
+                            rate -> rate.mid
                     )));
-
         } catch (IOException e) {
             throw new RuntimeException("Could not acquire currency rates.", e);
         }
     }
 }
 
-record TableJson(List<CurrencyRateJson> rates) {
+class TableJson {
+    List<CurrencyRateJson> rates;
+
+    private TableJson() {
+        this(null);
+    }
+
+    TableJson(List<CurrencyRateJson> rates) {
+        this.rates = rates;
+    }
 }
 
-record CurrencyRateJson(String code, float mid) {
+class CurrencyRateJson {
+    String code;
+    float mid;
+
+    private CurrencyRateJson() {
+    }
+
+    CurrencyRateJson(String code, float mid) {
+        this.code = code;
+        this.mid = mid;
+    }
 }

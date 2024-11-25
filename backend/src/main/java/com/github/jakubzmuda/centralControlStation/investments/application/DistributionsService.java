@@ -29,6 +29,7 @@ public class DistributionsService {
             CurrentUser currentUser) {
         this.portfoliosApplication = portfoliosApplication;
         this.distributionsDataSupplier = distributionsDataSupplier;
+        this.currenciesApplication = currenciesApplication;
         this.currentUser = currentUser;
     }
 
@@ -38,6 +39,8 @@ public class DistributionsService {
         Portfolio portfolio = portfoliosApplication
                 .getForUser(userId)
                 .orElseThrow(NotFoundException::new);
+
+        CurrencyRates currencyRates = currenciesApplication.getRates();
 
         ActualDistributions distributions = distributionsForPortfolio(portfolio);
 
@@ -70,7 +73,7 @@ public class DistributionsService {
                         forecastedDistributions.stream()
                                 .filter(distribution -> distribution.month().equals(month))
                                 .toList(),
-                        currenciesApplication.getRates()))
+                        currencyRates))
                 .collect(Collectors.toList());
 
         return new DistributionsForecast(new YearlyForecast(monthlyForecasts));
