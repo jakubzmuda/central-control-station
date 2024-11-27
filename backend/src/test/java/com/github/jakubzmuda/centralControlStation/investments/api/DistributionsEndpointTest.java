@@ -55,7 +55,7 @@ public class DistributionsEndpointTest extends ApiTest {
     }
 
     @Test
-    public void shouldCalculateTotalForMonth() {
+    public void shouldCalculateTotalForMonthForSameCurrency() {
         currencyDataProviderHelper.withUsdPlnRate(4f).stub();
 
         givenPortfolio(
@@ -82,7 +82,7 @@ public class DistributionsEndpointTest extends ApiTest {
 
     @Test
     public void shouldCalculateTotalForYear() {
-        currencyDataProviderHelper.withUsdPlnRate(4f);
+        currencyDataProviderHelper.withUsdPlnRate(4f).stub();
 
         givenPortfolio(
                 TestUser.Max,
@@ -109,6 +109,8 @@ public class DistributionsEndpointTest extends ApiTest {
 
     @Test
     public void shouldShowTotalZeroWhenNoDistributions() {
+        currencyDataProviderHelper.withUsdPlnRate(4f).stub();
+
         givenPortfolio(TestUser.Max);
 
         Response response = api.whenAs(TestUser.Max).get("/api/distributions/forecast?user=max");
@@ -119,7 +121,6 @@ public class DistributionsEndpointTest extends ApiTest {
 
         assertThat(responseBody.yearlyForecast.months.get("january").total.get("USD")).isEqualTo(0f);
         assertThat(responseBody.yearlyForecast.total.get("USD")).isEqualTo(0f);
-
     }
 
     @Test
@@ -139,6 +140,8 @@ public class DistributionsEndpointTest extends ApiTest {
 
     @Test
     public void shouldWorkForSelectedPolishStocks() {
+        currencyDataProviderHelper.withUsdPlnRate(4f).stub();
+
         givenPortfolio(
                 TestUser.Max,
                 new PortfolioEntry("domdev", 5f),
