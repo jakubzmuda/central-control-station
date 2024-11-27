@@ -3,14 +3,15 @@ package com.github.jakubzmuda.centralControlStation.investments.domain.distribut
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.MultiCurrencyMonetaryValue;
 
 import java.util.List;
+import java.util.Optional;
 
 public record YearlyForecast(List<MonthlyForecast> monthlyForecasts) {
 
-    public MultiCurrencyMonetaryValue total() {
+    public Optional<MultiCurrencyMonetaryValue> total() {
         return this.monthlyForecasts
                 .stream()
                 .map(MonthlyForecast::totalForEachCurrency)
-                .reduce(MultiCurrencyMonetaryValue::add)
-                .orElseThrow(() -> new RuntimeException("No monthly forecasts"));
+                .flatMap(Optional::stream)
+                .reduce(MultiCurrencyMonetaryValue::add);
     }
 }

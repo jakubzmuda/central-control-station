@@ -53,17 +53,20 @@ public class DistributionsEndpoint {
                     .stream()
                     .collect(Collectors.toMap(
                             monthlyForecast -> monthlyForecast.month().getName(),
-                            entry -> new DistributionListJson(entry.forecastedDistributions(), entry.totalForEachCurrency()),
+                            entry -> new DistributionListJson(entry.forecastedDistributions(), entry.totalForEachCurrency().orElse(null)),
                             (oldValue, newValue) -> oldValue,
                             LinkedHashMap::new
                     ));
 
-            total = yearlyForecast
-                    .total()
-                    .asMap()
-                    .entrySet()
-                    .stream()
-                    .collect(Collectors.toMap(key -> key.getKey().symbol(), Map.Entry::getValue));
+            if (yearlyForecast.total().isPresent()) {
+                total = yearlyForecast
+                        .total()
+                        .get()
+                        .asMap()
+                        .entrySet()
+                        .stream()
+                        .collect(Collectors.toMap(key -> key.getKey().symbol(), Map.Entry::getValue));
+            }
         }
     }
 
@@ -80,11 +83,13 @@ public class DistributionsEndpoint {
                     .map(DistributionJson::new)
                     .toList();
 
-            this.total = total
-                    .asMap()
-                    .entrySet()
-                    .stream()
-                    .collect(Collectors.toMap(key -> key.getKey().symbol(), Map.Entry::getValue));
+            if (total != null) {
+                this.total = total
+                        .asMap()
+                        .entrySet()
+                        .stream()
+                        .collect(Collectors.toMap(key -> key.getKey().symbol(), Map.Entry::getValue));
+            }
         }
     }
 

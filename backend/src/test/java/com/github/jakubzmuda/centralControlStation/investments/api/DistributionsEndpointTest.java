@@ -20,8 +20,6 @@ public class DistributionsEndpointTest extends ApiTest {
 
     @Test
     public void shouldRespondWithForecast() {
-        currencyDataProviderHelper.withUsdPlnRate(4f).stub();
-
         givenPortfolio(
                 TestUser.Max,
                 new PortfolioEntry("aapl", 1.50f),
@@ -56,8 +54,6 @@ public class DistributionsEndpointTest extends ApiTest {
 
     @Test
     public void shouldCalculateTotalForMonthForSameCurrency() {
-        currencyDataProviderHelper.withUsdPlnRate(4f).stub();
-
         givenPortfolio(
                 TestUser.Max,
                 new PortfolioEntry("aapl", 1f),
@@ -82,8 +78,6 @@ public class DistributionsEndpointTest extends ApiTest {
 
     @Test
     public void shouldCalculateTotalForYear() {
-        currencyDataProviderHelper.withUsdPlnRate(4f).stub();
-
         givenPortfolio(
                 TestUser.Max,
                 new PortfolioEntry("aapl", 1f),
@@ -109,8 +103,6 @@ public class DistributionsEndpointTest extends ApiTest {
 
     @Test
     public void shouldShowTotalZeroWhenNoDistributions() {
-        currencyDataProviderHelper.withUsdPlnRate(4f).stub();
-
         givenPortfolio(TestUser.Max);
 
         Response response = api.whenAs(TestUser.Max).get("/api/distributions/forecast?user=max");
@@ -119,14 +111,12 @@ public class DistributionsEndpointTest extends ApiTest {
 
         LinkedHashMap<String, DistributionsEndpoint.DistributionListJson> months = responseBody.yearlyForecast.months;
 
-        assertThat(responseBody.yearlyForecast.months.get("january").total.get("USD")).isEqualTo(0f);
-        assertThat(responseBody.yearlyForecast.total.get("USD")).isEqualTo(0f);
+        assertThat(responseBody.yearlyForecast.months.get("january").total).isNull();
+        assertThat(responseBody.yearlyForecast.total).isNull();
     }
 
     @Test
     public void shouldSortMoths() {
-        currencyDataProviderHelper.withUsdPlnRate(4f).stub();
-
         givenPortfolio(TestUser.Max);
 
         Response response = api.whenAs(TestUser.Max).get("/api/distributions/forecast?user=max");
@@ -140,8 +130,6 @@ public class DistributionsEndpointTest extends ApiTest {
 
     @Test
     public void shouldWorkForSelectedPolishStocks() {
-        currencyDataProviderHelper.withUsdPlnRate(4f).stub();
-
         givenPortfolio(
                 TestUser.Max,
                 new PortfolioEntry("domdev", 5f),
@@ -163,7 +151,7 @@ public class DistributionsEndpointTest extends ApiTest {
     }
 
     @Test
-    public void shouldConvertCurrenciesInBothDirections() {
+    public void shouldCalculateTotalPerCurrency() {
         givenPortfolio(
                 TestUser.Max,
                 new PortfolioEntry("domdev", 5f),
@@ -172,7 +160,7 @@ public class DistributionsEndpointTest extends ApiTest {
 
         distributionsHelper
                 .withProduct("aapl")
-                .withDistribution(0.24f, LocalDate.parse("2024-07-09"))
+                .withDistribution(0.25f, LocalDate.parse("2024-06-09"))
                 .stub();
 
         Response response = api.whenAs(TestUser.Max).get("/api/distributions/forecast?user=max");
@@ -184,28 +172,27 @@ public class DistributionsEndpointTest extends ApiTest {
         Map<String, DistributionsEndpoint.DistributionListJson> months = responseBody.yearlyForecast.months;
 
         DistributionsEndpoint.DistributionListJson juneDistributions = months.get("june");
-        assertThat(juneDistributions.distributions.getFirst().product).isEqualTo("domdev");
-        assertThat(juneDistributions.distributions.getFirst().monetaryValue.get("PLN")).isEqualTo(30f);
-        assertThat(juneDistributions.distributions.getFirst().monetaryValue.get("USD")).isEqualTo(7.185f);
+        DistributionsEndpoint.DistributionJson domdevDistribution = juneDistributions.distributions
+                .stream().filter(d -> d.product.equals("domdev")).findFirst().get();
+        assertThat(domdevDistribution).isNotNull();
+        assertThat(domdevDistribution.monetaryValue.get("PLN")).isEqualTo(30f);
 
-        assertThat(juneDistributions.distributions.getLast().product).isEqualTo("aapl");
-        assertThat(juneDistributions.distributions.getLast().monetaryValue.get("USD")).isEqualTo(2.4f);
-        assertThat(juneDistributions.distributions.getLast().monetaryValue.get("PLN")).isEqualTo(10.02f);
+        DistributionsEndpoint.DistributionJson aaplDistirbution = juneDistributions.distributions
+                .stream().filter(d -> d.product.equals("aapl")).findFirst().get();
+        assertThat(aaplDistirbution).isNotNull();
+        assertThat(aaplDistirbution.monetaryValue.get("USD")).isEqualTo(2.5f);
 
-        assertThat(juneDistributions.total.get("PLN")).isEqualTo(100f);
-        assertThat(juneDistributions.total.get("USD")).isEqualTo(100f);
-
+        assertThat(juneDistributions.total.get("PLN")).isEqualTo(30f);
+        assertThat(juneDistributions.total.get("USD")).isEqualTo(2.5f);
 
         // It might look like it doesn't add up from previous assertions. That's because polish stock distributions are stubbed for now.
-        assertThat(responseBody.yearlyForecast.total.get("PLN")).isEqualTo(100f);
-        assertThat(responseBody.yearlyForecast.total.get("USD")).isEqualTo(100f);
+        assertThat(responseBody.yearlyForecast.total.get("PLN")).isEqualTo(60f);
+        assertThat(responseBody.yearlyForecast.total.get("USD")).isEqualTo(2.5f);
     }
 
 
     @Test
     public void shouldBeAbleToForecastForAnyUserWhenAuthenticated() {
-        currencyDataProviderHelper.withUsdPlnRate(4f).stub();
-
         givenPortfolio(TestUser.Max);
 
         Response response = api.whenAs(TestUser.Charles).get("/api/distributions/forecast?user=max");
@@ -219,8 +206,6 @@ public class DistributionsEndpointTest extends ApiTest {
 
     @Test
     public void shouldBeAbleToForecastEvenForEmptyPortfolio() {
-        currencyDataProviderHelper.withUsdPlnRate(4f).stub();
-
         givenPortfolio(TestUser.Max);
 
         Response response = api.whenAs(TestUser.Max).get("/api/distributions/forecast?user=max");

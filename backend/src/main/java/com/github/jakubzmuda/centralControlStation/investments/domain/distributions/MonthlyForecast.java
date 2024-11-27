@@ -2,21 +2,18 @@ package com.github.jakubzmuda.centralControlStation.investments.domain.distribut
 
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.Month;
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.MultiCurrencyMonetaryValue;
-import com.github.jakubzmuda.centralControlStation.investments.domain.currency.CurrencyRates;
-import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public final class MonthlyForecast {
     private Month month;
     private List<ForecastedDistribution> forecastedDistributions;
-    private CurrencyRates currencyRates;
 
-    public MonthlyForecast(Month month, List<ForecastedDistribution> forecastedDistributions, CurrencyRates currencyRates) {
+    public MonthlyForecast(Month month, List<ForecastedDistribution> forecastedDistributions) {
         this.month = month;
         this.forecastedDistributions = forecastedDistributions;
-        this.currencyRates = currencyRates;
     }
 
     @Override
@@ -25,21 +22,20 @@ public final class MonthlyForecast {
         if (obj == null || obj.getClass() != this.getClass()) return false;
         var that = (MonthlyForecast) obj;
         return Objects.equals(this.month, that.month) &&
-                Objects.equals(this.forecastedDistributions, that.forecastedDistributions) &&
-                Objects.equals(this.currencyRates, that.currencyRates);
+                Objects.equals(this.forecastedDistributions, that.forecastedDistributions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(month, forecastedDistributions, currencyRates);
+        return Objects.hash(month, forecastedDistributions);
     }
 
     @Override
     public String toString() {
-        return "MonthlyForecast[" +
-                "month=" + month + ", " +
-                "forecastedDistributions=" + forecastedDistributions + ", " +
-                "currencyRates=" + currencyRates + ']';
+        return "MonthlyForecast{" +
+                "month=" + month +
+                ", forecastedDistributions=" + forecastedDistributions +
+                '}';
     }
 
     public Month month() {
@@ -50,16 +46,11 @@ public final class MonthlyForecast {
         return forecastedDistributions;
     }
 
-    public MultiCurrencyMonetaryValue totalForEachCurrency() {
+    public Optional<MultiCurrencyMonetaryValue> totalForEachCurrency() {
         return forecastedDistributions
                 .stream()
                 .map(ForecastedDistribution::monetaryValue)
                 .map(MultiCurrencyMonetaryValue::new)
-                .reduce(MultiCurrencyMonetaryValue::add)
-                .orElse(new MultiCurrencyMonetaryValue());
-    }
-
-    public MultiCurrencyMonetaryValue totalConvertedToEachCurrency() {
-        throw new NotImplementedException("Not implemented yet");
+                .reduce(MultiCurrencyMonetaryValue::add);
     }
 }
