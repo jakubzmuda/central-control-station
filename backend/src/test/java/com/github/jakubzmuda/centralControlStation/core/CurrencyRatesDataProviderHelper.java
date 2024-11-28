@@ -3,6 +3,8 @@ package com.github.jakubzmuda.centralControlStation.core;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import org.springframework.stereotype.Component;
 
+import java.util.Locale;
+
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 
@@ -17,7 +19,7 @@ public class CurrencyRatesDataProviderHelper {
     }
 
     public void stub() {
-        String body = String.format("""
+        String body = String.format(Locale.US, """
                 [
                   {
                     "table": "A",
