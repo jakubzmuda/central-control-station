@@ -30,6 +30,6 @@ class ProductionCurrentUser implements CurrentUser {
 
     @Override
     public Optional<UserId> tryGet() {
-        return Optional.of(userId);
+        return Optional.ofNullable(userId);
     }
 }
