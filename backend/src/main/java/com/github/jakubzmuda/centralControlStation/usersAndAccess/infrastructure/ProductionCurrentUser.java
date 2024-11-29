@@ -4,12 +4,14 @@ import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.UserId;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.Profile;
 import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.CurrentUser;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
 import static org.springframework.context.annotation.ScopedProxyMode.TARGET_CLASS;
 import static org.springframework.web.context.WebApplicationContext.SCOPE_REQUEST;
 
+@Component
 @Scope(scopeName = SCOPE_REQUEST, proxyMode = TARGET_CLASS)
 @Profile("!test")
 class ProductionCurrentUser implements CurrentUser {
