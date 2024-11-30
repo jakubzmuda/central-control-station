@@ -3,9 +3,3 @@
   display: flex;
   flex: 1;
 }
-
-body {
-  background-color: #272727;
-  color: #ffff;
-  height: 100%;
-}
