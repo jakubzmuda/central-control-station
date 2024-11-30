@@ -4,9 +4,9 @@ import styles from "./portfolioPage.module.css"
 
 function PortfolioPage() {
     return (
-        <Page>
+        <Page title={"Twoje akcyjki"}>
             <div className={styles.container}>
-                Portfolio
+
             </div>
         </Page>
     );
