@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import NoAccessPage from "./pages/NoAccessPage";
+import NoAccessPage from "./pages/noAccessPage/NoAccessPage";
 
 function App() {
   return (
