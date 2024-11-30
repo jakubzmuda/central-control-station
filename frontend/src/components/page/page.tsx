@@ -1,13 +1,19 @@
-import React from "react";
+import React, {useState} from "react";
 import styles from './page.module.css';
 import Header from "../header/header";
+import UserSwitch from "../userSwitch/userSwitch";
 
 function Page({title, children}: {title?: string, children: any}) {
-    console.log("title", title)
+
+    const [selectedUser, setSelectedUser] = useState("krokus")
+
     return (
         <div className={styles.page}>
             <Header />
-            <h2 className={styles.title}>{title}</h2>
+            <div className={styles.header}>
+                <h2 className={styles.title}>{title}</h2>
+                <UserSwitch users={['krokus', 'paruwi', 'skrzynka']} selectedUser={selectedUser} onChange={(newUser) => setSelectedUser(newUser)}/>
+            </div>
             <div className={styles.pageContent}>
                 {children}
             </div>
