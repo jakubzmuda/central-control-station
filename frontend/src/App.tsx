@@ -1,11 +1,17 @@
 import React from 'react';
 import './App.css';
 import NoAccessPage from "./pages/noAccessPage/NoAccessPage";
+import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
+import NotFoundPage from "./pages/notFoundPage/NotFoundPage";
 
 function App() {
   return (
     <div className="App">
-      <NoAccessPage/>
+        <Routes>
+            <Route path="/no-access" element={<NoAccessPage />} />
+            <Route path="/not-found" element={<NotFoundPage />} />
+            <Route path="*" element={<Navigate to="/not-found" replace />} />
+        </Routes>
     </div>
   );
 }
