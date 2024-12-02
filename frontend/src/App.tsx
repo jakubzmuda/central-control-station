@@ -9,6 +9,7 @@ function App() {
   return (
     <div className="App">
         <Routes>
+            <Route path="" element={<Navigate to="/portfolio" replace />} />
             <Route path="/" element={<Navigate to="/portfolio" replace />} />
             <Route path="/portfolio" element={<PortfolioPage />} />
             <Route path="/no-access" element={<NoAccessPage />} />

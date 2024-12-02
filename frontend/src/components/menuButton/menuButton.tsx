@@ -5,7 +5,7 @@ import {MdMenu} from "react-icons/md";
 function MenuButton() {
     return (
         <button className={styles.button}>
-            <MdMenu color={"#E80F88"} size={40}/>
+            <MdMenu color={"#E80F88"} size={32}/>
         </button>
     );
 }
