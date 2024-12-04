@@ -1,0 +1,22 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+}
+
+.image {
+    width: 60%;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    max-width: 512px;
+}
+
+.token {
+    max-width: 512px;
+    width: 60%;
+    height: 128px;
+    max-height: 128px;
+    margin: 32px;
+}
