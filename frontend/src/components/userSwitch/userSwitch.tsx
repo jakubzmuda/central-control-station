@@ -28,7 +28,7 @@ function UserSwitch({users, selectedUser, onChange}: {
                     color: color,
                     fontSize: 16,
                     border: '1px solid ' + color,
-                    borderRadius: '8px',
+                    borderRadius: '100px',
                     '& .MuiSelect-select': {
                         padding: '4px 16px',
                     },
