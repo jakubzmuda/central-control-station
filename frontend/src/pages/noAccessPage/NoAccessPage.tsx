@@ -8,7 +8,6 @@ function NoAccessPage() {
 
     const navigate = useNavigate();
 
-
     return (
         <Page>
             <div className={styles.container}>

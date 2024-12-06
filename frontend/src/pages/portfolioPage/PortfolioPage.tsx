@@ -1,16 +1,22 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect} from "react";
 import Page from "../../components/page/page";
 import styles from "./portfolioPage.module.css"
 import PrimaryButton from "../../components/primaryButton/primaryButton";
 import AppContext from "../../context";
+import {useNavigate} from "react-router-dom";
 
 function PortfolioPage() {
 
     const context = useContext(AppContext);
+    const navigate = useNavigate();
 
     useEffect(() => {
-       fetchPortfolio()
-    }, [])
+       fetchPortfolio().catch(e => {
+           if(e.status === 401) {
+               navigate('/no-access');
+           }
+       })
+    })
 
     return (
         <Page title={"Twoje akcyjki"}>
@@ -21,8 +27,8 @@ function PortfolioPage() {
     );
 
 
-    function fetchPortfolio() {
-        context.api.fetchPortfolios();
+    async function fetchPortfolio() {
+        await context.api.fetchPortfolios();
     }
 }
 

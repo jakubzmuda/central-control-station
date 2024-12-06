@@ -10,7 +10,6 @@ import AppContext from './context';
 
 function App() {
     const defaultPage = '/portfolio';
-    const api = new Api();
     return (
         <AppContext.Provider value={{api: new Api()}}>
             <div className="App">

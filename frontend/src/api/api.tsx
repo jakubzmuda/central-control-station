@@ -2,14 +2,13 @@ import axios from "axios";
 
 export default class Api {
 
-    axiosInstance = axios.create({
+    private axiosInstance = axios.create({
         baseURL: this.baseUrl(),
         timeout: 10000,
         headers: {
             'Content-Type': 'application/json',
         },
     });
-
 
     async fetchPortfolios() {
         try {

@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import styles from './page.module.css';
 import Header from "../header/header";
 import UserSwitch from "../userSwitch/userSwitch";
+import {useNavigate} from "react-router-dom";
 
 function Page({title, children}: {title?: string, children: any}) {
 
