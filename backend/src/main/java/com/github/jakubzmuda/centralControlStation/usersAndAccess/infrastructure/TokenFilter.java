@@ -37,7 +37,9 @@ public class TokenFilter extends OncePerRequestFilter {
         try {
             String encodedToken = extractToken(request);
             Token token = Token.of(encodedToken);
-            currentUser.authorize(UserId.of(token.getPayload().user()));
+            if(token.isValid()) {
+                currentUser.authorize(UserId.of(token.getPayload().user()));
+            }
         } catch (Exception e) {
             currentUser.revoke();
         }
