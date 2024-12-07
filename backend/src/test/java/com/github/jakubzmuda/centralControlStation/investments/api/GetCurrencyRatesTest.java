@@ -9,7 +9,7 @@ import static com.github.jakubzmuda.centralControlStation.core.rest.ResponseStat
 import static com.github.jakubzmuda.centralControlStation.core.rest.ResponseStatus.UNAUTHORIZED;
 import static com.github.jakubzmuda.centralControlStation.core.rest.RestAssertions.assertThat;
 
-public class CurrencyRatesEndpointTest extends ApiTest {
+public class GetCurrencyRatesTest extends ApiTest {
 
     @Test
     public void shouldGetRates() {

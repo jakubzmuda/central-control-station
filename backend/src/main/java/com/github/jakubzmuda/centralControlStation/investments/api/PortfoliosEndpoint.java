@@ -35,6 +35,11 @@ public class PortfoliosEndpoint {
         application.save(new Portfolio(UserId.of(userId), entries));
     }
 
+    @DeleteMapping("/{userId}")
+    public void delete(@PathVariable String userId) {
+        application.delete(UserId.of(userId));
+    }
+
     static class PortfoliosResponse {
 
         Map<String, PortfolioJson> portfolios;

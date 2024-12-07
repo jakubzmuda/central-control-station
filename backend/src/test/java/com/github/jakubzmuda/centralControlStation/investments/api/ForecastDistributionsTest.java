@@ -16,7 +16,7 @@ import java.util.Map;
 import static com.github.jakubzmuda.centralControlStation.core.rest.ResponseStatus.OK;
 import static com.github.jakubzmuda.centralControlStation.core.rest.RestAssertions.assertThat;
 
-public class DistributionsEndpointTest extends ApiTest {
+public class ForecastDistributionsTest extends ApiTest {
 
     @Test
     public void shouldRespondWithForecast() {

@@ -13,4 +13,6 @@ public interface PortfolioRepository extends Repository<Portfolio, UserId> {
     List<Portfolio> findAll();
 
     void save(Portfolio portfolio);
+
+    void deleteByUserId(UserId userId);
 }

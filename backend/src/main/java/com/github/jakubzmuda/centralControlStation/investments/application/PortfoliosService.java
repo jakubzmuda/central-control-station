@@ -4,6 +4,7 @@ import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.
 import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.PortfolioRepository;
 import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.CurrentUser;
 import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.UserId;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -32,5 +33,11 @@ public class PortfoliosService {
     public void save(Portfolio portfolio) {
         currentUser.getOrUnauthorized();
         repository.save(portfolio);
+    }
+
+    @Transactional
+    public void delete(UserId userId) {
+        currentUser.getOrUnauthorized();
+        repository.deleteByUserId(userId);
     }
 }
