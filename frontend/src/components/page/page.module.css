@@ -21,4 +21,6 @@
 
 .pageContent {
     padding: 16px;
+    flex: 1;
+    display: flex;
 }

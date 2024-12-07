@@ -1,9 +1,9 @@
 import React, {useContext, useEffect} from "react";
 import Page from "../../components/page/page";
 import styles from "./portfolioPage.module.css"
-import PrimaryButton from "../../components/primaryButton/primaryButton";
 import AppContext from "../../context";
 import {useNavigate} from "react-router-dom";
+import ConfirmationBar from "../../components/confirmationBar/confirmationBar";
 
 function PortfolioPage() {
 
@@ -18,14 +18,22 @@ function PortfolioPage() {
        })
     })
 
+
     return (
         <Page title={"Twoje akcyjki"}>
             <div className={styles.container}>
-                <PrimaryButton>Add</PrimaryButton>
+                <ConfirmationBar onSave={() => onSave()} onCancel={() => onCancel()}/>
             </div>
         </Page>
     );
 
+    function onSave() {
+
+    }
+
+    function onCancel() {
+
+    }
 
     async function fetchPortfolio() {
         await context.api.fetchPortfolios();
