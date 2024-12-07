@@ -2,4 +2,22 @@ GET {{baseUrl}}/api/distributions/forecast?user=krokiet
 
 ###
 
+
+PUT {{baseUrl}}/api/portfolios/charles1
+Authorization: Bearer token
+Content-Type: application/json
+
+{
+    "entries": []
+}
+
+###
+
 GET {{baseUrl}}/api/portfolios
+Authorization: Bearer token
+
+
+###
+
+DELETE {{baseUrl}}/api/portfolios/charles
+Authorization: Bearer token
