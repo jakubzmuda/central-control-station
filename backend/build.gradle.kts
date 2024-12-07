@@ -18,6 +18,7 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:3.17.0")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("org.xerial:sqlite-jdbc:3.47.0.0")
+    implementation ("org.postgresql:postgresql:42.6.0")
     implementation("org.hibernate.orm:hibernate-community-dialects:6.3.0.Final")
     runtimeOnly("com.zaxxer:HikariCP")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
