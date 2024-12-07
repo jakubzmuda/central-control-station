@@ -27,16 +27,16 @@ function PortfolioPage() {
         </Page>
     );
 
-    function onSave() {
-
-    }
-
     function onCancel() {
-
+        navigate('/')
     }
 
     async function fetchPortfolio() {
         await context.api.fetchPortfolios();
+    }
+
+    async function onSave() {
+        await context.api.savePortfolio([]);
     }
 }
 
