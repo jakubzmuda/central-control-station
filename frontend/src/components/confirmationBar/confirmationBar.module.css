@@ -4,6 +4,7 @@
     align-items: center;
     flex: 1;
     width: 100%;
+    max-width: 512px;
     justify-content: space-around;
     position: absolute;
     bottom: 0;
