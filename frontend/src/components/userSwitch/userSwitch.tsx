@@ -1,20 +1,21 @@
-import React from "react";
+import React, {useContext} from "react";
 import styles from './userSwitch.module.css';
 import {MenuItem, Select} from "@mui/material";
+import AppStorage from "../../storage/appStorage";
+import {AppContext} from "../../context/context";
 
-function UserSwitch({users, selectedUser, onChange}: {
-    users: string[],
-    selectedUser: string,
-    onChange: (selected: string) => void
-}) {
+function UserSwitch() {
+    const storage = new AppStorage();
+    const context = useContext(AppContext);
+    const users = Array.from(new Set([storage.currentUser(), ...context.users]))
     const color = '#E80F88';
     return (
         <div className={styles.container}>
             <Select
-                value={selectedUser}
+                value={storage.currentUser()}
                 label="Członek"
                 onChange={(event) => {
-                    onChange(event.target.value);
+                    storage.setCurrentUser(event.target.value);
                 }}
                 MenuProps={{
                     PaperProps: {

@@ -1,23 +1,28 @@
-import React, {useContext, useEffect} from "react";
+import React, {useCallback, useContext, useEffect} from "react";
 import Page from "../../components/page/page";
 import styles from "./portfolioPage.module.css"
-import AppContext from "../../context";
 import {useNavigate} from "react-router-dom";
 import ConfirmationBar from "../../components/confirmationBar/confirmationBar";
+import {AppContext} from "../../context/context";
 
 function PortfolioPage() {
 
     const context = useContext(AppContext);
     const navigate = useNavigate();
 
-    useEffect(() => {
-       fetchPortfolio().catch(e => {
-           if(e.status === 401) {
-               navigate('/no-access');
-           }
-       })
-    })
+    const fetchPortfolios = useCallback(async () => {
+        try {
+            await context.api.fetchPortfolios();
+        } catch (e: any) {
+            if (e.status === 401) {
+                navigate('/no-access');
+            }
+        }
+    }, [context.api, navigate]);
 
+    useEffect(() => {
+        fetchPortfolios();
+    }, [fetchPortfolios]);
 
     return (
         <Page title={"Twoje akcyjki"}>
@@ -31,9 +36,6 @@ function PortfolioPage() {
         navigate('/')
     }
 
-    async function fetchPortfolio() {
-        await context.api.fetchPortfolios();
-    }
 
     async function onSave() {
         await context.api.savePortfolio([]);

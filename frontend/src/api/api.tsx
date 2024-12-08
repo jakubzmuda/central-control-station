@@ -1,6 +1,10 @@
 import axios from "axios";
+import AppStorage from "../storage/appStorage";
 
 export default class Api {
+
+    constructor(private setUsers: Function, private setPortfolios: Function) {
+    }
 
     private axiosInstance = axios.create({
         baseURL: this.baseUrl(),
@@ -10,10 +14,13 @@ export default class Api {
         },
     });
 
+    private storage = new AppStorage();
+
     async fetchPortfolios() {
         try {
             const response = await this.axiosInstance.get('/api/portfolios', { headers: { 'Authorization': this.authHeader() } });
-            return response.data;
+            this.setPortfolios(response.data);
+            this.setUsers([...Object.keys(response.data.portfolios)]);
         } catch (error) {
             console.error('Error fetching user data:', error);
             throw error;
@@ -22,9 +29,8 @@ export default class Api {
 
     async savePortfolio(portfolioEntries: PortfolioEntry[]) {
         try {
-            const currentUser = this.currentUser()
             const request = {entries: portfolioEntries};
-            const response = await this.axiosInstance.put(`/api/portfolios/${currentUser}`, request,{ headers: { 'Authorization': this.authHeader() } });
+            const response = await this.axiosInstance.put(`/api/portfolios/${this.storage.currentUser()}`, request,{ headers: { 'Authorization': this.authHeader() } });
             return response.data;
         } catch (error) {
             console.error('Error fetching user data:', error);
@@ -33,32 +39,8 @@ export default class Api {
     }
 
     private authHeader() {
-        const maybeToken = localStorage.getItem("token");
+        const maybeToken = this.storage.token();
         return maybeToken ? "Bearer " + maybeToken : null;
-    }
-
-    private token() {
-        return localStorage.getItem("token")
-    }
-
-    private authenticatedUser() {
-        try {
-            const token = this.token();
-            if(!token) {
-                return null;
-            }
-            const payload = token.split('.')[1];
-            const decodedPayload = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
-            return decodedPayload['user'];
-        } catch (error) {
-            console.error('Error decoding JWT:', error);
-            return null;
-        }
-    }
-
-    private currentUser() {
-        const maybeCurrentUser = localStorage.getItem("currentUser");
-        return maybeCurrentUser || this.authenticatedUser();
     }
 
     private baseUrl() {

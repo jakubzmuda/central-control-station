@@ -3,12 +3,14 @@ import Page from "../../components/page/page";
 import styles from "./loginPage.module.css"
 import PrimaryButton from "../../components/primaryButton/primaryButton";
 import {useNavigate} from "react-router-dom";
+import AppStorage from "../../storage/appStorage";
 
 
 function LoginPage() {
 
     const [token, setToken] = useState("");
     const navigate = useNavigate();
+    const storage = new AppStorage();
 
     return (
         <Page title={"Login"}>
@@ -22,7 +24,7 @@ function LoginPage() {
     );
 
     function login() {
-        localStorage.setItem('token', token);
+        storage.setToken(token);
         navigate('/portfolio');
     }
 }

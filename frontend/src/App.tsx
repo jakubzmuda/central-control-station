@@ -5,13 +5,12 @@ import {Navigate, Route, Routes} from "react-router-dom";
 import NotFoundPage from "./pages/notFoundPage/NotFoundPage";
 import PortfolioPage from "./pages/portfolioPage/PortfolioPage";
 import LoginPage from "./pages/loginPage/LoginPage";
-import Api from "./api/api";
-import AppContext from './context';
+import {AppContextProvider} from "./context/context";
 
 function App() {
     const defaultPage = '/portfolio';
     return (
-        <AppContext.Provider value={{api: new Api()}}>
+        <AppContextProvider>
             <div className="App">
                 <Routes>
                     <Route path="" element={<Navigate to={defaultPage} replace/>}/>
@@ -23,7 +22,7 @@ function App() {
                     <Route path="*" element={<Navigate to="/not-found" replace/>}/>
                 </Routes>
             </div>
-        </AppContext.Provider>
+        </AppContextProvider>
     );
 }
 
