@@ -7,8 +7,13 @@ import {AppContext} from "../../context/context";
 function UserSwitch() {
     const storage = new AppStorage();
     const context = useContext(AppContext);
-    const users = Array.from(new Set([storage.currentUser(), ...context.users]))
+    const users = Array.from(new Set([storage.currentUser(), ...context.users].filter(user => !!user)))
     const color = '#E80F88';
+
+    if (!users.length) {
+        return null;
+    }
+
     return (
         <div className={styles.container}>
             <Select

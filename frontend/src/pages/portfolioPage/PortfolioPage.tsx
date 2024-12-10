@@ -25,7 +25,7 @@ function PortfolioPage() {
     }, [fetchPortfolios]);
 
     return (
-        <Page title={"Twoje akcyjki"}>
+        <Page title={"Twoje akcyjki"} showUserSwitch={true}>
             <div className={styles.container}>
                 <ConfirmationBar onSave={() => onSave()} onCancel={() => onCancel()}/>
             </div>
