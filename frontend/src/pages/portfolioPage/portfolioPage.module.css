@@ -5,3 +5,8 @@
     align-items: center;
     flex: 1;
 }
+
+.portfolioLine {
+    display: flex;
+    flex-direction: row;
+}

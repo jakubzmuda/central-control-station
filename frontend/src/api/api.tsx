@@ -1,5 +1,6 @@
 import axios from "axios";
 import AppStorage from "../storage/appStorage";
+import {PortfolioEntry} from "../types/types";
 
 export default class Api {
 
@@ -48,6 +49,3 @@ export default class Api {
     }
 }
 
-type PortfolioEntry = {
-
-}
