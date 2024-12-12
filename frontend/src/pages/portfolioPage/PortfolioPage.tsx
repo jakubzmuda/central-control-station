@@ -37,7 +37,7 @@ function PortfolioPage() {
                     <div className={styles.amountContainer}>
                         <input className={styles.amount} value={entry.amount} onChange={e => updateAmount(entry.key, e.target.value)}/>
                     </div>
-                    <div className={styles.binContainer} onClick={() => deleteEntry(entry.productTicker)}><MdDelete color={"#E80F88"} size={32}/></div>
+                    <div className={styles.binContainer} onClick={() => deleteEntry(entry.key)}><MdDelete color={"#E80F88"} size={32}/></div>
                 </div>
             )}
         </>;
@@ -56,8 +56,8 @@ function PortfolioPage() {
         setPortfolioEntries((prevState) => [...prevState, {productTicker: '', amount: "0", key: Math.random().toString(36).substr(2, 9)}])
     }
 
-    function deleteEntry(ticker: string) {
-        setPortfolioEntries((prevState) => [...prevState].filter(entry => entry.productTicker !== ticker))
+    function deleteEntry(key: string) {
+        setPortfolioEntries((prevState) => [...prevState].filter(entry => entry.key !== key))
     }
 
     function updateTicker(key: string, newTicker: string) {
