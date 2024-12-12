@@ -9,4 +9,39 @@
 .portfolioLine {
     display: flex;
     flex-direction: row;
+    margin-bottom: 8px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.productTickerContainer {
+    height: 100%;
+    display: flex;
+    flex: 6;
+}
+
+.productTicker {
+    height: 100%;
+    display: flex;
+    margin-right: 8px;
+    width: 100%;
+}
+
+.amountContainer {
+    display: flex;
+    height: 100%;
+    flex: 4;
+}
+
+.amount {
+    height: 100%;
+    width: 100%;
+}
+
+.binContainer {
+    margin-left: 8px;
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
 }
