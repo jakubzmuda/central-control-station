@@ -4,7 +4,7 @@ import {PortfolioEntry} from "../types/types";
 
 export default class Api {
 
-    constructor(private setUsers: Function, private setPortfolios: Function) {
+    constructor(private setUsers: Function, private setPortfolios: Function, private setErrorMessage: Function) {
     }
 
     private axiosInstance = axios.create({
@@ -22,8 +22,8 @@ export default class Api {
             const response = await this.axiosInstance.get('/api/portfolios', { headers: { 'Authorization': this.authHeader() } });
             this.setPortfolios(response.data);
             this.setUsers([...Object.keys(response.data.portfolios)]);
-        } catch (error) {
-            console.error('Error fetching user data:', error);
+        } catch (error: any) {
+            this.setErrorMessage(`Mamy problemik z załadowaniem portfolio \n ${error.message}`)
             throw error;
         }
     }
@@ -33,8 +33,8 @@ export default class Api {
             const request = {entries: portfolioEntries};
             const response = await this.axiosInstance.put(`/api/portfolios/${this.storage.currentUser()}`, request,{ headers: { 'Authorization': this.authHeader() } });
             return response.data;
-        } catch (error) {
-            console.error('Error fetching user data:', error);
+        } catch (error: any) {
+            this.setErrorMessage(`Nie dało rady zapisać portfolio \n ${error.message}`)
             throw error;
         }
     }
