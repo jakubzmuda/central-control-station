@@ -97,6 +97,7 @@ function PortfolioPage() {
 
     async function onSave() {
         await context.api.savePortfolio(portfolioEntries.map(e => ({productTicker: e.productTicker, amount: parseFloat(e.amount)})));
+        navigate('/forecast')
     }
 
     function randomKey() {
