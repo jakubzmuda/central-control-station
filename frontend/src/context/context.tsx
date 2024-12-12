@@ -5,7 +5,7 @@ import {Portfolio} from "../types/types";
 type ContextType = Context<{
     api: Api,
     users: string[],
-    portfolios:  Portfolio[],
+    portfolios: { [key: string]: Portfolio },
     errorMessage: string
 }>;
 
@@ -15,7 +15,7 @@ export const AppContext: ContextType = createContext(undefined);
 
 export const AppContextProvider = ({children}) => {
     const [users, setUsers] = useState([]);
-    const [portfolios, setPortfolios] = useState([]);
+    const [portfolios, setPortfolios] = useState({});
     const [errorMessage, setErrorMessage] = useState('');
     const [api] = useState(new Api(setUsers, setPortfolios, setErrorMessage));
 
