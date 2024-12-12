@@ -22,9 +22,16 @@
 
 .productTicker {
     height: 100%;
-    display: flex;
     margin-right: 8px;
     width: 100%;
+    background-color: #1e1e1e;
+    color: #fff;
+    border: none;
+    padding: 8px;
+}
+
+.productTicker:focus {
+    outline: none;
 }
 
 .amountContainer {
@@ -36,6 +43,14 @@
 .amount {
     height: 100%;
     width: 100%;
+    background-color: #1e1e1e;
+    color: #fff;
+    border: none;
+    padding: 8px;
+}
+
+.amount:focus {
+    outline: none;
 }
 
 .binContainer {
