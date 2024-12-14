@@ -4,6 +4,7 @@ import com.github.jakubzmuda.centralControlStation.investments.domain.currency.C
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.MonetaryValue;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.ActualDistribution;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.ActualDistributions;
+import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.DistributionId;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -21,12 +22,12 @@ public class ActualDistributionsTest {
 
     @Test
     public void shouldSortByExDate() {
-        MonetaryValue someValue = MonetaryValue.of(Currency.USD, 1f);
+        MonetaryValue someValue = MonetaryValue.of(1f, Currency.USD);
         String someProduct = "aapl";
         var actualDistributions = new ActualDistributions(List.of(
-                new ActualDistribution(someProduct, someValue).withExDate(LocalDate.parse("2024-02-01")),
-                new ActualDistribution(someProduct, someValue).withExDate(LocalDate.parse("2024-05-01")),
-                new ActualDistribution(someProduct, someValue).withExDate(LocalDate.parse("2024-01-01"))
+                new ActualDistribution(DistributionId.next(), someProduct, someValue).withExDate(LocalDate.parse("2024-02-01")),
+                new ActualDistribution(DistributionId.next(), someProduct, someValue).withExDate(LocalDate.parse("2024-05-01")),
+                new ActualDistribution(DistributionId.next(), someProduct, someValue).withExDate(LocalDate.parse("2024-01-01"))
         ));
 
         assertThat(actualDistributions.last().get().exDate()).isEqualTo("2024-05-01");

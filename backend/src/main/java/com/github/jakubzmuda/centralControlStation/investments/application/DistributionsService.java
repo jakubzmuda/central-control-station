@@ -3,33 +3,30 @@ package com.github.jakubzmuda.centralControlStation.investments.application;
 import com.github.jakubzmuda.centralControlStation.core.application.NotFoundException;
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.MonetaryValue;
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.Month;
-import com.github.jakubzmuda.centralControlStation.investments.domain.currency.Currency;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.*;
 import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.Portfolio;
 import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.CurrentUser;
-import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.DistributionId;
 import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.UserId;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
 public class DistributionsService {
 
     private PortfoliosService portfoliosApplication;
-    private AmericanDistributionsDataSupplier americanDistributionsDataSupplier;
+    private DistributionRepository distributionRepository;
     private CurrentUser currentUser;
 
     public DistributionsService(
             PortfoliosService portfoliosApplication,
-            AmericanDistributionsDataSupplier americanDistributionsDataSupplier,
+            DistributionRepository distributionRepository,
             CurrentUser currentUser) {
         this.portfoliosApplication = portfoliosApplication;
-        this.americanDistributionsDataSupplier = americanDistributionsDataSupplier;
+        this.distributionRepository = distributionRepository;
         this.currentUser = currentUser;
     }
 
@@ -46,6 +43,10 @@ public class DistributionsService {
                 .stream()
                 .map(portfolioEntry -> {
                     ActualDistributions distributionsForProduct = distributions.forProduct(portfolioEntry.productTicker());
+
+                    if (distributionsForProduct.distributionList().isEmpty()) {
+                        return new ArrayList<ForecastedDistribution>();
+                    }
 
                     MonetaryValue lastDistributionAmount = distributionsForProduct
                             .last()
@@ -80,7 +81,7 @@ public class DistributionsService {
         return portfolio
                 .entries()
                 .stream()
-                .map(entry -> americanDistributionsDataSupplier.acquireDistributionHistoryForTicker(entry.productTicker()))
+                .map(entry -> new ActualDistributions(distributionRepository.findByProductTicker(entry.productTicker())))
                 .reduce(ActualDistributions::addAll)
                 .orElse(ActualDistributions.empty());
     }

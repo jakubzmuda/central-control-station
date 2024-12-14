@@ -44,7 +44,7 @@ public class AmericanStockAmericanDistributionsDataSupplier implements AmericanD
                 .map(entry -> new ActualDistribution(
                         DistributionId.next(),
                         productTicker,
-                        MonetaryValue.of(Currency.USD, Float.parseFloat(entry.attributes().amount())))
+                        MonetaryValue.of(Float.parseFloat(entry.attributes().amount()), Currency.USD))
                         .withExDate(LocalDate.parse(entry.attributes().exDate()))
                         .withDeclareDate(LocalDate.parse(entry.attributes().declareDate()))
                         .withPayDate(LocalDate.parse(entry.attributes().payDate()))

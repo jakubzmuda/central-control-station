@@ -18,7 +18,7 @@ public class MonetaryValue {
         this.amount = amount;
     }
 
-    public static MonetaryValue of(Currency currency, float amount) {
+    public static MonetaryValue of(float amount, Currency currency) {
         return new MonetaryValue(currency, amount);
     }
 

@@ -27,7 +27,7 @@ public class ApiTest {
     protected Database database;
 
     @Autowired
-    protected DistributionsDataProviderHelper distributionsHelper;
+    protected DistributionsHelper distributionsHelper;
 
     @Autowired
     protected CurrencyRatesDataProviderHelper currencyDataProviderHelper;

@@ -82,10 +82,10 @@ class StubbedProductDistributions {
 
     private ActualDistributions archicomDistributions() {
         return new ActualDistributions(List.of(
-                new ActualDistribution(DistributionId.next(), "archicom", MonetaryValue.of(Currency.PLN, 1.41f))
+                new ActualDistribution(DistributionId.next(), "archicom", MonetaryValue.of(1.41f, Currency.PLN))
                         .withExDate(LocalDate.parse("2024-10-29"))
                         .withPayDate(LocalDate.parse("2024-11-07")),
-                new ActualDistribution(DistributionId.next(), "archicom", MonetaryValue.of(Currency.PLN, 0.64f))
+                new ActualDistribution(DistributionId.next(), "archicom", MonetaryValue.of(0.64f, Currency.PLN))
                         .withExDate(LocalDate.parse("2024-07-09"))
                         .withPayDate(LocalDate.parse("2024-07-25"))
         ));
@@ -93,10 +93,10 @@ class StubbedProductDistributions {
 
     private ActualDistributions domdevDistributions() {
         return new ActualDistributions(List.of(
-                new ActualDistribution(DistributionId.next(), "domdev", MonetaryValue.of(Currency.PLN, 6f))
+                new ActualDistribution(DistributionId.next(), "domdev", MonetaryValue.of( 6f, Currency.PLN))
                         .withExDate(LocalDate.parse("2024-12-10"))
                         .withPayDate(LocalDate.parse("2024-12-18")),
-                new ActualDistribution(DistributionId.next(), "domdev", MonetaryValue.of(Currency.PLN, 6.5f))
+                new ActualDistribution(DistributionId.next(), "domdev", MonetaryValue.of(6.5f, Currency.PLN))
                         .withExDate(LocalDate.parse("2024-06-24"))
                         .withPayDate(LocalDate.parse("2024-07-04"))
         ));
