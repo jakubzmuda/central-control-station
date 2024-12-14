@@ -6,7 +6,8 @@ import com.github.jakubzmuda.centralControlStation.investments.domain.currency.C
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.MonetaryValue;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.ActualDistribution;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.ActualDistributions;
-import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.DistributionsDataSupplier;
+import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.AmericanDistributionsDataSupplier;
+import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.DistributionId;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -19,11 +20,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class CombinedDistributionsDataSupplier implements DistributionsDataSupplier {
+public class AmericanStockAmericanDistributionsDataSupplier implements AmericanDistributionsDataSupplier {
 
     private OkHttpClient client;
     private ObjectMapper objectMapper;
-    private StubbedProductDistributions StubbedProductDistributions = new StubbedProductDistributions();
 
     @Value("${application.seekingAlpha.url}")
     private String seekingAlphaUrl;
@@ -31,22 +31,18 @@ public class CombinedDistributionsDataSupplier implements DistributionsDataSuppl
     @Value("${application.seekingAlpha.port}")
     private String seekingAlphaPort;
 
-    public CombinedDistributionsDataSupplier(OkHttpClient client, ObjectMapper objectMapper) {
+    public AmericanStockAmericanDistributionsDataSupplier(OkHttpClient client, ObjectMapper objectMapper) {
         this.client = client;
         this.objectMapper = objectMapper;
     }
 
-    public ActualDistributions acquireLastYearDistributions(String productTicker) {
-        Optional<ActualDistributions> maybeStubbedDistributions = StubbedProductDistributions.get(productTicker);
-        if (maybeStubbedDistributions.isPresent()) {
-            return maybeStubbedDistributions.get();
-        }
-
+    public ActualDistributions acquireDistributionHistoryForTicker(String productTicker) {
         ProviderDistributionsResponse distributionsResponse = acquireDataFromExternalService(productTicker);
 
         return new ActualDistributions(distributionsResponse.data
                 .stream()
                 .map(entry -> new ActualDistribution(
+                        DistributionId.next(),
                         productTicker,
                         MonetaryValue.of(Currency.USD, Float.parseFloat(entry.attributes().amount())))
                         .withExDate(LocalDate.parse(entry.attributes().exDate()))
@@ -58,6 +54,7 @@ public class CombinedDistributionsDataSupplier implements DistributionsDataSuppl
 
     private ProviderDistributionsResponse acquireDataFromExternalService(String productTicker) {
         String url = String.format("%s:%s/api/v3/symbols/%s/dividend_history?years=0", seekingAlphaUrl, seekingAlphaPort, productTicker);
+
 
         Request request = new Request.Builder()
                 .url(url)

@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useCallback, useContext, useEffect} from "react";
 import Page from "../../components/page/page";
 import styles from "./forecastPage.module.css"
 import {useNavigate} from "react-router-dom";
@@ -11,14 +11,39 @@ function ForecastPage() {
     const context = useContext(AppContext);
     const navigate = useNavigate();
 
+    const fetchForecast = useCallback(async () => {
+        try {
+            const portfolios = await context.api.fetchForecast();
+        } catch (e: any) {
+            if (e.status === 401) {
+                navigate('/no-access');
+            }
+        }
+    }, [context.api, navigate]);
+
+    useEffect(() => {
+        fetchForecast();
+    }, [fetchForecast]);
 
     return (
         <Page title={"Twoje przychody"} showUserSwitch={true}>
             <div className={styles.container}>
-                Hej
+                {renderForecast()}
             </div>
         </Page>
     );
+
+
+    function renderForecast() {
+        if (context.forecast) {
+            console.log(context.forecast)
+            return <div className={styles.forecastContainer}>
+                <div>Twój roczny przychód</div>
+                <div>{context.forecast.yearlyForecast.total["USD"]} USD</div>
+            </div>
+        }
+        return "ładuję"
+    }
 
 
 }

@@ -1,12 +1,17 @@
 package com.github.jakubzmuda.centralControlStation.investments.domain.core;
 
 import com.github.jakubzmuda.centralControlStation.investments.domain.currency.Currency;
+import jakarta.persistence.Embeddable;
 
 import java.util.Objects;
 
+@Embeddable
 public class MonetaryValue {
     private Currency currency;
     private float amount;
+
+    private MonetaryValue() {
+    }
 
     public MonetaryValue(Currency currency, float amount) {
         this.currency = currency;

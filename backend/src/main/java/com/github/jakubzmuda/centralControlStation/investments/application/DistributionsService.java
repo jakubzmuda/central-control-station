@@ -3,29 +3,33 @@ package com.github.jakubzmuda.centralControlStation.investments.application;
 import com.github.jakubzmuda.centralControlStation.core.application.NotFoundException;
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.MonetaryValue;
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.Month;
+import com.github.jakubzmuda.centralControlStation.investments.domain.currency.Currency;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.*;
 import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.Portfolio;
 import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.CurrentUser;
+import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.DistributionId;
 import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.UserId;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
 public class DistributionsService {
 
     private PortfoliosService portfoliosApplication;
-    private DistributionsDataSupplier distributionsDataSupplier;
+    private AmericanDistributionsDataSupplier americanDistributionsDataSupplier;
     private CurrentUser currentUser;
 
     public DistributionsService(
             PortfoliosService portfoliosApplication,
-            DistributionsDataSupplier distributionsDataSupplier,
+            AmericanDistributionsDataSupplier americanDistributionsDataSupplier,
             CurrentUser currentUser) {
         this.portfoliosApplication = portfoliosApplication;
-        this.distributionsDataSupplier = distributionsDataSupplier;
+        this.americanDistributionsDataSupplier = americanDistributionsDataSupplier;
         this.currentUser = currentUser;
     }
 
@@ -76,7 +80,7 @@ public class DistributionsService {
         return portfolio
                 .entries()
                 .stream()
-                .map(entry -> distributionsDataSupplier.acquireLastYearDistributions(entry.productTicker()))
+                .map(entry -> americanDistributionsDataSupplier.acquireDistributionHistoryForTicker(entry.productTicker()))
                 .reduce(ActualDistributions::addAll)
                 .orElse(ActualDistributions.empty());
     }

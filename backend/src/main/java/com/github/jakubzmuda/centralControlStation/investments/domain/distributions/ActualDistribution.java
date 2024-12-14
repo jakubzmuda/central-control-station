@@ -1,11 +1,19 @@
 package com.github.jakubzmuda.centralControlStation.investments.domain.distributions;
 
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.MonetaryValue;
+import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.DistributionId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
+@Entity
 public class ActualDistribution {
+
+    @Id
+    private DistributionId id;
+
     private String productTicker;
     private MonetaryValue monetaryValue;
     private LocalDate exDate;
@@ -13,7 +21,11 @@ public class ActualDistribution {
     private LocalDate payDate;
     private LocalDate recordDate;
 
-    public ActualDistribution(String productTicker, MonetaryValue monetaryValue) {
+    private ActualDistribution() {
+    }
+
+    public ActualDistribution(DistributionId distributionId, String productTicker, MonetaryValue monetaryValue) {
+        this.id = distributionId;
         this.productTicker = productTicker;
         this.monetaryValue = monetaryValue;
     }
@@ -33,7 +45,7 @@ public class ActualDistribution {
 
     @Override
     public String toString() {
-        return "Distribution{" +
+        return "ActualDistribution{" +
                 "source='" + productTicker + '\'' +
                 ", monetaryValue=" + monetaryValue +
                 ", exDate=" + exDate +

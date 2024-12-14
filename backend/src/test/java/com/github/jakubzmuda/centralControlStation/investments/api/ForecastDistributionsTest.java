@@ -6,6 +6,7 @@ import com.github.jakubzmuda.centralControlStation.core.rest.Response;
 import com.github.jakubzmuda.centralControlStation.core.rest.ResponseStatus;
 import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.Portfolio;
 import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.PortfolioEntry;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -15,6 +16,7 @@ import java.util.Map;
 
 import static com.github.jakubzmuda.centralControlStation.core.rest.ResponseStatus.OK;
 import static com.github.jakubzmuda.centralControlStation.core.rest.RestAssertions.assertThat;
+
 
 public class ForecastDistributionsTest extends ApiTest {
 
@@ -188,6 +190,11 @@ public class ForecastDistributionsTest extends ApiTest {
         // It might look like it doesn't add up from previous assertions. That's because polish stock distributions are stubbed for now.
         assertThat(responseBody.yearlyForecast.total.get("PLN")).isEqualTo(60f);
         assertThat(responseBody.yearlyForecast.total.get("USD")).isEqualTo(2.5f);
+    }
+
+    @Test
+    public void should_skip_portfolio_entry_without_distributions_history() {
+        // TODO
     }
 
 
