@@ -56,7 +56,7 @@ function ForecastPage() {
     function renderEarningSummary(label: string, amount: number = 0) {
         return <div className={styles.earningsSummary}>
             <div className={styles.earningsLabel}>{label}</div>
-            <div className={styles.earningsAmount}>{parseFloat(amount.toFixed(2))} USD</div>
+            <div className={styles.earningsAmount}>{parseFloat(amount.toFixed(2))} zł</div>
         </div>
     }
 

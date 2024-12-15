@@ -54,8 +54,9 @@ export default class Api {
     async fetchCurrencyRates() {
         try {
             const response = await this.axiosInstance.get(`/api/currency-rates`,{ headers: { 'Authorization': this.authHeader() } });
-            this.setCurrencyRates(response.data);
-            return response.data;
+            const rates = response.data.rates;
+            this.setCurrencyRates(rates);
+            return rates;
         } catch (error: any) {
             this.setErrorMessage(`Nie udało się pobrać kursów walut. \n ${error.message}`)
             throw error;
