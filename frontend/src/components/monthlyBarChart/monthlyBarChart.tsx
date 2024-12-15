@@ -2,79 +2,50 @@ import React from "react";
 import {Bar} from "react-chartjs-2";
 import {BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip,} from 'chart.js';
 import {MonthlyBarChartColors} from "./monthlyBarChartColors";
+import {YearlyForecast} from "../../types/types";
 
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Legend, Title, Tooltip);
 
-function MonthlyBarChart() {
+function MonthlyBarChart({forecast}: { forecast: YearlyForecast }) {
     return (
         // @ts-ignore
-        <Bar data={data()} options={options()} plugins={[stackSumPlugin]}/>
+        <Bar data={data(forecast)} options={options()} plugins={[stackSumPlugin]}/>
     );
 
-    function data() {
-        const labels = months();
+    function data(forecast: YearlyForecast) {
+        const labels = Object.keys(forecast.months);
 
-        const colors = new MonthlyBarChartColors();
+        const productDataMap: { [product: string]: number[] } = {};
 
-        const productAColor = colors.next();
-        const productBColor = colors.next();
-        const productCColor = colors.next();
-        if (productAColor && productBColor && productCColor) {
-            return {
-                labels: labels,
-                datasets: [
-                    {
-                        label: 'Product A',
-                        data: [300, 500, 700, 400, 600],
-                        backgroundColor: productAColor.background,
-                        borderColor: productAColor.border,
-                        borderWidth: 1,
-                        stack: 'stack1',
-                    },
-                    {
-                        label: 'Product B',
-                        data: [200, 400, 600, 300, 500],
-                        backgroundColor: productBColor.background,
-                        borderColor: productBColor.border,
-                        borderWidth: 1,
-                        stack: 'stack1',
-                    },
-                    {
-                        label: 'Product C',
-                        data: [100, 300, 400, 200, 300],
-                        backgroundColor: productCColor.background,
-                        borderColor: productCColor.border,
-                        borderWidth: 1,
-                        stack: 'stack1',
-                    },
-                    {
-                        label: 'Product D',
-                        data: [100, 300, 400, 200, 300],
-                        backgroundColor: colors.next(),
-                        stack: 'stack1',
-                    },
-                    {
-                        label: 'Product E',
-                        data: [100, 300, 400, 200, 300],
-                        backgroundColor: colors.next(),
-                        stack: 'stack1',
-                    },
-                    {
-                        label: 'Product F',
-                        data: [100, 300, 400, 200, 300],
-                        backgroundColor: colors.next(),
-                        stack: 'stack1',
-                    },
-                    {
-                        label: 'Product G',
-                        data: [100, 300, 400, 200, 300],
-                        backgroundColor: colors.next(),
-                        stack: 'stack1',
-                    },
-                ],
-            };
-        }
+        Object.entries(forecast.months).forEach(([monthKey, monthData]) => {
+            Object.values(monthData.distributions).forEach((distribution) => {
+                if (!productDataMap[distribution.product]) {
+                    productDataMap[distribution.product] = Array(labels.length).fill(0);
+                }
+
+                const monthIndex = labels.indexOf(monthKey);
+                productDataMap[distribution.product][monthIndex] = distribution.monetaryValue["USD"]
+            });
+        });
+
+        const barChartColors = new MonthlyBarChartColors();
+
+        const datasets = Object.entries(productDataMap).map(([product, data], index) => {
+            const colors = barChartColors.next();
+            return ({
+                label: product,
+                data,
+                backgroundColor: colors?.background,
+                borderColor: colors?.border,
+                borderWidth: 1,
+            });
+        });
+
+        return {
+            labels,
+            datasets
+        };
     }
 
     function options() {
@@ -138,7 +109,7 @@ function MonthlyBarChart() {
 const stackSumPlugin = {
     id: 'stackSumPlugin',
     beforeDraw(chart) {
-        const { ctx, scales: { x, y } } = chart;
+        const {ctx, scales: {x, y}} = chart;
 
         chart.data.labels.forEach((label, index) => {
             let total = 0;
@@ -150,7 +121,7 @@ const stackSumPlugin = {
             const xPosition = x.getPixelForValue(index);
             const yPosition = y.getPixelForValue(total);
 
-            if(total > 0) {
+            if (total > 0) {
                 ctx.save();
                 ctx.fillStyle = '#fff';
                 ctx.font = '9px Arial';

@@ -62,9 +62,11 @@ function ForecastPage() {
     }
 
     function renderChart() {
-        return <div className={styles.chartContainer}>
-            <MonthlyBarChart />
-        </div>
+        if (context.forecast) {
+            return <div className={styles.chartContainer}>
+                <MonthlyBarChart forecast={context.forecast?.yearlyForecast}/>
+            </div>
+        }
     }
 
     function yearlyEarnings() {
