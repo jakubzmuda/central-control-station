@@ -15,7 +15,7 @@ function ForecastPage() {
             await context.api.fetchForecast();
         } catch (e: any) {
             if (e.status === 401) {
-                navigate('/no-access');
+                navigate('./no-access');
             }
         }
     }, [context.api, navigate]);
@@ -25,7 +25,7 @@ function ForecastPage() {
             await context.api.fetchCurrencyRates();
         } catch (e: any) {
             if (e.status === 401) {
-                navigate('/no-access');
+                navigate('./no-access');
             }
         }
     }, [context.api, navigate]);

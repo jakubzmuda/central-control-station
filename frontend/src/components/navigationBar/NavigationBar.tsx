@@ -9,13 +9,13 @@ function NavigationBar() {
 
     return (
         <div className={styles.container}>
-            <div className={styles.navigationItem} onClick={() => navigate('/portfolio')}>
+            <div className={styles.navigationItem} onClick={() => navigate('./portfolio')}>
                 <MdWorkOutline size={24} color={"#E80F88"}/>
             </div>
-            <div className={styles.navigationItem} onClick={() => navigate('/forecast')}>
+            <div className={styles.navigationItem} onClick={() => navigate('./forecast')}>
                 <MdAttachMoney size={24} color={"#E80F88"}/>
             </div>
-            <div className={styles.navigationItem} onClick={() => navigate('/login')}>
+            <div className={styles.navigationItem} onClick={() => navigate('./login')}>
                 <MdLogin size={24} color={"#E80F88"}/>
             </div>
         </div>

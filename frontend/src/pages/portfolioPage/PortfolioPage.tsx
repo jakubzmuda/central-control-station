@@ -25,7 +25,7 @@ function PortfolioPage() {
             })));
         } catch (e: any) {
             if (e.status === 401) {
-                navigate('/no-access');
+                navigate('./no-access');
             }
         }
     }, [context.api, navigate]);
@@ -92,12 +92,12 @@ function PortfolioPage() {
     }
 
     function onCancel() {
-        navigate('/')
+        navigate('./')
     }
 
     async function onSave() {
         await context.api.savePortfolio(portfolioEntries.map(e => ({productTicker: e.productTicker, amount: parseFloat(e.amount)})));
-        navigate('/forecast')
+        navigate('./forecast')
     }
 
     function randomKey() {
