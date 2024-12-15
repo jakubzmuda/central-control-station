@@ -28,3 +28,8 @@
 .earningsAmount {
     color: var(--main-green)
 }
+
+.chartContainer {
+    margin-top: 32px;
+    width: 100%;
+}

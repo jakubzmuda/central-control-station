@@ -3,6 +3,8 @@ import Page from "../../components/page/page";
 import styles from "./forecastPage.module.css"
 import {useNavigate} from "react-router-dom";
 import {AppContext} from "../../context/context";
+import {Bar} from "react-chartjs-2";
+import MonthlyBarChart from "../../components/monthlyBarChart/monthlyBarChart";
 
 function ForecastPage() {
 
@@ -38,10 +40,10 @@ function ForecastPage() {
         <Page title={"Twoje przychody"} showUserSwitch={true}>
             <div className={styles.container}>
                 {renderForecast()}
+                {renderChart()}
             </div>
         </Page>
     );
-
 
     function renderForecast() {
         if (context.forecast) {
@@ -57,6 +59,12 @@ function ForecastPage() {
         return <div className={styles.earningsSummary}>
             <div className={styles.earningsLabel}>{label}</div>
             <div className={styles.earningsAmount}>{parseFloat(amount.toFixed(2))} zł</div>
+        </div>
+    }
+
+    function renderChart() {
+        return <div className={styles.chartContainer}>
+            <MonthlyBarChart />
         </div>
     }
 
