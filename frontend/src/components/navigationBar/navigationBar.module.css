@@ -9,6 +9,7 @@
     background-color: #202020;
     position: absolute;
     bottom: 0;
+    max-width: 512px;
 }
 
 .appName {
