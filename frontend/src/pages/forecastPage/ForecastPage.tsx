@@ -3,7 +3,6 @@ import Page from "../../components/page/page";
 import styles from "./forecastPage.module.css"
 import {useNavigate} from "react-router-dom";
 import {AppContext} from "../../context/context";
-import {Bar} from "react-chartjs-2";
 import MonthlyBarChart from "../../components/monthlyBarChart/monthlyBarChart";
 
 function ForecastPage() {

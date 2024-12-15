@@ -1,8 +1,7 @@
 import React from "react";
 import styles from './navigationBar.module.css';
-import MenuButton from "../menuButton/menuButton";
 import {useNavigate} from "react-router-dom";
-import {MdAttachMoney, MdLogin, MdMood, MdWorkOutline} from "react-icons/md";
+import {MdAttachMoney, MdLogin, MdWorkOutline} from "react-icons/md";
 
 function NavigationBar() {
 
@@ -21,7 +20,6 @@ function NavigationBar() {
             </div>
         </div>
     );
-
 }
 
 export default NavigationBar;
