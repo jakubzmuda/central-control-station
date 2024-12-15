@@ -7,7 +7,7 @@ import {AppContext} from "../../context/context";
 function UserSwitch() {
     const storage = new AppStorage();
     const context = useContext(AppContext);
-    const users = Array.from(new Set([storage.currentUser(), ...context.users].filter(user => !!user)))
+    const users = Array.from(new Set([storage.currentUser(), ...context.users].filter(user => !!user))).map(user => capitalize(user))
     const color = '#E80F88';
 
     if (!users.length) {
@@ -17,10 +17,10 @@ function UserSwitch() {
     return (
         <div className={styles.container}>
             <Select
-                value={storage.currentUser()}
+                value={capitalize(storage.currentUser())}
                 label="Członek"
                 onChange={(event) => {
-                    storage.setCurrentUser(event.target.value);
+                    storage.setCurrentUser(event.target.value.toLowerCase());
                 }}
                 MenuProps={{
                     PaperProps: {
@@ -75,6 +75,10 @@ function UserSwitch() {
             </Select>
         </div>
     );
+
+    function capitalize(str: string) {
+        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+    }
 }
 
 export default UserSwitch;
