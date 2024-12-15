@@ -1,6 +1,7 @@
 import React from "react";
 import {Bar} from "react-chartjs-2";
 import {BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip,} from 'chart.js';
+import {MonthlyBarChartColors} from "./monthlyBarChartColors";
 
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Legend, Title, Tooltip);
@@ -13,53 +14,67 @@ function MonthlyBarChart() {
 
     function data() {
         const labels = months();
-        return {
-            labels: labels,
-            datasets: [
-                {
-                    label: 'Product A',
-                    data: [300, 500, 700, 400, 600],
-                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                    stack: 'stack1',
-                },
-                {
-                    label: 'Product B',
-                    data: [200, 400, 600, 300, 500],
-                    backgroundColor: 'rgba(153, 102, 255, 0.6)',
-                    stack: 'stack1',
-                },
-                {
-                    label: 'Product C',
-                    data: [100, 300, 400, 200, 300],
-                    backgroundColor: 'rgba(255, 159, 64, 0.6)',
-                    stack: 'stack1',
-                },
-                {
-                    label: 'Product D',
-                    data: [100, 300, 400, 200, 300],
-                    backgroundColor: 'rgba(67,45,23,0.6)',
-                    stack: 'stack1',
-                },
-                {
-                    label: 'Product E',
-                    data: [100, 300, 400, 200, 300],
-                    backgroundColor: 'rgba(207,26,94,0.6)',
-                    stack: 'stack1',
-                },
-                {
-                    label: 'Product F',
-                    data: [100, 300, 400, 200, 300],
-                    backgroundColor: 'rgba(0,118,253,0.6)',
-                    stack: 'stack1',
-                },
-                {
-                    label: 'Product G',
-                    data: [100, 300, 400, 200, 300],
-                    backgroundColor: 'rgba(34,255,0,0.6)',
-                    stack: 'stack1',
-                },
-            ],
-        };
+
+        const colors = new MonthlyBarChartColors();
+
+        const productAColor = colors.next();
+        const productBColor = colors.next();
+        const productCColor = colors.next();
+        if (productAColor && productBColor && productCColor) {
+            return {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Product A',
+                        data: [300, 500, 700, 400, 600],
+                        backgroundColor: productAColor.background,
+                        borderColor: productAColor.border,
+                        borderWidth: 1,
+                        stack: 'stack1',
+                    },
+                    {
+                        label: 'Product B',
+                        data: [200, 400, 600, 300, 500],
+                        backgroundColor: productBColor.background,
+                        borderColor: productBColor.border,
+                        borderWidth: 1,
+                        stack: 'stack1',
+                    },
+                    {
+                        label: 'Product C',
+                        data: [100, 300, 400, 200, 300],
+                        backgroundColor: productCColor.background,
+                        borderColor: productCColor.border,
+                        borderWidth: 1,
+                        stack: 'stack1',
+                    },
+                    {
+                        label: 'Product D',
+                        data: [100, 300, 400, 200, 300],
+                        backgroundColor: colors.next(),
+                        stack: 'stack1',
+                    },
+                    {
+                        label: 'Product E',
+                        data: [100, 300, 400, 200, 300],
+                        backgroundColor: colors.next(),
+                        stack: 'stack1',
+                    },
+                    {
+                        label: 'Product F',
+                        data: [100, 300, 400, 200, 300],
+                        backgroundColor: colors.next(),
+                        stack: 'stack1',
+                    },
+                    {
+                        label: 'Product G',
+                        data: [100, 300, 400, 200, 300],
+                        backgroundColor: colors.next(),
+                        stack: 'stack1',
+                    },
+                ],
+            };
+        }
     }
 
     function options() {
