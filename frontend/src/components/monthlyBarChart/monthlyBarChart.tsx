@@ -8,7 +8,7 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Legend, Title, Tooltip)
 function MonthlyBarChart() {
     return (
         // @ts-ignore
-        <Bar data={data()} options={options()}/>
+        <Bar data={data()} options={options()} plugins={[stackSumPlugin]}/>
     );
 
     function data() {
@@ -20,19 +20,43 @@ function MonthlyBarChart() {
                     label: 'Product A',
                     data: [300, 500, 700, 400, 600],
                     backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                    stack: 'stack1', // Grouping all datasets into one stack
+                    stack: 'stack1',
                 },
                 {
                     label: 'Product B',
                     data: [200, 400, 600, 300, 500],
                     backgroundColor: 'rgba(153, 102, 255, 0.6)',
-                    stack: 'stack1', // Same stack group
+                    stack: 'stack1',
                 },
                 {
                     label: 'Product C',
                     data: [100, 300, 400, 200, 300],
                     backgroundColor: 'rgba(255, 159, 64, 0.6)',
-                    stack: 'stack1', // Same stack group
+                    stack: 'stack1',
+                },
+                {
+                    label: 'Product D',
+                    data: [100, 300, 400, 200, 300],
+                    backgroundColor: 'rgba(67,45,23,0.6)',
+                    stack: 'stack1',
+                },
+                {
+                    label: 'Product E',
+                    data: [100, 300, 400, 200, 300],
+                    backgroundColor: 'rgba(207,26,94,0.6)',
+                    stack: 'stack1',
+                },
+                {
+                    label: 'Product F',
+                    data: [100, 300, 400, 200, 300],
+                    backgroundColor: 'rgba(0,118,253,0.6)',
+                    stack: 'stack1',
+                },
+                {
+                    label: 'Product G',
+                    data: [100, 300, 400, 200, 300],
+                    backgroundColor: 'rgba(34,255,0,0.6)',
+                    stack: 'stack1',
                 },
             ],
         };
@@ -44,10 +68,19 @@ function MonthlyBarChart() {
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    display: false,
-                },
-                title: {
-                    display: false,
+                    display: true,
+                    position: 'bottom',
+                    labels: {
+                        color: '#fff',
+                        font: {
+                            size: 14,
+                        },
+                        boxWidth: 20,
+                        padding: 10,
+                    },
+                    title: {
+                        display: false,
+                    },
                 },
             },
             scales: {
@@ -86,6 +119,33 @@ function MonthlyBarChart() {
         );
     }
 }
+
+const stackSumPlugin = {
+    id: 'stackSumPlugin',
+    beforeDraw(chart) {
+        const { ctx, scales: { x, y } } = chart;
+
+        chart.data.labels.forEach((label, index) => {
+            let total = 0;
+
+            chart.data.datasets.forEach((dataset) => {
+                total += dataset.data[index] || 0;
+            });
+
+            const xPosition = x.getPixelForValue(index);
+            const yPosition = y.getPixelForValue(total);
+
+            if(total > 0) {
+                ctx.save();
+                ctx.fillStyle = '#fff';
+                ctx.font = '9px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(`${total} zł`, xPosition, yPosition - 12);
+                ctx.restore();
+            }
+        });
+    },
+};
 
 
 export default MonthlyBarChart;
