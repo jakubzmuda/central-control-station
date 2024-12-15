@@ -36,13 +36,31 @@ function ForecastPage() {
 
     function renderForecast() {
         if (context.forecast) {
-            console.log(context.forecast)
-            return <div className={styles.forecastContainer}>
-                <div>Twój roczny przychód</div>
-                <div>{context.forecast.yearlyForecast.total["USD"]} USD</div>
+            return <div className={styles.earningsSummaryContainer}>
+                {renderEarningSummary('Rocznie', yearlyEarnings())}
+                {renderEarningSummary('Miesięcznie', monthlyEarnings())}
             </div>
         }
         return "ładuję"
+    }
+
+    function renderEarningSummary(label: string, amount: number = 0) {
+        return <div className={styles.earningsSummary}>
+            <div className={styles.earningsLabel}>{label}</div>
+            <div className={styles.earningsAmount}>{parseFloat(amount.toFixed(2))} USD</div>
+        </div>
+    }
+
+    function yearlyEarnings() {
+        if (context.forecast) {
+            return context.forecast.yearlyForecast.total["USD"];
+        }
+    }
+
+    function monthlyEarnings() {
+        if (context.forecast) {
+            return context.forecast.yearlyForecast.total["USD"] / 12;
+        }
     }
 
 
