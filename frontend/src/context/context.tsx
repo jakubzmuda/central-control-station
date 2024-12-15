@@ -7,6 +7,7 @@ type ContextType = Context<{
     users: string[],
     portfolios: { [key: string]: Portfolio },
     forecast?: Forecast,
+    currencyRates: {[key: string]: number},
     errorMessage: string
 }>;
 
@@ -21,10 +22,11 @@ export const AppContextProvider = ({children}) => {
     const [portfolios, setPortfolios] = useState({});
     const [forecast, setForecast] = useState<Forecast>(null);
     const [errorMessage, setErrorMessage] = useState('');
-    const [api] = useState(new Api(setUsers, setPortfolios, setErrorMessage, setForecast));
+    const [currencyRates, setCurrencyRates] = useState({});
+    const [api] = useState(new Api(setUsers, setPortfolios, setErrorMessage, setForecast, setCurrencyRates));
 
     return (
-        <AppContext.Provider value={{api: api, users, portfolios, errorMessage, forecast}}>
+        <AppContext.Provider value={{api: api, users, portfolios, errorMessage, forecast, currencyRates}}>
             {children}
         </AppContext.Provider>
     );

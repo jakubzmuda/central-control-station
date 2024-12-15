@@ -3,17 +3,25 @@ import Page from "../../components/page/page";
 import styles from "./forecastPage.module.css"
 import {useNavigate} from "react-router-dom";
 import {AppContext} from "../../context/context";
-import AppStorage from "../../storage/appStorage";
 
 function ForecastPage() {
 
-    const appStorage = new AppStorage();
     const context = useContext(AppContext);
     const navigate = useNavigate();
 
     const fetchForecast = useCallback(async () => {
         try {
-            const portfolios = await context.api.fetchForecast();
+            await context.api.fetchForecast();
+        } catch (e: any) {
+            if (e.status === 401) {
+                navigate('/no-access');
+            }
+        }
+    }, [context.api, navigate]);
+
+    const fetchCurrencyRates = useCallback(async () => {
+        try {
+            await context.api.fetchCurrencyRates();
         } catch (e: any) {
             if (e.status === 401) {
                 navigate('/no-access');
@@ -23,7 +31,8 @@ function ForecastPage() {
 
     useEffect(() => {
         fetchForecast();
-    }, [fetchForecast]);
+        fetchCurrencyRates()
+    }, [fetchForecast, fetchCurrencyRates]);
 
     return (
         <Page title={"Twoje przychody"} showUserSwitch={true}>
@@ -52,15 +61,15 @@ function ForecastPage() {
     }
 
     function yearlyEarnings() {
-        if (context.forecast) {
-            return context.forecast.yearlyForecast.total["USD"];
+        const usdPlnRate = context.currencyRates['USD/PLN'];
+        if (context.forecast && usdPlnRate) {
+            return context.forecast.yearlyForecast.total["USD"] * usdPlnRate;
         }
+        return 0;
     }
 
     function monthlyEarnings() {
-        if (context.forecast) {
-            return context.forecast.yearlyForecast.total["USD"] / 12;
-        }
+        return yearlyEarnings() / 12;
     }
 
 

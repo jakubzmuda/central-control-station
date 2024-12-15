@@ -4,7 +4,7 @@ import {PortfolioEntry} from "../types/types";
 
 export default class Api {
 
-    constructor(private setUsers: Function, private setPortfolios: Function, private setErrorMessage: Function, private setForecast: Function) {
+    constructor(private setUsers: Function, private setPortfolios: Function, private setErrorMessage: Function, private setForecast: Function, private setCurrencyRates: Function) {
     }
 
     private axiosInstance = axios.create({
@@ -47,6 +47,17 @@ export default class Api {
             return response.data;
         } catch (error: any) {
             this.setErrorMessage(`Wołaj starego, nie dało rady podliczyć przychodów \n ${error.message}`)
+            throw error;
+        }
+    }
+
+    async fetchCurrencyRates() {
+        try {
+            const response = await this.axiosInstance.get(`/api/currency-rates`,{ headers: { 'Authorization': this.authHeader() } });
+            this.setCurrencyRates(response.data);
+            return response.data;
+        } catch (error: any) {
+            this.setErrorMessage(`Nie udało się pobrać kursów walut. \n ${error.message}`)
             throw error;
         }
     }

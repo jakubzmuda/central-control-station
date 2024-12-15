@@ -50,6 +50,7 @@ public class NbpCurrencyRatesDataSupplier implements CurrencyRatesDataSupplier {
                     .getFirst()
                     .rates
                     .stream()
+                    .filter(json -> Currency.isSupported(json.code))
                     .collect(Collectors.toMap(
                             rate -> Tuple.of(Currency.of(rate.code), Currency.PLN),
                             rate -> rate.mid

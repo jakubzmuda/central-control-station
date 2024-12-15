@@ -18,6 +18,14 @@ public enum Currency {
         };
     }
 
+    public static boolean isSupported(String code) {
+        return switch (code) {
+            case "USD" -> true;
+            case "PLN" -> true;
+            default -> false;
+        };
+    }
+
     public String symbol() {
         return symbol;
     }
