@@ -1,13 +1,14 @@
 import {Context, createContext, useState} from 'react';
 import Api from "../api/api";
-import {Portfolio, YearlyForecast} from "../types/types";
+import {CurrencyRates, Portfolio, YearlyForecast} from "../types/types";
+
 
 type ContextType = Context<{
     api: Api,
     users: string[],
     portfolios: { [key: string]: Portfolio },
     forecast?: Forecast,
-    currencyRates: {[key: string]: number},
+    currencyRates: CurrencyRates,
     errorMessage: string
 }>;
 

@@ -27,3 +27,5 @@ export interface Distribution {
 }
 
 export type MonetaryValue = { [currency: string]: number }
+
+export type CurrencyRates = { [currencyToCurrency: string]: number };

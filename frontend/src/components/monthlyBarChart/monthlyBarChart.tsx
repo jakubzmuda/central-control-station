@@ -1,13 +1,19 @@
-import React from "react";
+import React, {useContext} from "react";
 import {Bar} from "react-chartjs-2";
 import {BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip,} from 'chart.js';
 import {MonthlyBarChartColors} from "./monthlyBarChartColors";
 import {YearlyForecast} from "../../types/types";
+import {AppContext} from "../../context/context";
+import {MoneyDisplay} from "../../moneyDisplay/MoneyDisplay";
+import {CurrencyConverter} from "../../currency/currencyConverter";
 
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Legend, Title, Tooltip);
 
 function MonthlyBarChart({forecast}: { forecast: YearlyForecast }) {
+
+    const context = useContext(AppContext);
+
     return (
         // @ts-ignore
         <Bar data={data(forecast)} options={options()} plugins={[stackSumPlugin]}/>
@@ -19,13 +25,13 @@ function MonthlyBarChart({forecast}: { forecast: YearlyForecast }) {
         const productDataMap: { [product: string]: number[] } = {};
 
         Object.entries(forecast.months).forEach(([monthKey, monthData]) => {
-            Object.values(monthData.distributions).forEach((distribution) => {
+            Object.values(monthData.distributions.sort((dist1, dist2) => dist2.monetaryValue["USD"] - dist1.monetaryValue["USD"])).forEach((distribution) => {
                 if (!productDataMap[distribution.product]) {
                     productDataMap[distribution.product] = Array(labels.length).fill(0);
                 }
 
                 const monthIndex = labels.indexOf(monthKey);
-                productDataMap[distribution.product][monthIndex] = distribution.monetaryValue["USD"]
+                productDataMap[distribution.product][monthIndex] = new CurrencyConverter().inPln(distribution.monetaryValue, context.currencyRates)
             });
         });
 
@@ -118,9 +124,9 @@ const stackSumPlugin = {
             if (total > 0) {
                 ctx.save();
                 ctx.fillStyle = '#fff';
-                ctx.font = '9px Arial';
+                ctx.font = '8px Arial';
                 ctx.textAlign = 'center';
-                ctx.fillText(`${total} zł`, xPosition, yPosition - 12);
+                ctx.fillText(`${new MoneyDisplay().asString(total)} zł`, xPosition, yPosition - 8);
                 ctx.restore();
             }
         });

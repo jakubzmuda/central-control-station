@@ -19,7 +19,6 @@ import java.util.Map;
 import static com.github.jakubzmuda.centralControlStation.core.rest.ResponseStatus.OK;
 import static com.github.jakubzmuda.centralControlStation.core.rest.RestAssertions.assertThat;
 
-
 public class ForecastDistributionsTest extends ApiTest {
 
     @Test
@@ -199,7 +198,11 @@ public class ForecastDistributionsTest extends ApiTest {
 
         assertThat(responseBody.yearlyForecast.total.get("PLN")).isNull();
         assertThat(responseBody.yearlyForecast.total.get("USD")).isEqualTo(0.552f);
+    }
 
+    @Test
+    public void should_not_duplicate_distributions_in_january() {
+        // TODO - distiributions in January look duplicated
     }
 
     @Test

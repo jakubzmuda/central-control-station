@@ -4,6 +4,8 @@ import styles from "./forecastPage.module.css"
 import {useNavigate} from "react-router-dom";
 import {AppContext} from "../../context/context";
 import MonthlyBarChart from "../../components/monthlyBarChart/monthlyBarChart";
+import {CurrencyConverter} from "../../currency/currencyConverter";
+import {MoneyDisplay} from "../../moneyDisplay/MoneyDisplay";
 
 function ForecastPage() {
 
@@ -15,7 +17,7 @@ function ForecastPage() {
             await context.api.fetchForecast();
         } catch (e: any) {
             if (e.status === 401) {
-                navigate('./no-access');
+                navigate('/no-access');
             }
         }
     }, [context.api, navigate]);
@@ -25,7 +27,7 @@ function ForecastPage() {
             await context.api.fetchCurrencyRates();
         } catch (e: any) {
             if (e.status === 401) {
-                navigate('./no-access');
+                navigate('/no-access');
             }
         }
     }, [context.api, navigate]);
@@ -54,10 +56,10 @@ function ForecastPage() {
         return "ładuję"
     }
 
-    function renderEarningSummary(label: string, amount: number = 0) {
+    function renderEarningSummary(label: string, amount: string) {
         return <div className={styles.earningsSummary}>
             <div className={styles.earningsLabel}>{label}</div>
-            <div className={styles.earningsAmount}>{parseFloat(amount.toFixed(2))} zł</div>
+            <div className={styles.earningsAmount}>{amount} zł</div>
         </div>
     }
 
@@ -70,15 +72,19 @@ function ForecastPage() {
     }
 
     function yearlyEarnings() {
-        const usdPlnRate = context.currencyRates['USD/PLN'];
-        if (context.forecast && usdPlnRate) {
-            return context.forecast.yearlyForecast.total["USD"] * usdPlnRate;
+        if (context.forecast && context.currencyRates["USD/PLN"]) {
+            const amountInPln = new CurrencyConverter().inPln(context.forecast.yearlyForecast.total, context.currencyRates);
+            return new MoneyDisplay().asString(amountInPln)
         }
-        return 0;
+        return "0";
     }
 
     function monthlyEarnings() {
-        return yearlyEarnings() / 12;
+        if (context.forecast && context.currencyRates) {
+            const amountInPln = new CurrencyConverter().inPln(context.forecast.yearlyForecast.total, context.currencyRates);
+            return new MoneyDisplay().asString(amountInPln / 12)
+        }
+        return "0";
     }
 
 

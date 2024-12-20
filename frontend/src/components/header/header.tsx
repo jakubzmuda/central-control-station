@@ -8,7 +8,7 @@ function Header() {
 
     return (
         <div className={styles.header}>
-            <div className={styles.appName} onClick={() => navigate('./')}>Krokiet i przyjaciele</div>
+            <div className={styles.appName} onClick={() => navigate('/')}>Krokiet i przyjaciele</div>
         </div>
     );
 }

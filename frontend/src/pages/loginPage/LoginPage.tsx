@@ -25,7 +25,7 @@ function LoginPage() {
 
     function login() {
         storage.setToken(token);
-        navigate('./portfolio');
+        navigate('/portfolio');
     }
 }
 
