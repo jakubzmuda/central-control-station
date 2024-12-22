@@ -1,3 +1,10 @@
+GET {{baseUrl}}/api/health
+
+
+
+
+###
+
 GET {{baseUrl}}/api/distributions/forecast?user=krokiet
 
 ###
@@ -8,7 +15,7 @@ Authorization: Bearer token
 Content-Type: application/json
 
 {
-    "entries": []
+  "entries": []
 }
 
 ###
