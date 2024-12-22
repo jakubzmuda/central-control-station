@@ -10,7 +10,7 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-      <BrowserRouter basename="/central-control-station">
+      <BrowserRouter>
           <App />
       </BrowserRouter>
   </React.StrictMode>
