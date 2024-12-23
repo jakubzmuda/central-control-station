@@ -1,22 +1,31 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styles from './errorBubble.module.css';
-import {AppContext} from "../../context/context";
+import { AppContext } from "../../context/context";
 
 function ErrorBubble() {
     const context = useContext(AppContext);
     const [isVisible, setIsVisible] = useState(false);
+    const [shouldRender, setShouldRender] = useState(false);
 
     useEffect(() => {
         if (context.errorMessage) {
+            setShouldRender(true);
             setIsVisible(true);
 
             const timer = setTimeout(() => {
                 setIsVisible(false);
+                setTimeout(() => {
+                    setShouldRender(false);
+                }, 500);
             }, 3000);
 
             return () => clearTimeout(timer);
         }
     }, [context.errorMessage]);
+
+    if (!shouldRender) {
+        return null;
+    }
 
     return (
         <div

@@ -19,7 +19,7 @@ export default class Api {
 
     async fetchPortfolios() {
         try {
-            const response = await this.axiosInstance.get('/api/portfolios', { headers: { 'Authorization': this.authHeader() } });
+            const response = await this.axiosInstance.get('/api/portfo111lios', { headers: { 'Authorization': this.authHeader() } });
             this.setPortfolios(response.data.portfolios);
             this.setUsers([...Object.keys(response.data.portfolios)]);
             return response.data.portfolios

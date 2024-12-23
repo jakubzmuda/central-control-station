@@ -16,7 +16,6 @@ function PortfolioPage() {
     const fetchPortfolios = useCallback(async () => {
         try {
             const portfolios = await context.api.fetchPortfolios();
-            console.log('context.currentUser', context.currentUser)
             setPortfolioEntries(portfolios[context.currentUser].entries.map(entry => ({
                 key: randomKey(),
                 productTicker: entry.productTicker,
