@@ -6,10 +6,12 @@ import {AppContext} from "../../context/context";
 import MonthlyBarChart from "../../components/monthlyBarChart/monthlyBarChart";
 import {CurrencyConverter} from "../../currency/currencyConverter";
 import {MoneyDisplay} from "../../moneyDisplay/MoneyDisplay";
+import AppStorage from "../../storage/appStorage";
 
 function ForecastPage() {
 
     const context = useContext(AppContext);
+    const storage = new AppStorage();
     const navigate = useNavigate();
 
     const fetchForecast = useCallback(async () => {
@@ -33,9 +35,28 @@ function ForecastPage() {
     }, [context.api, navigate]);
 
     useEffect(() => {
-        fetchForecast();
         fetchCurrencyRates()
-    }, [fetchForecast, fetchCurrencyRates]);
+    }, [fetchCurrencyRates]);
+
+
+    useEffect(() => {
+        fetchForecast();
+        // eslint-disable-next-line
+    }, [fetchForecast]);
+
+    const fetchPortfolios = useCallback(async () => {
+        try {
+            await context.api.fetchPortfolios();
+        } catch (e: any) {
+            if (e.status === 401) {
+                navigate('/no-access');
+            }
+        }
+    }, [context.api, navigate]);
+
+    useEffect(() => {
+        fetchPortfolios();
+    }, [fetchPortfolios]);
 
     return (
         <Page title={"Twoje przychody"} showUserSwitch={true}>

@@ -9,6 +9,7 @@ export default class AppStorage {
     private currentUserKey = "currentUser";
 
     public currentUser() {
+        console.log('asked', localStorage.getItem(this.currentUserKey))
         const maybeCurrentUser = localStorage.getItem(this.currentUserKey);
         return maybeCurrentUser || this.authenticatedUser();
     }
@@ -29,6 +30,7 @@ export default class AppStorage {
     }
 
     public setCurrentUser(user: string) {
+        console.log('set', user)
         localStorage.setItem(this.currentUserKey, user);
     }
 

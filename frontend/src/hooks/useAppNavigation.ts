@@ -6,7 +6,7 @@ const useAppNavigation = () => {
 
     return useCallback(
         (path: string) => {
-            navigate(`/central-control-station${path}`);
+            navigate(`${path}`);
         }, [navigate]);
 };
 

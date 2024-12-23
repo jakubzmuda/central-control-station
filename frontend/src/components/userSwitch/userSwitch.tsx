@@ -7,7 +7,8 @@ import {AppContext} from "../../context/context";
 function UserSwitch() {
     const storage = new AppStorage();
     const context = useContext(AppContext);
-    const users = Array.from(new Set([storage.currentUser(), ...context.users].filter(user => !!user))).map(user => capitalize(user))
+    const currentUser = storage.currentUser();
+    const users = Array.from(new Set([currentUser, ...context.users].filter(user => !!user))).map(user => capitalize(user))
     const color = '#E80F88';
 
     if (!users.length) {
@@ -17,7 +18,7 @@ function UserSwitch() {
     return (
         <div className={styles.container}>
             <Select
-                value={capitalize(storage.currentUser())}
+                value={capitalize(currentUser)}
                 label="Członek"
                 onChange={(event) => {
                     storage.setCurrentUser(event.target.value.toLowerCase());
