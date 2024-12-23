@@ -5,12 +5,10 @@ import {useNavigate} from "react-router-dom";
 import {AppContext} from "../../context/context";
 import PrimaryButton from "../../components/primaryButton/primaryButton";
 import {MdDelete} from "react-icons/md";
-import AppStorage from "../../storage/appStorage";
 
 /* eslint-disable react-hooks/exhaustive-deps */
 function PortfolioPage() {
 
-    const appStorage = new AppStorage();
     const context = useContext(AppContext);
     const navigate = useNavigate();
     const [portfolioEntries, setPortfolioEntries] = useState<ReactPortfolioEntry[]>([])
@@ -18,7 +16,8 @@ function PortfolioPage() {
     const fetchPortfolios = useCallback(async () => {
         try {
             const portfolios = await context.api.fetchPortfolios();
-            setPortfolioEntries(portfolios[appStorage.currentUser()].entries.map(entry => ({
+            console.log('context.currentUser', context.currentUser)
+            setPortfolioEntries(portfolios[context.currentUser].entries.map(entry => ({
                 key: randomKey(),
                 productTicker: entry.productTicker,
                 amount: String(entry.amount)
@@ -28,11 +27,11 @@ function PortfolioPage() {
                 navigate('/no-access');
             }
         }
-    }, [context.api, navigate]);
+    }, [context.api, navigate, context.currentUser]);
 
     useEffect(() => {
         fetchPortfolios();
-    }, [fetchPortfolios]);
+    }, [fetchPortfolios, context.currentUser]);
 
 
     function renderEntries() {
@@ -44,9 +43,11 @@ function PortfolioPage() {
                                onChange={(e) => updateTicker(entry.key, e.target.value)}/>
                     </div>
                     <div className={styles.amountContainer}>
-                        <input className={styles.amount} value={entry.amount} onChange={e => updateAmount(entry.key, e.target.value)}/>
+                        <input className={styles.amount} value={entry.amount}
+                               onChange={e => updateAmount(entry.key, e.target.value)}/>
                     </div>
-                    <div className={styles.binContainer} onClick={() => deleteEntry(entry.key)}><MdDelete color={"#E80F88"} size={32}/></div>
+                    <div className={styles.binContainer} onClick={() => deleteEntry(entry.key)}><MdDelete
+                        color={"#E80F88"} size={32}/></div>
                 </div>
             )}
         </>;
@@ -96,7 +97,10 @@ function PortfolioPage() {
     }
 
     async function onSave() {
-        await context.api.savePortfolio(portfolioEntries.map(e => ({productTicker: e.productTicker, amount: parseFloat(e.amount)})));
+        await context.api.savePortfolio(portfolioEntries.map(e => ({
+            productTicker: e.productTicker,
+            amount: parseFloat(e.amount)
+        })));
         navigate('/forecast')
     }
 

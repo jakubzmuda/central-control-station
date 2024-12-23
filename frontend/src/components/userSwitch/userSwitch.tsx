@@ -1,13 +1,11 @@
 import React, {useContext} from "react";
 import styles from './userSwitch.module.css';
 import {MenuItem, Select} from "@mui/material";
-import AppStorage from "../../storage/appStorage";
 import {AppContext} from "../../context/context";
 
 function UserSwitch() {
-    const storage = new AppStorage();
     const context = useContext(AppContext);
-    const currentUser = storage.currentUser();
+    const currentUser = context.currentUser;
     const users = Array.from(new Set([currentUser, ...context.users].filter(user => !!user))).map(user => capitalize(user))
     const color = '#E80F88';
 
@@ -21,7 +19,7 @@ function UserSwitch() {
                 value={capitalize(currentUser)}
                 label="Członek"
                 onChange={(event) => {
-                    storage.setCurrentUser(event.target.value.toLowerCase());
+                    context.setCurrentUser(event.target.value.toLowerCase());
                 }}
                 MenuProps={{
                     PaperProps: {

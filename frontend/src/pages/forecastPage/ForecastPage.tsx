@@ -6,12 +6,10 @@ import {AppContext} from "../../context/context";
 import MonthlyBarChart from "../../components/monthlyBarChart/monthlyBarChart";
 import {CurrencyConverter} from "../../currency/currencyConverter";
 import {MoneyDisplay} from "../../moneyDisplay/MoneyDisplay";
-import AppStorage from "../../storage/appStorage";
 
 function ForecastPage() {
 
     const context = useContext(AppContext);
-    const storage = new AppStorage();
     const navigate = useNavigate();
 
     const fetchForecast = useCallback(async () => {
@@ -42,7 +40,7 @@ function ForecastPage() {
     useEffect(() => {
         fetchForecast();
         // eslint-disable-next-line
-    }, [fetchForecast]);
+    }, [fetchForecast, context.currentUser]);
 
     const fetchPortfolios = useCallback(async () => {
         try {
