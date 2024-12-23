@@ -69,8 +69,7 @@ export default class Api {
     }
 
     private baseUrl() {
-        // return "http://localhost:8080";
-        return "https://kroker-control-station.eu-central-1.elasticbeanstalk.com/";
+        return "https://api.krokiecik.shop";
     }
 }
 
