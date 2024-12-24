@@ -7,6 +7,7 @@ import PortfolioPage from "./pages/portfolioPage/PortfolioPage";
 import LoginPage from "./pages/loginPage/LoginPage";
 import {AppContextProvider} from "./context/context";
 import ForecastPage from "./pages/forecastPage/ForecastPage";
+import GoalsPage from "./pages/goalsPage/GoalsPage";
 
 function App() {
     const defaultPage = '/forecast';
@@ -18,6 +19,7 @@ function App() {
                     <Route path="/" element={<Navigate to={defaultPage} replace/>}/>
                     <Route path="/portfolio" element={<PortfolioPage/>}/>
                     <Route path="/forecast" element={<ForecastPage/>}/>
+                    <Route path="/goals" element={<GoalsPage/>}/>
                     <Route path="/no-access" element={<NoAccessPage/>}/>
                     <Route path="/not-found" element={<NotFoundPage/>}/>
                     <Route path="/login" element={<LoginPage/>}/>

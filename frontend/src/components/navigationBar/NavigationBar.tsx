@@ -1,6 +1,6 @@
 import React from "react";
 import styles from './navigationBar.module.css';
-import {MdAttachMoney, MdLogin, MdWorkOutline} from "react-icons/md";
+import {MdAttachMoney, MdInsertEmoticon, MdLogin, MdWorkOutline} from "react-icons/md";
 import {useLocation, useNavigate} from "react-router-dom";
 
 function NavigationBar() {
@@ -12,6 +12,7 @@ function NavigationBar() {
         <div className={styles.container}>
             {renderNavigationItem('/portfolio', <MdWorkOutline size={24} color={"#E80F88"}/>)}
             {renderNavigationItem('/forecast', <MdAttachMoney size={24} color={"#E80F88"}/>)}
+            {renderNavigationItem('/goals', <MdInsertEmoticon  size={24} color={"#E80F88"}/>)}
             {renderNavigationItem('/login', <MdLogin size={24} color={"#E80F88"}/>)}
         </div>
     );

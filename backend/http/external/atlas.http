@@ -1,0 +1,6 @@
+POST https://atlasetf.pl/api/v2/etf/dividend
+Content-Type: application/json
+
+{
+  "isin": "IE0031442068"
+}
