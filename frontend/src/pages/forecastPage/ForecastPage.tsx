@@ -93,7 +93,8 @@ function ForecastPage() {
     function yearlyEarnings() {
         if (context.forecast && context.currencyRates["USD/PLN"]) {
             const amountInPln = new CurrencyConverter().inPln(context.forecast.yearlyForecast.total, context.currencyRates);
-            return new MoneyDisplay().asString(amountInPln)
+            const afterTax = amountInPln * 0.81;
+            return new MoneyDisplay().asString(afterTax)
         }
         return "0";
     }
@@ -101,7 +102,8 @@ function ForecastPage() {
     function monthlyEarnings() {
         if (context.forecast && context.currencyRates) {
             const amountInPln = new CurrencyConverter().inPln(context.forecast.yearlyForecast.total, context.currencyRates);
-            return new MoneyDisplay().asString(amountInPln / 12)
+            const afterTax = amountInPln * 0.81;
+            return new MoneyDisplay().asString(afterTax / 12)
         }
         return "0";
     }
