@@ -1,10 +1,7 @@
-import React, {useCallback, useContext, useEffect, useState} from "react";
+import React, {useContext} from "react";
 import Page from "../../components/page/page";
-import styles from "./goalsPage.module.css"
-import {useNavigate} from "react-router-dom";
 import {AppContext} from "../../context/context";
-import PrimaryButton from "../../components/primaryButton/primaryButton";
-import {MdDelete} from "react-icons/md";
+import styles from './goalsPage.module.css';
 
 function GoalsPage() {
 
@@ -12,6 +9,10 @@ function GoalsPage() {
 
     return (
         <Page title={"Cele"} showUserSwitch={true}>
+            <div className={styles.container}>
+                <div>Zakładając, że wydajesz miesięcznie:</div>
+                <input/>
+            </div>
 
         </Page>
     );
