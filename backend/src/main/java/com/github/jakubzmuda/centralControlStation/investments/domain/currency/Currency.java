@@ -2,7 +2,8 @@ package com.github.jakubzmuda.centralControlStation.investments.domain.currency;
 
 public enum Currency {
     USD("USD"),
-    PLN("PLN");
+    PLN("PLN"),
+    EUR("EUR");
 
     private final String symbol;
 
@@ -14,6 +15,7 @@ public enum Currency {
         return switch (code) {
             case "USD" -> USD;
             case "PLN" -> PLN;
+            case "EUR" -> EUR;
             default -> throw new IllegalArgumentException("Unsupported currency code: " + code);
         };
     }
@@ -22,6 +24,7 @@ public enum Currency {
         return switch (code) {
             case "USD" -> true;
             case "PLN" -> true;
+            case "EUR" -> true;
             default -> false;
         };
     }

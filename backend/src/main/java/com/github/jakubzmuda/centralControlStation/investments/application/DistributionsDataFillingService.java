@@ -2,10 +2,7 @@ package com.github.jakubzmuda.centralControlStation.investments.application;
 
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.MonetaryValue;
 import com.github.jakubzmuda.centralControlStation.investments.domain.currency.Currency;
-import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.ActualDistribution;
-import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.ActualDistributions;
-import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.AmericanDistributionsDataSupplier;
-import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.DistributionRepository;
+import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.*;
 import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.Portfolio;
 import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.PortfolioEntry;
 import com.github.jakubzmuda.centralControlStation.investments.domain.portfolio.PortfolioRepository;
@@ -27,9 +24,13 @@ public class DistributionsDataFillingService {
 
     private PortfolioRepository portfolioRepository;
     private AmericanDistributionsDataSupplier americanDistributionsDataSupplier;
+    private EtfDistributionDataSupplier etfDistributionDataSupplier;
     private DistributionRepository distributionRepository;
 
-    public DistributionsDataFillingService(PortfolioRepository portfolioRepository, AmericanDistributionsDataSupplier americanDistributionsDataSupplier, DistributionRepository distributionRepository) {
+    public DistributionsDataFillingService(PortfolioRepository portfolioRepository,
+                                           AmericanDistributionsDataSupplier americanDistributionsDataSupplier,
+                                           EtfDistributionDataSupplier etfDistributionDataSupplier,
+                                           DistributionRepository distributionRepository) {
         this.portfolioRepository = portfolioRepository;
         this.americanDistributionsDataSupplier = americanDistributionsDataSupplier;
         this.distributionRepository = distributionRepository;
@@ -54,6 +55,12 @@ public class DistributionsDataFillingService {
             if (maybeStubbedDistributions.isPresent()) {
                 updateDistributions(maybeStubbedDistributions.get());
                 logger.info("Persisted distributions for product '{}' from stubbed history", productTicker);
+                return;
+            }
+            Optional<EtfDetails> maybeEtf = new EtfDetailsResolver().fromPseudoTicker(productTicker);
+            if (maybeEtf.isPresent()) {
+                EtfDetails etfDetails = maybeEtf.get();
+                updateDistributions(etfDistributionDataSupplier.acquireDistributionHistoryForIsin(etfDetails.isin, etfDetails.currency));
                 return;
             }
             updateDistributions(americanDistributionsDataSupplier.acquireDistributionHistoryForTicker(productTicker));
@@ -93,12 +100,34 @@ class StubbedProductDistributions {
 
     private ActualDistributions domdevDistributions() {
         return new ActualDistributions(List.of(
-                new ActualDistribution(DistributionId.next(), "domdev", MonetaryValue.of( 6f, Currency.PLN))
+                new ActualDistribution(DistributionId.next(), "domdev", MonetaryValue.of(6f, Currency.PLN))
                         .withExDate(LocalDate.parse("2024-12-10"))
                         .withPayDate(LocalDate.parse("2024-12-18")),
                 new ActualDistribution(DistributionId.next(), "domdev", MonetaryValue.of(6.5f, Currency.PLN))
                         .withExDate(LocalDate.parse("2024-06-24"))
                         .withPayDate(LocalDate.parse("2024-07-04"))
         ));
+    }
+}
+
+class EtfDetailsResolver {
+
+    public Optional<EtfDetails> fromPseudoTicker(String pseudoTicker) {
+        return switch (pseudoTicker) {
+            case "etf-sp500" -> Optional.of(new EtfDetails("IE0031442068", Currency.USD));
+            case "etf-europe" -> Optional.of(new EtfDetails("IE00B1YZSC51", Currency.EUR));
+            case "etf-emerging-markets" -> Optional.of(new EtfDetails("IE00B0M63177", Currency.EUR));
+            default -> Optional.empty();
+        };
+    }
+}
+
+class EtfDetails {
+    String isin;
+    Currency currency;
+
+    public EtfDetails(String isin, Currency currency) {
+        this.isin = isin;
+        this.currency = currency;
     }
 }

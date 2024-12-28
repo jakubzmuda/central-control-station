@@ -2,8 +2,8 @@ package com.github.jakubzmuda.centralControlStation.investments.infrastructure;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.jakubzmuda.centralControlStation.investments.domain.currency.Currency;
 import com.github.jakubzmuda.centralControlStation.investments.domain.core.MonetaryValue;
+import com.github.jakubzmuda.centralControlStation.investments.domain.currency.Currency;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.ActualDistribution;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.ActualDistributions;
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.AmericanDistributionsDataSupplier;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class AmericanStockAmericanDistributionsDataSupplier implements AmericanDistributionsDataSupplier {
