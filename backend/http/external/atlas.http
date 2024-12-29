@@ -1,4 +1,4 @@
-POST http://atlasetf.pl/api/v2/etf/dividend
+POST https://atlasetf.pl/api/v2/etf/dividend
 Content-Type: application/json
 
 {

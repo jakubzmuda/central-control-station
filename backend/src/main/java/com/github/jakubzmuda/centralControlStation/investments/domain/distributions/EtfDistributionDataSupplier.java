@@ -5,6 +5,6 @@ import com.github.jakubzmuda.centralControlStation.investments.domain.currency.C
 
 public interface EtfDistributionDataSupplier {
 
-    ActualDistributions acquireDistributionHistoryForIsin(String productTicker, Currency currency);
+    ActualDistributions acquireDistributionHistoryForIsin(String isin, String pseudoTicker, Currency currency);
 
 }

@@ -9,7 +9,6 @@ import com.github.jakubzmuda.centralControlStation.investments.domain.distributi
 import com.github.jakubzmuda.centralControlStation.investments.domain.distributions.EtfDistributionDataSupplier;
 import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.DistributionId;
 import okhttp3.*;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -23,33 +22,28 @@ public class EtfDistributionsDataSupplier implements EtfDistributionDataSupplier
     private OkHttpClient client;
     private ObjectMapper objectMapper;
 
-    @Value("${application.atlas.url}")
-    private String url;
-
-    @Value("${application.atlas.port}")
-    private String port;
-
     public EtfDistributionsDataSupplier(OkHttpClient client, ObjectMapper objectMapper) {
         this.client = client;
         this.objectMapper = objectMapper;
     }
 
-    public ActualDistributions acquireDistributionHistoryForIsin(String isin, Currency currency) {
+    public ActualDistributions acquireDistributionHistoryForIsin(String isin, String targetPseudoTicker, Currency currency) {
         AtlasResponse distributionsResponse = acquireByIsin(isin);
 
-        return new ActualDistributions(distributionsResponse.quotes
+        return new ActualDistributions(distributionsResponse.dividends
                 .stream()
                 .filter(entry -> entry.dividend != 0)
+                .dropWhile(d -> LocalDate.parse(d.date).isBefore(LocalDate.now().minusYears(3)))
                 .map(entry -> new ActualDistribution(
                         DistributionId.next(),
-                        isin,
+                        targetPseudoTicker,
                         MonetaryValue.of(entry.dividend, currency))
                         .withExDate(LocalDate.parse(entry.date))
                 ).toList());
     }
 
     private AtlasResponse acquireByIsin(String isin) {
-        String url = String.format("%s:%s/api/v2/etf/dividend", this.url, port);
+        String url = String.format("https://atlasetf.pl/api/v2/etf/dividend");
 
         MediaType JSON = MediaType.get("application/json; charset=utf-8");
         String json = String.format("{\"isin\":\"%s\"}", isin);
@@ -65,7 +59,6 @@ public class EtfDistributionsDataSupplier implements EtfDistributionDataSupplier
         } catch (IOException e) {
             throw new RuntimeException("Data acquirement for product " + isin + " failed", e);
         }
-
     }
 }
 
@@ -73,9 +66,9 @@ class EtfIsinResolver {
 
     public Optional<String> fromPseudoTicker(String pseudoTicker) {
         return switch (pseudoTicker) {
-            case "etf-sp500" -> Optional.of("IE0031442068 ");
-            case "etf-europe" -> Optional.of("IE00B1YZSC51 ");
-            case "etf-emerging-markets" -> Optional.of("IE00B0M63177 ");
+            case "etf-sp500" -> Optional.of("IE0031442068");
+            case "etf-europe" -> Optional.of("IE00B1YZSC51");
+            case "etf-emerging-markets" -> Optional.of("IE00B0M63177");
             default -> Optional.empty();
         };
     }
@@ -93,13 +86,13 @@ class AtlasRequest {
 }
 
 class AtlasResponse {
-    List<Quote> quotes;
+    List<Dividends> dividends;
 
     private AtlasResponse() {
     }
 }
 
-class Quote {
+class Dividends {
     @JsonProperty("date")
     String date;
 
@@ -107,7 +100,7 @@ class Quote {
     float dividend;
 
 
-    private Quote() {
+    private Dividends() {
     }
 
 }

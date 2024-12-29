@@ -32,8 +32,8 @@ public class ApiTest {
     @Autowired
     protected CurrencyRatesDataProviderHelper currencyDataProviderHelper;
 
-    @Value( "${application.seekingAlpha.port}" )
-    private Integer seekingAlphaPort;
+    @Value( "${application.nbp.port}" )
+    private Integer nbpPort;
 
     protected WireMockServer wireMockServer;
 
@@ -43,9 +43,9 @@ public class ApiTest {
         distributionsHelper.reset();
         currencyDataProviderHelper.reset();
         database.reset();
-        wireMockServer = new WireMockServer(seekingAlphaPort);
+        wireMockServer = new WireMockServer(nbpPort);
         wireMockServer.start();
-        configureFor("localhost", seekingAlphaPort);
+        configureFor("localhost", nbpPort);
     }
 
     @AfterEach

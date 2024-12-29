@@ -11,7 +11,6 @@ import com.github.jakubzmuda.centralControlStation.usersAndAccess.domain.Distrib
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -23,12 +22,6 @@ public class AmericanStockAmericanDistributionsDataSupplier implements AmericanD
 
     private OkHttpClient client;
     private ObjectMapper objectMapper;
-
-    @Value("${application.seekingAlpha.url}")
-    private String seekingAlphaUrl;
-
-    @Value("${application.seekingAlpha.port}")
-    private String seekingAlphaPort;
 
     public AmericanStockAmericanDistributionsDataSupplier(OkHttpClient client, ObjectMapper objectMapper) {
         this.client = client;
@@ -52,8 +45,7 @@ public class AmericanStockAmericanDistributionsDataSupplier implements AmericanD
     }
 
     private ProviderDistributionsResponse acquireDataFromExternalService(String productTicker) {
-        String url = String.format("%s:%s/api/v3/symbols/%s/dividend_history?years=0", seekingAlphaUrl, seekingAlphaPort, productTicker);
-
+        String url = String.format("https://seekingalpha.com/api/v3/symbols/%s/dividend_history?years=0", productTicker);
 
         Request request = new Request.Builder()
                 .url(url)

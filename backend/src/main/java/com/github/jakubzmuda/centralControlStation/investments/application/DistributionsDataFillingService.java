@@ -33,6 +33,7 @@ public class DistributionsDataFillingService {
                                            DistributionRepository distributionRepository) {
         this.portfolioRepository = portfolioRepository;
         this.americanDistributionsDataSupplier = americanDistributionsDataSupplier;
+        this.etfDistributionDataSupplier = etfDistributionDataSupplier;
         this.distributionRepository = distributionRepository;
     }
 
@@ -60,7 +61,9 @@ public class DistributionsDataFillingService {
             Optional<EtfDetails> maybeEtf = new EtfDetailsResolver().fromPseudoTicker(productTicker);
             if (maybeEtf.isPresent()) {
                 EtfDetails etfDetails = maybeEtf.get();
-                updateDistributions(etfDistributionDataSupplier.acquireDistributionHistoryForIsin(etfDetails.isin, etfDetails.currency));
+                ActualDistributions actualDistributions = etfDistributionDataSupplier.acquireDistributionHistoryForIsin(etfDetails.isin, productTicker, etfDetails.currency);
+                updateDistributions(actualDistributions);
+                logger.info("Persisted distributions for product '{}' from etf provider", productTicker);
                 return;
             }
             updateDistributions(americanDistributionsDataSupplier.acquireDistributionHistoryForTicker(productTicker));
