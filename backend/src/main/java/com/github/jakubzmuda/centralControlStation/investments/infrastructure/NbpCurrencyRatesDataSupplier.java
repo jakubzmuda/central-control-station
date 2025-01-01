@@ -55,7 +55,7 @@ public class NbpCurrencyRatesDataSupplier implements CurrencyRatesDataSupplier {
                             rate -> Tuple.of(Currency.of(rate.code), Currency.PLN),
                             rate -> rate.mid
                     )));
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException("Could not acquire currency rates.", e);
         }
     }

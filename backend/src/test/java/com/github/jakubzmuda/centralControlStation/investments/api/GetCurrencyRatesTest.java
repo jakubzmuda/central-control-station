@@ -13,7 +13,10 @@ public class GetCurrencyRatesTest extends ApiTest {
 
     @Test
     public void shouldGetRates() {
-        currencyDataProviderHelper.withUsdPlnRate(4.5f).stub();
+        currencyDataProviderHelper
+                .withUsdPlnRate(4.2f)
+                .withEurPlnRate(4.5f)
+                .stub();
 
         Response response = api.whenAs(TestUser.Max).get("/api/currency-rates");
 
@@ -21,7 +24,8 @@ public class GetCurrencyRatesTest extends ApiTest {
 
         CurrencyRatesEndpoint.CurrencyRatesResponse currencyRatesResponse = response.bodyAs(CurrencyRatesEndpoint.CurrencyRatesResponse.class);
 
-        assertThat(currencyRatesResponse.rates.get("USD/PLN")).isEqualTo(4.5f);
+        assertThat(currencyRatesResponse.rates.get("USD/PLN")).isEqualTo(4.2f);
+        assertThat(currencyRatesResponse.rates.get("EUR/PLN")).isEqualTo(4.5f);
     }
 
     @Test

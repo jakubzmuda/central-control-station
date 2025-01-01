@@ -12,9 +12,15 @@ import static com.github.tomakehurst.wiremock.client.WireMock.get;
 public class CurrencyRatesDataProviderHelper {
 
     private float usdPlnRate = 0f;
+    private float eurPlnRate = 0f;
 
     public CurrencyRatesDataProviderHelper withUsdPlnRate(float rate) {
         this.usdPlnRate = rate;
+        return this;
+    }
+
+    public CurrencyRatesDataProviderHelper withEurPlnRate(float rate) {
+        this.eurPlnRate = rate;
         return this;
     }
 
@@ -30,11 +36,16 @@ public class CurrencyRatesDataProviderHelper {
                         "currency": "dolar amerykański",
                         "code": "USD",
                         "mid": %f
+                      },
+                      {
+                        "currency": "Euro",
+                        "code": "EUR",
+                        "mid": %f
                       }
                     ]
                   }
                 ]
-                """, this.usdPlnRate);
+                """, this.usdPlnRate, this.eurPlnRate);
 
 
         WireMock.stubFor(get("/api/exchangerates/tables/A/")

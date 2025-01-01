@@ -36,6 +36,7 @@ public class CurrencyRatesEndpoint {
 
         public CurrencyRatesResponse(CurrencyRates currencyRates) {
             rates.put("USD/PLN", currencyRates.rateFor(Currency.USD, Currency.PLN));
+            rates.put("EUR/PLN", currencyRates.rateFor(Currency.EUR, Currency.PLN));
         }
     }
 }
