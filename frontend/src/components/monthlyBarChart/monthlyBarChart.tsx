@@ -1,10 +1,10 @@
 import React, {useContext} from "react";
-import {Bar} from "react-chartjs-2";
 import {BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip,} from 'chart.js';
 import {MonthlyBarChartColors} from "./monthlyBarChartColors";
 import {YearlyForecast} from "../../types/types";
 import {AppContext} from "../../context/context";
 import {CurrencyConverter} from "../../currency/currencyConverter";
+import BarChart from "../barChart/barChart";
 
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Legend, Title, Tooltip);
@@ -15,7 +15,7 @@ function MonthlyBarChart({forecast}: { forecast: YearlyForecast }) {
 
     return (
         // @ts-ignore
-        <Bar data={data(forecast)} options={options()}/>
+        <BarChart data={data(forecast)}/>
     );
 
     function data(forecast: YearlyForecast) {
@@ -50,59 +50,6 @@ function MonthlyBarChart({forecast}: { forecast: YearlyForecast }) {
         return {
             labels,
             datasets
-        };
-    }
-
-    function options() {
-        return {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'bottom',
-                    labels: {
-                        color: '#fff',
-                        font: {
-                            size: 14,
-                        },
-                        boxWidth: 20,
-                        padding: 10,
-                    },
-                    title: {
-                        display: false,
-                    },
-                },
-            },
-            scales: {
-                x: {
-                    stacked: true,
-                    ticks: {
-                        color: '#fff',
-                    },
-                    grid: {
-                        display: false,
-                        drawBorder: false,
-                    },
-                },
-                y: {
-                    stacked: true,
-                    ticks: {
-                        display: true,
-                        color: '#fff',
-                    },
-                    grid: {
-                        display: true,
-                        color: 'rgba(255,255,255,0.1)',
-                        drawBorder: false,
-                    },
-                },
-            },
-            layout: {
-                padding: {
-                    left: 0, right: 0, top: 0, bottom: 0,
-                },
-            },
         };
     }
 }
