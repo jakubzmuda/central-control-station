@@ -7,6 +7,8 @@ export default class AppStorage {
 
     private tokenKey = "token";
     private currentUserKey = "currentUser";
+    private monthlySavingsKey = "monthlySavings";
+    private monthlySpendingsKey = "monthlySpendings";
 
     public currentUser() {
         const maybeCurrentUser = localStorage.getItem(this.currentUserKey);
@@ -28,8 +30,26 @@ export default class AppStorage {
         }
     }
 
+    public monthlySavings() {
+        const maybeSavings = localStorage.getItem(this.monthlySavingsKey);
+        return maybeSavings ? parseInt(maybeSavings) : 100;
+    }
+
+    public monthlySpendings() {
+        const maybeSpendings = localStorage.getItem(this.monthlySpendingsKey);
+        return maybeSpendings ? parseInt(maybeSpendings) : 2000;
+    }
+
     public setCurrentUser(user: string) {
         localStorage.setItem(this.currentUserKey, user);
+    }
+
+    public setMonthlySpendings(spendings: number) {
+        localStorage.setItem(this.monthlySpendingsKey, spendings.toString());
+    }
+
+    public setMonthlySavings(savings: number) {
+        localStorage.setItem(this.monthlySavingsKey, savings.toString());
     }
 
     public setToken(token: string) {

@@ -2,8 +2,8 @@ import React from "react";
 import styles from './switch.module.css';
 import {MenuItem, Select} from "@mui/material";
 
-function Switch({value, entries, onChange}: {value: string, entries: string[], onChange: Function}) {
-    const color = '#E80F88';
+function Switch({value, entries, onChange}: {value: string | number, entries: string[] | number[], onChange: Function}) {
+    const color = '#fff';
 
     return <div className={styles.container}>
         <Select

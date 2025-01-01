@@ -12,7 +12,11 @@ type ContextType = Context<{
     currencyRates: CurrencyRates,
     errorMessage: string,
     currentUser: string,
-    setCurrentUser: Function
+    setCurrentUser: Function,
+    setMonthlySavings: Function,
+    monthlySavings: number,
+    monthlySpendings: number,
+    setMonthlySpendings: Function,
 }>;
 
 type Forecast = { yearlyForecast: YearlyForecast } | null
@@ -22,8 +26,12 @@ export const AppContext: ContextType = createContext(undefined);
 
 
 export const AppContextProvider = ({children}) => {
+    const appStorage = new AppStorage();
+
     const [users, setUsers] = useState([]);
-    const [currentUser, setCurrentUser] = useState<string>(new AppStorage().currentUser());
+    const [currentUser, setCurrentUser] = useState<string>(appStorage.currentUser());
+    const [monthlySavings, setMonthlySavings] = useState<number>(appStorage.monthlySavings());
+    const [monthlySpendings, setMonthlySpendings] = useState<number>(appStorage.monthlySpendings());
     const [portfolios, setPortfolios] = useState({});
     const [forecast, setForecast] = useState<Forecast>(null);
     const [errorMessage, setErrorMessage] = useState('');
@@ -31,12 +39,35 @@ export const AppContextProvider = ({children}) => {
     const [api] = useState(new Api(setUsers, setPortfolios, setErrorMessage, setForecast, setCurrencyRates));
 
     const setAndPersistCurrentUser = (user: string) => {
-        new AppStorage().setCurrentUser(user)
+        appStorage.setCurrentUser(user)
         setCurrentUser(user);
     }
 
+    const setAndPersistMonthlySavings = (savings: number) => {
+        appStorage.setMonthlySavings(savings)
+        setMonthlySavings(savings);
+    }
+
+    const setAndPersistMonthlySpendings = (spendings: number) => {
+        appStorage.setMonthlySpendings(spendings)
+        setMonthlySpendings(spendings);
+    }
+
     return (
-        <AppContext.Provider value={{api: api, users, portfolios, errorMessage, forecast, currencyRates, currentUser, setCurrentUser: setAndPersistCurrentUser}}>
+        <AppContext.Provider value={{
+            api: api,
+            users,
+            portfolios,
+            errorMessage,
+            forecast,
+            currencyRates,
+            currentUser,
+            setCurrentUser: setAndPersistCurrentUser,
+            monthlySavings,
+            setMonthlySavings: setAndPersistMonthlySavings,
+            monthlySpendings,
+            setMonthlySpendings: setAndPersistMonthlySpendings
+        }}>
             {children}
         </AppContext.Provider>
     );
