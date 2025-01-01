@@ -17,3 +17,8 @@
 .inputContainer > * {
     margin-right: 8px;
 }
+
+.chartContainer {
+    height: 50%;
+    width: 100%;
+}

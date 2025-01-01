@@ -1,6 +1,6 @@
 import React, {useContext} from "react";
 import {BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip,} from 'chart.js';
-import {MonthlyBarChartColors} from "./monthlyBarChartColors";
+import {BarChartColors} from "./barChartColors";
 import {YearlyForecast} from "../../types/types";
 import {AppContext} from "../../context/context";
 import {CurrencyConverter} from "../../currency/currencyConverter";
@@ -24,7 +24,11 @@ function MonthlyBarChart({forecast}: { forecast: YearlyForecast }) {
         const productDataMap: { [product: string]: number[] } = {};
 
         Object.entries(forecast.months).forEach(([monthKey, monthData]) => {
-            Object.values(monthData.distributions.sort((dist1, dist2) => dist2.monetaryValue["USD"] - dist1.monetaryValue["USD"])).forEach((distribution) => {
+            Object.values(monthData.distributions.sort((dist1, dist2) => {
+                const plnValue1 = new CurrencyConverter().inPln(dist1.monetaryValue, context.currencyRates)
+                const plnValue2 = new CurrencyConverter().inPln(dist2.monetaryValue, context.currencyRates)
+                return plnValue2 - plnValue1;
+            })).forEach((distribution) => {
                 if (!productDataMap[distribution.product]) {
                     productDataMap[distribution.product] = Array(labels.length).fill(0);
                 }
@@ -34,7 +38,7 @@ function MonthlyBarChart({forecast}: { forecast: YearlyForecast }) {
             });
         });
 
-        const barChartColors = new MonthlyBarChartColors();
+        const barChartColors = new BarChartColors();
 
         const datasets = Object.entries(productDataMap).map(([product, data], index) => {
             const colors = barChartColors.next();

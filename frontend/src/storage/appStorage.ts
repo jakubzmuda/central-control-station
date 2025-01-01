@@ -32,12 +32,12 @@ export default class AppStorage {
 
     public monthlySavings() {
         const maybeSavings = localStorage.getItem(this.monthlySavingsKey);
-        return maybeSavings ? parseInt(maybeSavings) : 100;
+        return maybeSavings ? parseInt(maybeSavings) : 0;
     }
 
     public monthlySpendings() {
         const maybeSpendings = localStorage.getItem(this.monthlySpendingsKey);
-        return maybeSpendings ? parseInt(maybeSpendings) : 2000;
+        return maybeSpendings ? parseInt(maybeSpendings) : 5000;
     }
 
     public setCurrentUser(user: string) {

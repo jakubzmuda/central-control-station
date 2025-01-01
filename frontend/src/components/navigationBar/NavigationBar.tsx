@@ -12,7 +12,7 @@ function NavigationBar() {
         <div className={styles.container}>
             {renderNavigationItem('/portfolio', <MdWorkOutline size={24} color={"#E80F88"}/>)}
             {renderNavigationItem('/forecast', <MdAttachMoney size={24} color={"#E80F88"}/>)}
-            {renderNavigationItem('/goals', <MdInsertEmoticon  size={24} color={"#E80F88"}/>)}
+            {renderNavigationItem('/future', <MdInsertEmoticon  size={24} color={"#E80F88"}/>)}
             {renderNavigationItem('/login', <MdLogin size={24} color={"#E80F88"}/>)}
         </div>
     );

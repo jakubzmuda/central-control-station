@@ -46,7 +46,7 @@ function PortfolioPage() {
                                onChange={e => updateAmount(entry.key, e.target.value)}/>
                     </div>
                     <div className={styles.binContainer} onClick={() => deleteEntry(entry.key)}><MdDelete
-                        color={"#E80F88"} size={32}/></div>
+                        color={"#fff"} size={32}/></div>
                 </div>
             )}
         </>;
