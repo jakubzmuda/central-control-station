@@ -4,7 +4,6 @@ import {BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title,
 import {MonthlyBarChartColors} from "./monthlyBarChartColors";
 import {YearlyForecast} from "../../types/types";
 import {AppContext} from "../../context/context";
-import {MoneyDisplay} from "../../moneyDisplay/MoneyDisplay";
 import {CurrencyConverter} from "../../currency/currencyConverter";
 
 
@@ -16,7 +15,7 @@ function MonthlyBarChart({forecast}: { forecast: YearlyForecast }) {
 
     return (
         // @ts-ignore
-        <Bar data={data(forecast)} options={options()} plugins={[stackSumPlugin]}/>
+        <Bar data={data(forecast)} options={options()}/>
     );
 
     function data(forecast: YearlyForecast) {
@@ -89,10 +88,12 @@ function MonthlyBarChart({forecast}: { forecast: YearlyForecast }) {
                 y: {
                     stacked: true,
                     ticks: {
-                        display: false,
+                        display: true,
+                        color: '#fff',
                     },
                     grid: {
-                        display: false,
+                        display: true,
+                        color: 'rgba(255,255,255,0.1)',
                         drawBorder: false,
                     },
                 },
@@ -105,33 +106,5 @@ function MonthlyBarChart({forecast}: { forecast: YearlyForecast }) {
         };
     }
 }
-
-const stackSumPlugin = {
-    id: 'stackSumPlugin',
-    beforeDraw(chart) {
-        const {ctx, scales: {x, y}} = chart;
-
-        chart.data.labels.forEach((label, index) => {
-            let total = 0;
-
-            chart.data.datasets.forEach((dataset) => {
-                total += dataset.data[index] || 0;
-            });
-
-            const xPosition = x.getPixelForValue(index);
-            const yPosition = y.getPixelForValue(total);
-
-            if (total > 0) {
-                ctx.save();
-                ctx.fillStyle = '#fff';
-                ctx.font = '8px Arial';
-                ctx.textAlign = 'center';
-                ctx.fillText(`${new MoneyDisplay().asString(total)} zł`, xPosition, yPosition - 8);
-                ctx.restore();
-            }
-        });
-    },
-};
-
 
 export default MonthlyBarChart;

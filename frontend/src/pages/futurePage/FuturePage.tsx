@@ -13,12 +13,12 @@ function FuturePage() {
             <div className={styles.container}>
                 <div className={styles.inputContainer}>
                     <div>Chcę oszczędzać miesięcznie</div>
-                    <Switch entries={generateIncrements(0, 5000, 100)} value={context.monthlySavings} onChange={(value) => context.setMonthlySavings(value)}/>
+                    <Switch entries={generateIncrements(0, 5000, 100)} value={context.monthlySavings} onChange={(value: number) => context.setMonthlySavings(value)}/>
                     <div>zł.</div>
                 </div>
                 <div className={styles.inputContainer}>
                     <div>Moje miesięczne wydatki to</div>
-                    <Switch entries={generateIncrements(0, 10000, 500)} value={context.monthlySpendings} onChange={(value) => context.setMonthlySpendings(value)}/>
+                    <Switch entries={generateIncrements(0, 10000, 500)} value={context.monthlySpendings} onChange={(value: number) => context.setMonthlySpendings(value)}/>
                     <div>zł.</div>
                 </div>
             </div>
