@@ -79,6 +79,7 @@ function FuturePage() {
                     <h3>Prognoza miesięcznych przychodów</h3>
                     <FutureGainsBarChart/>
                 </div>
+                <div className={styles.canvasPlaceholder}/>
             </div>
         </Page>
     );

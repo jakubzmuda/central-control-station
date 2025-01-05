@@ -4,6 +4,7 @@
     justify-content: flex-start;
     align-items: center;
     flex: 1;
+    padding-bottom: 86px;
 }
 
 .portfolioLine {
@@ -59,4 +60,8 @@
     flex: 1;
     align-items: center;
     justify-content: center;
+}
+
+.addPositionButtonContainer {
+    margin-top: 8px;
 }

@@ -3,7 +3,6 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    flex: 1;
 }
 
 .inputContainer {
@@ -25,4 +24,9 @@
 .chartContainer {
     height: 30%;
     width: 100%;
+}
+
+.canvasPlaceholder {
+    position: relative;
+    height: 128px;
 }

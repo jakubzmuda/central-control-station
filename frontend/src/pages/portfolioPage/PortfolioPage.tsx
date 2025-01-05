@@ -56,7 +56,7 @@ function PortfolioPage() {
         <Page title={"Twoje akcyjki"} showUserSwitch={true} onSave={onSave} onCancel={onCancel}>
             <div className={styles.container}>
                 {renderEntries()}
-                <PrimaryButton onClick={() => addEntry()}>Nowa pozycja</PrimaryButton>
+                <div className={styles.addPositionButtonContainer}><PrimaryButton onClick={() => addEntry()}>Nowa pozycja</PrimaryButton></div>
             </div>
         </Page>
     );

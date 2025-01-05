@@ -6,7 +6,7 @@
     width: 100%;
     max-width: 512px;
     justify-content: space-around;
-    position: absolute;
+    position: fixed;
     bottom: 0;
     padding: 16px 0;
     background-color: #202020;
