@@ -7,7 +7,7 @@ import PortfolioPage from "./pages/portfolioPage/PortfolioPage";
 import LoginPage from "./pages/loginPage/LoginPage";
 import {AppContextProvider} from "./context/context";
 import ForecastPage from "./pages/forecastPage/ForecastPage";
-import FuturePage from "./pages/futurePage/FuturePage";
+import FuturePage from "./pages/futurePage/futurePage";
 
 function App() {
     const defaultPage = '/forecast';

@@ -1,0 +1,70 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.daysOff {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #fff;
+    border-radius: 8px;
+    height: 48px;
+    width: 48px;
+    font-size: 24px;
+    font-weight: 400;
+    margin-bottom: 16px;
+}
+
+.daysOffSmall {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #fff;
+    border-radius: 8px;
+    height: 36px;
+    width: 36px;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.progressContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.progressBar {
+    width: calc(100% - 2 * 36px);
+    height: 24px;
+    background-color: transparent;
+    border: 1px solid #fff;
+    border-left: none;
+    border-right: none;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.progress {
+    border: 1px solid #32cc65;
+    height: 100%;
+
+    background: repeating-linear-gradient(
+            45deg,
+            rgba(50, 204, 101, 0.4),
+            rgba(50, 204, 101, 0.4) 10px,
+            #32cc65 10px,
+            #32cc65 20px
+    );
+}
+
+.percentageLabel {
+    position: absolute;
+    pointer-events: none;
+    left: 50%;
+    transform: translate(-50%);
+}

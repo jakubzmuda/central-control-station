@@ -5,6 +5,8 @@ import styles from './futurePage.module.css';
 import Switch from "../../components/switch/switch";
 import FutureGainsBarChart from "../../components/futureGainsBarChart/futureGainsBarChart";
 import {useNavigate} from "react-router-dom";
+import DaysOffDisplay from "../../components/daysOffDisplay/daysOffDisplay";
+import {CurrencyConverter} from "../../currency/currencyConverter";
 
 function FuturePage() {
 
@@ -60,33 +62,61 @@ function FuturePage() {
             <div className={styles.container}>
                 <div className={styles.inputContainer}>
                     <div>Chcę oszczędzać miesięcznie</div>
-                    <Switch entries={generateIncrements(0, 5000, 100)} value={context.monthlySavings} onChange={(value: number) => context.setMonthlySavings(value)}/>
+                    <Switch entries={generateIncrements(0, 15000)} value={context.monthlySavings}
+                            onChange={(value: number) => context.setMonthlySavings(value)}/>
                     <div>zł.</div>
                 </div>
                 <div className={styles.inputContainer}>
                     <div>Moje miesięczne wydatki to</div>
-                    <Switch entries={generateIncrements(0, 10000, 500)} value={context.monthlySpendings} onChange={(value: number) => context.setMonthlySpendings(value)}/>
+                    <Switch entries={generateIncrements(0, 15000)} value={context.monthlySpendings}
+                            onChange={(value: number) => context.setMonthlySpendings(value)}/>
                     <div>zł.</div>
+                </div>
+                <div className={styles.daysOffContainer}>
+                    <DaysOffDisplay daysOff={daysOff()}/>
                 </div>
                 <div className={styles.chartContainer}>
                     <h3>Prognoza miesięcznych przychodów</h3>
-                    <FutureGainsBarChart />
+                    <FutureGainsBarChart/>
                 </div>
             </div>
-
         </Page>
     );
 
-    function generateIncrements(start: number, end: number, step: number): number[] {
+    function daysOff(): number {
+        const yearlySpendings = context.monthlySpendings * 12;
+        const spendingsCoverageFactor = yearlyEarnings() / yearlySpendings;
+        return spendingsCoverageFactor * 365.25;
+    }
+
+    function yearlyEarnings() {
+        if (context.forecast && context.currencyRates) {
+            const amountInPln = new CurrencyConverter().inPln(context.forecast.yearlyForecast.total, context.currencyRates);
+            return amountInPln * 0.81;
+        }
+        return 0;
+    }
+
+    function generateIncrements(start: number, end: number): number[] {
         if (start > end) {
             throw new Error("Start value must be less than or equal to end value.");
         }
 
         const increments: number[] = [];
-        for (let i = start; i <= end; i += step) {
+        for (let i = start; i <= end; i += step(i)) {
             increments.push(i);
         }
         return increments;
+    }
+
+    function step(amount: number): number {
+        if (amount < 1000) {
+            return 100;
+        }
+        if (amount < 5000) {
+            return 500;
+        }
+        return 1000;
     }
 
 }

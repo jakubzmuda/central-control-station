@@ -18,7 +18,11 @@
     margin-right: 8px;
 }
 
+.daysOffContainer {
+    margin-bottom: 16px;
+}
+
 .chartContainer {
-    height: 50%;
+    height: 30%;
     width: 100%;
 }
